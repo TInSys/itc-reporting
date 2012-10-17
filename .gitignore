@@ -1,0 +1,10 @@
+target
+.settings
+.gwt-log
+src/main/resources/config/spring/.svn
+src/main/resources/config/spring/beans/.svn
+src/main/resources/config/.svn/all-wcprops
+src/main/resources/config/.svn/entries
+src/main/resources/config/database/.svn/all-wcprops
+src/main/resources/config/database/.svn/entries
+database.properties.svn-base

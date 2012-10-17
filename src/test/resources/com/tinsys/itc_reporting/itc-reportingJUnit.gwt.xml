@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+  <!-- Inherit our applications main module.                      -->
+  <inherits name='com.tinsys.itc_reporting.itc-reporting' />
+
+  <!-- Specify the path to any remote services.                   -->
+  <servlet path="/itc-reporting/greet" class="com.tinsys.itc_reporting.server.GreetingServiceImpl" />
+
+</module>
