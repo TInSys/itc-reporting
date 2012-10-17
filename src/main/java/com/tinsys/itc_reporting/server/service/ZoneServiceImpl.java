@@ -24,23 +24,19 @@ public class ZoneServiceImpl implements ZoneService {
     }
 
     public ZoneDTO findZone(Long id) {
-        // TODO Auto-generated method stub
-        return null;
+        return zoneDAO.findZone(id);
     }
 
     public ZoneDTO createZone(ZoneDTO aZone) {
-        // TODO Auto-generated method stub
-        return null;
+        return zoneDAO.createZone(aZone);
     }
 
     public ZoneDTO updateZone(ZoneDTO aZone) {
-        // TODO Auto-generated method stub
-        return null;
+        return zoneDAO.updateZone(aZone);
     }
 
     public void deleteZone(ZoneDTO aZone) {
-        // TODO Auto-generated method stub
-
+        zoneDAO.deleteZone(aZone);
     }
 
 }

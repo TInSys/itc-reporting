@@ -22,7 +22,7 @@ public class ZoneDAOImpl implements ZoneDAO {
         this.factory = factory;
     }
 
-    @Transactional
+    
     public ArrayList<ZoneDTO> getAllZones() {
         ArrayList<ZoneDTO> result = new ArrayList<ZoneDTO>();
         @SuppressWarnings("unchecked")
@@ -32,31 +32,50 @@ public class ZoneDAOImpl implements ZoneDAO {
             ZoneDTO zoneDTO = new ZoneDTO();
             zoneDTO.setId(zone.getId());
             zoneDTO.setCode(zone.getCode());
-            zoneDTO.setName(zoneDTO.getName());
+            zoneDTO.setName(zone.getName());
             zoneDTO.setCurrencyISO(zone.getCurrencyISO());
             result.add(zoneDTO);
         }
         return result;
     }
-
+    
     public ZoneDTO findZone(Long id) {
-        // TODO Auto-generated method stub
-        return null;
+        Zone zone = (Zone) factory.getCurrentSession().get(Zone.class, id);
+        ZoneDTO result = new ZoneDTO();
+        result.setId(zone.getId());
+        result.setCode(zone.getCode());
+        result.setName(zone.getName());
+        result.setCurrencyISO(zone.getCurrencyISO());
+        return result;
     }
-
+    
     public ZoneDTO createZone(ZoneDTO aZone) {
-        // TODO Auto-generated method stub
-        return null;
+        Zone zone = new Zone();
+        zone.setCode(aZone.getCode());
+        zone.setName(aZone.getName());
+        zone.setCurrencyISO(aZone.getCurrencyISO());
+        factory.getCurrentSession().persist(zone);
+        Long id = (Long) factory.getCurrentSession().getIdentifier(zone);
+        aZone.setId(id);
+        return aZone;
     }
-
+    
     public ZoneDTO updateZone(ZoneDTO aZone) {
-        // TODO Auto-generated method stub
-        return null;
+        Zone zone = (Zone) factory.getCurrentSession().get(Zone.class, aZone.getId());
+        zone.setCode(aZone.getCode());
+        zone.setName(aZone.getName());
+        zone.setCurrencyISO(aZone.getCurrencyISO());
+        factory.getCurrentSession().saveOrUpdate(zone);
+        return aZone;
     }
-
+    
     public void deleteZone(ZoneDTO aZone) {
-        // TODO Auto-generated method stub
-
+        Zone zone = new Zone();
+        zone.setId(aZone.getId());
+        zone.setCode(aZone.getCode());
+        zone.setName(aZone.getName());
+        zone.setCurrencyISO(aZone.getCurrencyISO());
+        factory.getCurrentSession().delete(zone);
     }
 
 }
