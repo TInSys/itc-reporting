@@ -1,8 +1,10 @@
 package com.tinsys.itc_reporting.dao;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +29,8 @@ public class ZoneDAOImpl implements ZoneDAO {
         ArrayList<ZoneDTO> result = new ArrayList<ZoneDTO>();
         @SuppressWarnings("unchecked")
         ArrayList<Zone> zoneList = (ArrayList<Zone>) factory
-                .getCurrentSession().createCriteria(Zone.class).list();
+                .getCurrentSession().createCriteria(Zone.class).addOrder(Order.asc("code")).list();
+
         for (Zone zone : zoneList) {
             ZoneDTO zoneDTO = new ZoneDTO();
             zoneDTO.setId(zone.getId());
@@ -36,6 +39,7 @@ public class ZoneDAOImpl implements ZoneDAO {
             zoneDTO.setCurrencyISO(zone.getCurrencyISO());
             result.add(zoneDTO);
         }
+
         return result;
     }
     

@@ -2,6 +2,8 @@
 <module rename-to='ITCreporting'>
 	<!-- Inherit the core Web Toolkit stuff. -->
 	<inherits name='com.google.gwt.user.User' />
+   <!-- Inherit Internationalization. -->
+	<inherits name="com.google.gwt.i18n.I18N"/>
 
 	<!-- We need the JUnit module in the main module, -->
 	<!-- otherwise eclipse complains (Google plugin bug?) -->

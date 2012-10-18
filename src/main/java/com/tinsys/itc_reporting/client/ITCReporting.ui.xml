@@ -22,6 +22,8 @@
 						<g:FlowPanel>
 							<g:PushButton ui:field="zoneManagementPushButton"
 								text="Manage Zones" styleName="{style.stackButton}" />
+							<g:PushButton ui:field="taxManagementPushButton"
+                        text="Manage Tax Rates" styleName="{style.stackButton}" />
 						</g:FlowPanel>
 
 					</g:stack>

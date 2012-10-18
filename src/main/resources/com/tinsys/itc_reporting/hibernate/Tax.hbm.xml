@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+                                   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.tinsys.itc_reporting.model.Tax" table="tax">
+		<id name="id" type="long">
+			<column name="id" />
+			<generator class="identity" />
+		</id>
+   <property name="rate" type="big_decimal">
+      <column name = "rate" sql-type="NUMERIC(19,6)"/>
+   </property>
+   <many-to-one column="zone" name="zone" lazy="false" />
+   <many-to-one column="period" name="period" lazy="false" />
+	</class>
+</hibernate-mapping>

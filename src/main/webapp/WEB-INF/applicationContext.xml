@@ -51,5 +51,11 @@
 		<property name="factory" ref="sessionFactory" />
 	</bean>
 
+   <bean id="taxDAO" class="com.tinsys.itc_reporting.dao.TaxDAOImpl">
+      <property name="factory" ref="sessionFactory" />
+   </bean>
 
+   <bean id="periodDAO" class="com.tinsys.itc_reporting.dao.PeriodDAOImpl">
+      <property name="factory" ref="sessionFactory" />
+   </bean>   
 </beans>

@@ -37,5 +37,10 @@ public class PeriodDTO implements Serializable {
     public void setStopDate(Date stopDate) {
         this.stopDate = stopDate;
     }
+    
+    @Override
+   public String toString() {
+      return startDate +((stopDate!=null)?" to "+stopDate:" ");
+   }
 
 }

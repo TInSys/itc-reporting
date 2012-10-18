@@ -32,12 +32,6 @@
 		</repository>
 	</repositories>
 	<dependencies>
-		<!-- Hibernate core -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate</artifactId>
-			<version>3.2.7.ga</version>
-		</dependency>
 		
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -158,6 +152,13 @@
 			<artifactId>spring-hibernate3</artifactId>
 			<version>2.0.8</version>
 		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate</artifactId>
+			<version>3.5.4-Final</version>
+			<type>pom</type>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -184,6 +185,7 @@
 				<configuration>
 					<runTarget>itc-reporting.html</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
+					<extraJvmArgs>-XX:MaxPermSize=512M -Xmx1024M</extraJvmArgs>
 				</configuration>
 			</plugin>
 
