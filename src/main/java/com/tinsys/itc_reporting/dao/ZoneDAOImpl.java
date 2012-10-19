@@ -1,12 +1,10 @@
 package com.tinsys.itc_reporting.dao;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.tinsys.itc_reporting.model.Zone;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
@@ -24,12 +22,12 @@ public class ZoneDAOImpl implements ZoneDAO {
         this.factory = factory;
     }
 
-    
     public ArrayList<ZoneDTO> getAllZones() {
         ArrayList<ZoneDTO> result = new ArrayList<ZoneDTO>();
         @SuppressWarnings("unchecked")
         ArrayList<Zone> zoneList = (ArrayList<Zone>) factory
-                .getCurrentSession().createCriteria(Zone.class).addOrder(Order.asc("code")).list();
+                .getCurrentSession().createCriteria(Zone.class)
+                .addOrder(Order.asc("code")).list();
 
         for (Zone zone : zoneList) {
             ZoneDTO zoneDTO = new ZoneDTO();
@@ -42,7 +40,7 @@ public class ZoneDAOImpl implements ZoneDAO {
 
         return result;
     }
-    
+
     public ZoneDTO findZone(Long id) {
         Zone zone = (Zone) factory.getCurrentSession().get(Zone.class, id);
         ZoneDTO result = new ZoneDTO();
@@ -52,7 +50,7 @@ public class ZoneDAOImpl implements ZoneDAO {
         result.setCurrencyISO(zone.getCurrencyISO());
         return result;
     }
-    
+
     public ZoneDTO createZone(ZoneDTO aZone) {
         Zone zone = new Zone();
         zone.setCode(aZone.getCode());
@@ -63,16 +61,17 @@ public class ZoneDAOImpl implements ZoneDAO {
         aZone.setId(id);
         return aZone;
     }
-    
+
     public ZoneDTO updateZone(ZoneDTO aZone) {
-        Zone zone = (Zone) factory.getCurrentSession().get(Zone.class, aZone.getId());
+        Zone zone = (Zone) factory.getCurrentSession().get(Zone.class,
+                aZone.getId());
         zone.setCode(aZone.getCode());
         zone.setName(aZone.getName());
         zone.setCurrencyISO(aZone.getCurrencyISO());
         factory.getCurrentSession().saveOrUpdate(zone);
         return aZone;
     }
-    
+
     public void deleteZone(ZoneDTO aZone) {
         Zone zone = new Zone();
         zone.setId(aZone.getId());

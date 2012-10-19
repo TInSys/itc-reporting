@@ -7,20 +7,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.tinsys.itc_reporting.client.service.PeriodService;
 import com.tinsys.itc_reporting.dao.PeriodDAO;
-import com.tinsys.itc_reporting.dao.ZoneDAO;
 import com.tinsys.itc_reporting.shared.dto.PeriodDTO;
 
 @Service("periodService")
 @Transactional
 public class PeriodServiceImpl implements PeriodService {
 
-   @Autowired
-   @Qualifier("periodDAO")
-   private PeriodDAO periodDAO;
-   
-   @Override
-   public PeriodDTO updatePeriod(PeriodDTO aPeriod) {
-      return periodDAO.updatePeriod(aPeriod);
-   }
+    @Autowired
+    @Qualifier("periodDAO")
+    private PeriodDAO periodDAO;
+
+    @Override
+    public PeriodDTO updatePeriod(PeriodDTO aPeriod) {
+        return periodDAO.updatePeriod(aPeriod);
+    }
 
 }
