@@ -1,0 +1,85 @@
+<!-- <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent"> -->
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:c="urn:import:com.google.gwt.user.cellview.client"
+	xmlns:dp="urn:import:com.google.gwt.user.datepicker.client">
+	<ui:style>
+		.principal {
+			margin: 20px;
+		}
+		
+		.marge {
+			margin: 5px;
+		}
+		
+		.center {
+			text-align: center;
+		}
+	</ui:style>
+	<g:HorizontalPanel width="100%" borderWidth="1">
+
+		<g:VerticalPanel width="100%" styleName="{style.marge}">
+			<g:HorizontalPanel>
+				<g:Label text="Zone :" styleName="{style.marge}" />
+				<g:ValueListBox ui:field="zoneListBox" styleName="{style.marge}" />
+			</g:HorizontalPanel>
+
+			<g:VerticalPanel>
+				<c:CellTable ui:field="fxRateCellTable" />
+				<c:SimplePager ui:field='pager' location='CENTER' />
+			</g:VerticalPanel>
+
+
+			<g:HTMLPanel>
+				<table>
+					<tr>
+						<td>
+							<g:Label text="Rate " />
+						</td>
+						<td>
+							<g:TextBox ui:field="fxRateRateTextBox" visibleLength="15"
+								maxLength="15" styleName="{style.marge}" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<g:Label text="Period :" />
+						</td>
+						<td>
+							<g:ListBox ui:field="monthPeriod"/>
+						</td>
+						<td>
+							<g:Label text=" to :" />
+						</td>
+						<td>
+							<g:ListBox ui:field="yearPeriod"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<g:Label text="Currency " />
+						</td>
+						<td>
+							<g:TextBox ui:field="zoneCurrencyISOTextBox"
+								visibleLength="3" maxLength="3" styleName="{style.marge}" />
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td colspan="2">
+							<g:Button ui:field="saveFXRate" text="Save FXRate"
+								styleName="{style.marge}" />
+							<g:Button ui:field="cancelUpdateFXRate" text="Cancel current changes"
+								styleName="{style.marge}" visible="false" />
+							<g:Button ui:field="deleteFXRate" text="Delete FXRate"
+								styleName="{style.marge}" visible="false" />
+						</td>
+
+					</tr>
+				</table>
+			</g:HTMLPanel>
+
+
+		</g:VerticalPanel>
+	</g:HorizontalPanel>
+
+</ui:UiBinder> 

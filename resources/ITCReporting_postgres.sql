@@ -45,7 +45,7 @@ CREATE TABLE fx_rate
   rate numeric(19,6),
   "zone" bigint,
   period bigint,
-  "currencyISO" character varying(3),
+  currency_iso character varying(3),
   CONSTRAINT fx_rate_pkey PRIMARY KEY (id),
   CONSTRAINT period_fkey FOREIGN KEY (period)
       REFERENCES period (id) MATCH SIMPLE

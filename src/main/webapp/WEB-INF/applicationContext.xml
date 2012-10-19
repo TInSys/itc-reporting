@@ -17,11 +17,11 @@
 
 	<context:annotation-config />
 	<aop:config proxy-target-class="true" />
-<tx:advice id="txAdvice">
-    <tx:attributes>
-        <tx:method name="*" propagation="REQUIRED" />
-    </tx:attributes>
-</tx:advice>
+	<tx:advice id="txAdvice">
+		<tx:attributes>
+			<tx:method name="*" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
 	<tx:annotation-driven />
 
 	<context:component-scan base-package="com.tinsys.itc_reporting" />
@@ -41,9 +41,10 @@
 	<import resource="classes/config/spring/beans/HibernateSessionFactory.xml" />
 
 
-<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-     <property name="sessionFactory" ref="sessionFactory"/>
-</bean>
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
 
 
 
@@ -51,11 +52,16 @@
 		<property name="factory" ref="sessionFactory" />
 	</bean>
 
-   <bean id="taxDAO" class="com.tinsys.itc_reporting.dao.TaxDAOImpl">
-      <property name="factory" ref="sessionFactory" />
-   </bean>
+	<bean id="taxDAO" class="com.tinsys.itc_reporting.dao.TaxDAOImpl">
+		<property name="factory" ref="sessionFactory" />
+	</bean>
 
-   <bean id="periodDAO" class="com.tinsys.itc_reporting.dao.PeriodDAOImpl">
-      <property name="factory" ref="sessionFactory" />
-   </bean>   
+	<bean id="periodDAO" class="com.tinsys.itc_reporting.dao.PeriodDAOImpl">
+		<property name="factory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="fxRateDAO" class="com.tinsys.itc_reporting.dao.FXRateDAOImpl">
+		<property name="factory" ref="sessionFactory" />
+	</bean>
+
 </beans>

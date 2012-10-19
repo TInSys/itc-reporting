@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+                                   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.tinsys.itc_reporting.model.FXRate" table="fx_rate">
+		<id name="id" type="long">
+			<column name="id" />
+			<generator class="identity" />
+		</id>
+   <property name="rate" type="big_decimal">
+      <column name = "rate" sql-type="NUMERIC(19,6)"/>
+   </property>
+   <property generated="never" lazy="false" name="currencyISO"
+         type="string">
+         <column name="currency_iso" not-null="true" />
+   </property>
+   <many-to-one column="zone" name="zone" lazy="false" />
+   <many-to-one column="period" name="period" lazy="false" />
+	</class>
+</hibernate-mapping>

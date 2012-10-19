@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.tinsys.itc_reporting.client.widgets.FXRateManagement;
 import com.tinsys.itc_reporting.client.widgets.TaxManagement;
 import com.tinsys.itc_reporting.client.widgets.WidgetSwitchManagement;
 import com.tinsys.itc_reporting.client.widgets.ZoneManagement;
@@ -28,9 +29,6 @@ public class ITCReporting implements EntryPoint {
 
     @UiField
     ScrollPanel mainPanel;
-
-    @UiField
-    PushButton zoneManagementPushButton;
     
     private static final Binder binder = GWT.create(Binder.class);
     
@@ -76,6 +74,23 @@ public class ITCReporting implements EntryPoint {
           mainPanel.add(new TaxManagement());
       }
   }
+
+  @UiHandler("FXRateManagementPushButton")
+  void handleClickFXRateManagementPushButton(ClickEvent e) {
+      if (mainPanel.getWidget() != null) {
+          WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel
+                  .getWidget();
+          if (!widgetStatus.isEditing()) {
+              mainPanel.remove(mainPanel.getWidget());
+              mainPanel.add(new FXRateManagement());
+          } else {
+              showSaveAlert();
+          }
+      } else {
+          mainPanel.add(new FXRateManagement());
+      }
+  }
+  
   
   private void showSaveAlert() {
       final DialogBox simplePopup = new DialogBox(true);

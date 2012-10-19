@@ -14,7 +14,7 @@ public class FXRateDTO implements Serializable {
     private BigDecimal rate;
     private String currencyISO;
     private ZoneDTO zone;
-    private PeriodDTO period;
+    private MonthPeriodDTO period;
 
     public Long getId() {
         return id;
@@ -48,11 +48,11 @@ public class FXRateDTO implements Serializable {
         this.zone = zone;
     }
 
-    public PeriodDTO getPeriod() {
+    public MonthPeriodDTO getPeriod() {
         return period;
     }
 
-    public void setPeriod(PeriodDTO period) {
+    public void setPeriod(MonthPeriodDTO period) {
         this.period = period;
     }
 
