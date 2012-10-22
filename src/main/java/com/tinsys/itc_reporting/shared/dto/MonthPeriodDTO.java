@@ -39,7 +39,7 @@ public class MonthPeriodDTO implements Serializable {
 
     @Override
    public String toString() {
-      return month+1+"/"+year;
+      return month+"/"+year;
    }
 
 }

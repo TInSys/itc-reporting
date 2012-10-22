@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.tinsys.itc_reporting.shared.dto.FXRateDTO;
+import com.tinsys.itc_reporting.shared.dto.MonthPeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
 public interface FXRateServiceAsync {
@@ -19,5 +20,8 @@ public interface FXRateServiceAsync {
             AsyncCallback<ArrayList<FXRateDTO>> callback);
 
     void updateFXRate(FXRateDTO aFXRate, AsyncCallback<FXRateDTO> callback);
+
+   void getAllFXRatesForPeriod(MonthPeriodDTO monthPeriodDto,
+         AsyncCallback<ArrayList<FXRateDTO>> callback);
 
 }

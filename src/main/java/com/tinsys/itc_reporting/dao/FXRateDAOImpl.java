@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -147,5 +148,46 @@ public class FXRateDAOImpl implements FXRateDAO {
         factory.getCurrentSession().delete(fxRate);
 
     }
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public ArrayList<FXRateDTO> getAllFXRatesForPeriod(
+         PeriodDTO monthYearToPeriod) {
+      ArrayList<FXRateDTO> result = new ArrayList<FXRateDTO>();
+      ArrayList<FXRate> fxRateList;
+      try {
+         Query query = factory.getCurrentSession().createQuery("select fx from FXRate fx left join fx.zone Zone where fx.period.startDate = :sDate ");
+         query.setParameter("sDate", monthYearToPeriod.getStartDate());
+         fxRateList = (ArrayList<FXRate>) query.list();
+ /*         Criteria criteria = factory.getCurrentSession().createCriteria(
+                  FXRate.class).createAlias("period", "aPeriod");
+          fxRateList = (ArrayList<FXRate>) criteria.add(
+                  Restrictions.eq("aPeriod.startDate", monthYearToPeriod.getStartDate())).list();*/
+      } catch (Exception e) {
+          throw new RuntimeException(e);
+      }
+
+      for (FXRate fxRate : fxRateList) {
+          FXRateDTO fxRateDTO = new FXRateDTO();
+          fxRateDTO.setId(fxRate.getId());
+          fxRateDTO.setRate(fxRate.getRate());
+          ZoneDTO zoneDTO = new ZoneDTO();
+          zoneDTO.setCode(fxRate.getZone().getCode());
+          zoneDTO.setName(fxRate.getZone().getName());
+          zoneDTO.setCurrencyISO(fxRate.getZone().getCurrencyISO());
+          fxRateDTO.setZone(zoneDTO);
+          MonthPeriodDTO periodDTO = new MonthPeriodDTO();
+          periodDTO.setId(fxRate.getPeriod().getId());
+          Calendar cal = new GregorianCalendar();
+          cal.setTime(fxRate.getPeriod().getStartDate());
+          
+          periodDTO.setMonth(cal.get(Calendar.MONTH)+1);
+          periodDTO.setYear(cal.get(Calendar.YEAR));
+          fxRateDTO.setPeriod(periodDTO);
+          result.add(fxRateDTO);
+      }
+
+      return result;
+   }
 
 }

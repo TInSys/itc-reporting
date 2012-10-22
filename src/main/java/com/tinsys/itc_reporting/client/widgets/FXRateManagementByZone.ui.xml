@@ -48,7 +48,7 @@
 							<g:ListBox ui:field="monthPeriod" styleName="{style.marge}"/>
                   </td>
                   <td>
-							<g:Label text=" to :" styleName="{style.marge}"/>
+							<g:Label text="/" styleName="{style.marge}"/>
                   </td>
                   <td>
 							<g:ListBox ui:field="yearPeriod" styleName="{style.marge}"/>

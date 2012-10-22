@@ -46,7 +46,7 @@ import com.tinsys.itc_reporting.shared.dto.FXRateDTO;
 import com.tinsys.itc_reporting.shared.dto.MonthPeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
-public class FXRateManagement extends Composite implements
+public class FXRateManagementByZone extends Composite implements
       WidgetSwitchManagement {
 
    private static Binder uiBinder = GWT.create(Binder.class);
@@ -133,11 +133,11 @@ public class FXRateManagement extends Composite implements
    @UiField
    Button cancelUpdateFXRate = new Button();
 
-   @UiTemplate("FXRateManagement.ui.xml")
-   interface Binder extends UiBinder<Widget, FXRateManagement> {
+   @UiTemplate("FXRateManagementByZone.ui.xml")
+   interface Binder extends UiBinder<Widget, FXRateManagementByZone> {
    }
 
-   public FXRateManagement() {
+   public FXRateManagementByZone() {
       initWidget(uiBinder.createAndBindUi(this));
       zoneService.getAllZones(new AsyncCallback<ArrayList<ZoneDTO>>() {
 
@@ -283,7 +283,7 @@ public class FXRateManagement extends Composite implements
 
             selectedFXRate.setRate(new BigDecimal(fxRateRateTextBox.getText()));
             MonthPeriodDTO monthPeriodDTO = new MonthPeriodDTO();
-            monthPeriodDTO.setMonth(monthPeriod.getSelectedIndex());
+            monthPeriodDTO.setMonth(monthPeriod.getSelectedIndex()+1);
             monthPeriodDTO.setYear(yearPeriod.getSelectedIndex() + STARTING_YEAR);
             selectedFXRate.setPeriod(monthPeriodDTO);
             createFXRate();

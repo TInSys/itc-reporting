@@ -12,6 +12,7 @@ import com.tinsys.itc_reporting.dao.FXRateDAO;
 import com.tinsys.itc_reporting.dao.PeriodDAO;
 import com.tinsys.itc_reporting.server.utils.DateUtils;
 import com.tinsys.itc_reporting.shared.dto.FXRateDTO;
+import com.tinsys.itc_reporting.shared.dto.MonthPeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.PeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
@@ -58,5 +59,10 @@ public class FXRateServiceImpl implements FXRateService {
         periodDAO.deletePeriod(DateUtils.monthYearToPeriod(aFXRate.getPeriod().getId(),aFXRate.getPeriod().getMonth(), aFXRate.getPeriod().getYear()));
 
     }
+
+   @Override
+   public ArrayList<FXRateDTO> getAllFXRatesForPeriod(MonthPeriodDTO monthPeriodDto) {
+      return fxRateDAO.getAllFXRatesForPeriod(DateUtils.monthYearToPeriod(null, monthPeriodDto.getMonth(), monthPeriodDto.getYear()));
+   }
 
 }
