@@ -10,12 +10,12 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
-import com.tinsys.itc_reporting.model.Period;
 import com.tinsys.itc_reporting.model.FXRate;
+import com.tinsys.itc_reporting.model.Period;
 import com.tinsys.itc_reporting.model.Zone;
 import com.tinsys.itc_reporting.server.utils.DateUtils;
-import com.tinsys.itc_reporting.shared.dto.MonthPeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.FXRateDTO;
+import com.tinsys.itc_reporting.shared.dto.MonthPeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.PeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
@@ -58,14 +58,13 @@ public class FXRateDAOImpl implements FXRateDAO {
             FXRateDTO fxRateDTO = new FXRateDTO();
             fxRateDTO.setId(fxRate.getId());
             fxRateDTO.setRate(fxRate.getRate());
-            fxRateDTO.setCurrencyISO(fxRate.getCurrencyISO());
             fxRateDTO.setZone(zoneDTO);
             MonthPeriodDTO periodDTO = new MonthPeriodDTO();
             periodDTO.setId(fxRate.getPeriod().getId());
             Calendar cal = new GregorianCalendar();
             cal.setTime(fxRate.getPeriod().getStartDate());
             
-            periodDTO.setMonth(cal.get(Calendar.MONTH));
+            periodDTO.setMonth(cal.get(Calendar.MONTH)+1);
             periodDTO.setYear(cal.get(Calendar.YEAR));
             fxRateDTO.setPeriod(periodDTO);
             result.add(fxRateDTO);
@@ -85,7 +84,6 @@ public class FXRateDAOImpl implements FXRateDAO {
 
         FXRate fxRate = new FXRate();
         fxRate.setRate(aFXRate.getRate());
-        fxRate.setCurrencyISO(aFXRate.getCurrencyISO());
         Zone zone = new Zone();
         zone.setId(aFXRate.getZone().getId());
         zone.setCode(aFXRate.getZone().getCode());
@@ -114,7 +112,6 @@ public class FXRateDAOImpl implements FXRateDAO {
         FXRate fxRate = (FXRate) factory.getCurrentSession()
                 .get(FXRate.class, aFXRate.getId());
         fxRate.setRate(aFXRate.getRate());
-        fxRate.setCurrencyISO(aFXRate.getCurrencyISO());
         Zone zone = new Zone();
         zone.setId(aFXRate.getZone().getId());
         zone.setCode(aFXRate.getZone().getCode());
@@ -136,7 +133,6 @@ public class FXRateDAOImpl implements FXRateDAO {
         FXRate fxRate = (FXRate) factory.getCurrentSession()
                 .get(FXRate.class, aFXRate.getId());
         fxRate.setRate(aFXRate.getRate());
-        fxRate.setCurrencyISO(aFXRate.getCurrencyISO());
         Zone zone = new Zone();
         zone.setId(aFXRate.getZone().getId());
         zone.setCode(aFXRate.getZone().getCode());

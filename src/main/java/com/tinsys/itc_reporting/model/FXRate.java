@@ -12,7 +12,6 @@ public class FXRate implements Serializable {
 
     private Long id;
     private BigDecimal rate;
-    private String currencyISO;
     private Zone zone;
     private Period period;
 
@@ -30,14 +29,6 @@ public class FXRate implements Serializable {
 
     public void setRate(BigDecimal rate) {
         this.rate = rate;
-    }
-
-    public String getCurrencyISO() {
-        return currencyISO;
-    }
-
-    public void setCurrencyISO(String currencyISO) {
-        this.currencyISO = currencyISO;
     }
 
     public Zone getZone() {

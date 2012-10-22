@@ -63,6 +63,7 @@ public class TaxManagement extends Composite implements WidgetSwitchManagement {
     private ZoneDTO currentZone;
     private List<TaxDTO> taxList;
     private PeriodDTO periodToClose;
+    private ZoneDTO dummyZone;
 
     SimplePager.Resources pagerResources = GWT
             .create(SimplePager.Resources.class);
@@ -146,12 +147,14 @@ public class TaxManagement extends Composite implements WidgetSwitchManagement {
 
             @Override
             public void onSuccess(ArrayList<ZoneDTO> result) {
-                ZoneDTO dummyZone = new ZoneDTO();
+                dummyZone = new ZoneDTO();
                 dummyZone.setCode("Please choose a Zone ");
                 dummyZone.setName("");
                 dummyZone.setCurrencyISO("");
                 dummyZone.setId(-1L);
                 result.add(0, dummyZone);
+                currentZone = dummyZone;
+                zoneListBox.setValue(result.get(0));
                 zoneListBox.setAcceptableValues(result);
             }
         });
@@ -334,7 +337,7 @@ public class TaxManagement extends Composite implements WidgetSwitchManagement {
     private boolean taxIsValid() {
         periodToClose = null;
         List<String> errors = new ArrayList<String>();
-        if (currentZone == null) {
+        if (currentZone.getId() == -1) {
             errors.add("Please select a Zone ");
         }
         if (taxRateTextBox.getText().length() == 0

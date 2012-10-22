@@ -33,45 +33,39 @@
 				<table>
 					<tr>
 						<td>
-							<g:Label text="Rate " />
+							<g:Label text="Rate " styleName="{style.marge}"/>
 						</td>
-						<td>
+						<td colspan = "3">
 							<g:TextBox ui:field="fxRateRateTextBox" visibleLength="15"
 								maxLength="15" styleName="{style.marge}" />
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<g:Label text="Period :" />
-						</td>
-						<td>
-							<g:ListBox ui:field="monthPeriod"/>
-						</td>
-						<td>
-							<g:Label text=" to :" />
-						</td>
-						<td>
-							<g:ListBox ui:field="yearPeriod"/>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<g:Label text="Currency " />
-						</td>
-						<td>
-							<g:TextBox ui:field="zoneCurrencyISOTextBox"
-								visibleLength="3" maxLength="3" styleName="{style.marge}" />
-						</td>
-					</tr>
-					<tr>
-						<td></td>
-						<td colspan="2">
+							<g:Label text="Period :" styleName="{style.marge}"/>
+                  </td>
+                  <td>
+							<g:ListBox ui:field="monthPeriod" styleName="{style.marge}"/>
+                  </td>
+                  <td>
+							<g:Label text=" to :" styleName="{style.marge}"/>
+                  </td>
+                  <td>
+							<g:ListBox ui:field="yearPeriod" styleName="{style.marge}"/>
+                  </td>
+
+               </tr>
+            </table>
+<table>
+               <tr>
+                  <td>						                  <g:HorizontalPanel>
 							<g:Button ui:field="saveFXRate" text="Save FXRate"
 								styleName="{style.marge}" />
 							<g:Button ui:field="cancelUpdateFXRate" text="Cancel current changes"
 								styleName="{style.marge}" visible="false" />
-							<g:Button ui:field="deleteFXRate" text="Delete FXRate"
+                        							<g:Button ui:field="deleteFXRate" text="Delete FXRate"
 								styleName="{style.marge}" visible="false" />
+								                </g:HorizontalPanel>
 						</td>
 
 					</tr>

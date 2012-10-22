@@ -8,12 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tinsys.itc_reporting.client.service.FXRateService;
-import com.tinsys.itc_reporting.dao.PeriodDAO;
 import com.tinsys.itc_reporting.dao.FXRateDAO;
+import com.tinsys.itc_reporting.dao.PeriodDAO;
 import com.tinsys.itc_reporting.server.utils.DateUtils;
-import com.tinsys.itc_reporting.shared.dto.MonthPeriodDTO;
-import com.tinsys.itc_reporting.shared.dto.PeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.FXRateDTO;
+import com.tinsys.itc_reporting.shared.dto.PeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
 @Service("fxRateService")
@@ -40,9 +39,10 @@ public class FXRateServiceImpl implements FXRateService {
 
     @Override
     public FXRateDTO createFXRate(FXRateDTO aFXRate) {
-        periodDAO.createPeriod(DateUtils.monthYearToPeriod(aFXRate.getPeriod().getId(),aFXRate.getPeriod().getMonth(), aFXRate.getPeriod().getYear()));
-        aFXRate.setPeriod(aFXRate.getPeriod());
-        return fxRateDAO.createFXRate(aFXRate);
+       PeriodDTO aPeriod = DateUtils.monthYearToPeriod(null,aFXRate.getPeriod().getMonth(), aFXRate.getPeriod().getYear());
+       aPeriod = periodDAO.createPeriod(aPeriod);
+       aFXRate.getPeriod().setId(aPeriod.getId());
+       return fxRateDAO.createFXRate(aFXRate);
     }
 
     @Override

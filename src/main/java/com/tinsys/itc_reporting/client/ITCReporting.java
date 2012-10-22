@@ -12,7 +12,6 @@ import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -75,7 +74,7 @@ public class ITCReporting implements EntryPoint {
       }
   }
 
-  @UiHandler("FXRateManagementPushButton")
+  @UiHandler("FXRateManagementByZonePushButton")
   void handleClickFXRateManagementPushButton(ClickEvent e) {
       if (mainPanel.getWidget() != null) {
           WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel
