@@ -10,8 +10,19 @@
 			height: 40px;
 			vertical-align: middle;
 		}
+		.pageHeader {
+	      text-align: center;
+	      font-size: x-large;
+	   }
 	</ui:style>
 	<g:HTMLPanel>
+	     <table width="100%">
+         <tr>
+            <td>
+               <g:Label text="iTunes Connect Reporting" styleName="{style.pageHeader}" />
+            </td>
+         </tr>
+      </table>
 		<g:DockLayoutPanel unit="EM" height="90%">
 			<g:west size="20">
 				<g:StackLayoutPanel unit='EM'>
@@ -29,7 +40,6 @@
                      <g:PushButton ui:field="FXRateManagementByMonthPushButton"
                         text="Manage FX Rates by Month" styleName="{style.stackButton}" />
 						</g:FlowPanel>
-
 					</g:stack>
 					<g:stack>
 						<g:header size='3'>
@@ -39,11 +49,11 @@
 					</g:stack>
 				</g:StackLayoutPanel>
 			</g:west>
-			<g:center size="50">
+			<g:center>
 				<g:ScrollPanel ui:field="mainPanel">
 				</g:ScrollPanel>
 			</g:center>
-			<g:north size="5">
+			<g:north size="0">
 				<g:HorizontalPanel />
 			</g:north>
 		</g:DockLayoutPanel>

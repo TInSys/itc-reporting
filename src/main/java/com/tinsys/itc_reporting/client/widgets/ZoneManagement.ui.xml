@@ -1,19 +1,7 @@
 <!-- <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent"> -->
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:c="urn:import:com.google.gwt.user.cellview.client">
-	<ui:style>
-		.principal {
-			margin: 20px;
-		}
-		
-		.marge {
-			margin: 5px;
-		}
-		
-		.center {
-			text-align: center;
-		}
-	</ui:style>
+   <ui:style src="../mainStyles.css"/>
 	<g:HorizontalPanel width="100%" borderWidth="1">
 		<g:VerticalPanel width="100%" styleName="{style.principal}">
 			<g:VerticalPanel>

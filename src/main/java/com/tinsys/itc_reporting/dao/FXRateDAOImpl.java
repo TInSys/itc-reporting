@@ -226,6 +226,7 @@ public class FXRateDAOImpl implements FXRateDAO {
 
 @Override
 public void saveOrUpdate(List<FXRateDTO> fxRateList) {
+    PeriodDTO createdPeriod = null;
     for (FXRateDTO fxRateDTO : fxRateList) {
         FXRate fxRate = new FXRate();
         fxRate.setId(fxRateDTO.getId());
@@ -237,14 +238,16 @@ public void saveOrUpdate(List<FXRateDTO> fxRateList) {
         zone.setName(fxRateDTO.getZone().getName());
         fxRate.setZone(zone);
         Period period = new Period();
-
-        PeriodDTO periodDTO = DateUtils.monthYearToPeriod(fxRateDTO.getPeriod().getId(), fxRateDTO.getPeriod().getMonth(), fxRateDTO.getPeriod().getYear());
-        period.setId(periodDTO.getId());
-        period.setStartDate(periodDTO.getStartDate());
-        period.setStopDate(periodDTO.getStopDate());
-        if (period.getId()==null){
+        if (createdPeriod == null){
+        createdPeriod = DateUtils.monthYearToPeriod(fxRateDTO.getPeriod().getId(), fxRateDTO.getPeriod().getMonth(), fxRateDTO.getPeriod().getYear());
+        }
+        period.setId(createdPeriod.getId());
+        period.setStartDate(createdPeriod.getStartDate());
+        period.setStopDate(createdPeriod.getStopDate());
+        if (period.getId()==null ){
             factory.getCurrentSession().save(period);
-            period.setId((Long) factory.getCurrentSession().getIdentifier(period));
+            createdPeriod.setId((Long) factory.getCurrentSession().getIdentifier(period));
+            period.setId(createdPeriod.getId());
         }
         fxRate.setPeriod(period);
         
