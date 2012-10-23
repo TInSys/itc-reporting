@@ -46,4 +46,17 @@ public class ZoneDTO implements Serializable {
         this.currencyISO = currencyISO;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && (obj.getClass().equals(this.getClass()))) {
+            ZoneDTO zoneDTO = (ZoneDTO) obj;
+            return this.id == zoneDTO.getId();
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Long.valueOf(this.id).hashCode();
+    }
 }

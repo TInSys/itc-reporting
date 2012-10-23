@@ -1,6 +1,7 @@
 package com.tinsys.itc_reporting.server.service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -64,5 +65,11 @@ public class FXRateServiceImpl implements FXRateService {
    public ArrayList<FXRateDTO> getAllFXRatesForPeriod(MonthPeriodDTO monthPeriodDto) {
       return fxRateDAO.getAllFXRatesForPeriod(DateUtils.monthYearToPeriod(null, monthPeriodDto.getMonth(), monthPeriodDto.getYear()));
    }
+
+@Override
+public void saveOrUpdate(List<FXRateDTO> fxRateList) {
+    fxRateDAO.saveOrUpdate(fxRateList);
+    
+}
 
 }

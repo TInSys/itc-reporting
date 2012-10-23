@@ -3,7 +3,7 @@ package com.tinsys.itc_reporting.shared.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class FXRateDTO implements Serializable {
+public class FXRateDTO implements Serializable,Comparable<FXRateDTO> {
 
     /**
      * 
@@ -45,6 +45,12 @@ public class FXRateDTO implements Serializable {
 
     public void setPeriod(MonthPeriodDTO period) {
         this.period = period;
+    }
+
+    @Override
+    public int compareTo(FXRateDTO fxRateDTO) {
+        String zoneCode = fxRateDTO.getZone().getCode();
+        return this.getZone().getCode().compareTo(zoneCode);
     }
 
 }

@@ -20,9 +20,9 @@
 		<g:VerticalPanel width="100%" styleName="{style.marge}">
 			<g:HorizontalPanel>
 				<g:Label text="Period :" styleName="{style.marge}" />
-				<g:ListBox ui:field="monthPeriod" styleName="{style.marge}" />
+				<g:ListBox ui:field="monthPeriodListBox" styleName="{style.marge}" />
 				<g:Label text="/" styleName="{style.marge}" />
-				<g:ListBox ui:field="yearPeriod" styleName="{style.marge}" />
+				<g:ListBox ui:field="yearPeriodListBox" styleName="{style.marge}" />
 			</g:HorizontalPanel>
 
 			<g:VerticalPanel>
@@ -38,8 +38,6 @@
 								<g:Button ui:field="saveFXRate" text="Save FXRate"
 									styleName="{style.marge}" />
 								<g:Button ui:field="cancelUpdateFXRate" text="Cancel current changes"
-									styleName="{style.marge}" visible="false" />
-								<g:Button ui:field="deleteFXRate" text="Delete FXRate"
 									styleName="{style.marge}" visible="false" />
 							</g:HorizontalPanel>
 						</td>

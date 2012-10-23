@@ -1,6 +1,7 @@
 package com.tinsys.itc_reporting.client.service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.tinsys.itc_reporting.shared.dto.FXRateDTO;
@@ -23,5 +24,7 @@ public interface FXRateServiceAsync {
 
    void getAllFXRatesForPeriod(MonthPeriodDTO monthPeriodDto,
          AsyncCallback<ArrayList<FXRateDTO>> callback);
+
+   void saveOrUpdate(List<FXRateDTO> fxRateList, AsyncCallback<Void> callback);
 
 }

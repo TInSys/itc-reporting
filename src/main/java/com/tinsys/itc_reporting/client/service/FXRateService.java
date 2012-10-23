@@ -1,6 +1,7 @@
 package com.tinsys.itc_reporting.client.service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -22,4 +23,6 @@ public interface FXRateService extends RemoteService {
     public void deleteFXRate(FXRateDTO aFXRate);
     
     ArrayList<FXRateDTO> getAllFXRatesForPeriod(MonthPeriodDTO monthPeriodDto);
+    
+    void saveOrUpdate(List<FXRateDTO> fxRateList);
 }
