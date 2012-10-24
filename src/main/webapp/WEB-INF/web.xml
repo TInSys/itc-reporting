@@ -33,5 +33,16 @@
 		<servlet-name>springGwtRemoteServiceServlet</servlet-name>
 		<url-pattern>/ITCreporting/springGwtServices/*</url-pattern>
 	</servlet-mapping>
+	
+	  <!-- File upload servlet -->
+  <servlet>
+    <servlet-name>uploadServlet</servlet-name>
+    <servlet-class>com.tinsys.itc_reporting.server.utils.FileUploadServlet</servlet-class>
+  </servlet>
+ 
+  <servlet-mapping>
+    <servlet-name>uploadServlet</servlet-name>
+    <url-pattern>/ITCreporting/upload</url-pattern>
+  </servlet-mapping>
 
 </web-app>

@@ -102,7 +102,61 @@ CREATE INDEX fki_zone_fkey
   USING btree
   (id);
 
+-- Table: application
+
+-- DROP TABLE application;
+
+CREATE TABLE application
+(
+  id serial NOT NULL,
+  vendor_id character varying(20),
+  name character varying(50),
+  CONSTRAINT application_pkey PRIMARY KEY (id )
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE application
+  OWNER TO "ITCReporting";
 
 
+-- Table: sales
 
+-- DROP TABLE sales;
+
+CREATE TABLE sales
+(
+  id serial NOT NULL,
+  sold_units bigint,
+  individual_price numeric(19,6),
+  total_price numeric(19,6),
+  country_code character varying(3),
+  period bigint,
+  zone bigint,
+  application bigint,
+  CONSTRAINT sales_pkey PRIMARY KEY (id ),
+  CONSTRAINT application_fkey FOREIGN KEY (id)
+      REFERENCES application (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT period_fkey FOREIGN KEY (period)
+      REFERENCES period (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT zone_fkey FOREIGN KEY (zone)
+      REFERENCES zone (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE sales
+  OWNER TO "ITCReporting";
+
+-- Index: fki_application_fkey
+
+-- DROP INDEX fki_application_fkey;
+
+CREATE INDEX fki_application_fkey
+  ON sales
+  USING btree
+  (id );
 
