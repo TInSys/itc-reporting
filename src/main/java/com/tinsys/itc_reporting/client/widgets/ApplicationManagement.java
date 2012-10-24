@@ -30,20 +30,19 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SingleSelectionModel;
-import com.tinsys.itc_reporting.client.service.ZoneService;
-import com.tinsys.itc_reporting.client.service.ZoneServiceAsync;
-import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
+import com.tinsys.itc_reporting.client.service.ApplicationService;
+import com.tinsys.itc_reporting.client.service.ApplicationServiceAsync;
+import com.tinsys.itc_reporting.shared.dto.ApplicationDTO;
 
-public class ZoneManagement extends Composite implements WidgetSwitchManagement {
+public class ApplicationManagement extends Composite implements WidgetSwitchManagement {
 
     private static Binder uiBinder = GWT.create(Binder.class);
-    private ZoneServiceAsync zoneService = GWT.create(ZoneService.class);
-    private ZoneDTO selectedZone;
+    private ApplicationServiceAsync applicationService = GWT.create(ApplicationService.class);
+    private ApplicationDTO selectedApplication;
     private int currentPage = 0;
     private boolean editionInProgress;
-    private String oldZoneCodeTextBoxContent;
-    private String oldZoneNameTextBoxContent;
-    private String oldZoneCurrencyISOTextBoxContent;
+    private String oldApplicationVendorIDTextBoxContent;
+    private String oldApplicationNameTextBoxContent;
     private boolean reverseSelection = false;
 
     
@@ -53,138 +52,114 @@ public class ZoneManagement extends Composite implements WidgetSwitchManagement 
     SimplePager pager = new SimplePager(SimplePager.TextLocation.CENTER,
             pagerResources, false, 0, true);
 
-    ListDataProvider<ZoneDTO> provider = new ListDataProvider<ZoneDTO>();
-    final Column<ZoneDTO, String> zoneCodeColumn = new Column<ZoneDTO, String>(
+    ListDataProvider<ApplicationDTO> provider = new ListDataProvider<ApplicationDTO>();
+    final Column<ApplicationDTO, String> applicationVendorIDColumn = new Column<ApplicationDTO, String>(
             new ClickableTextCell()) {
 
         @Override
-        public String getValue(ZoneDTO zoneDTO) {
-            return zoneDTO.getCode();
+        public String getValue(ApplicationDTO applicationDTO) {
+            return applicationDTO.getVendorID();
         }
     };
-    final Column<ZoneDTO, String> zoneNameColumn = new Column<ZoneDTO, String>(
+    final Column<ApplicationDTO, String> applicationNameColumn = new Column<ApplicationDTO, String>(
             new ClickableTextCell()) {
 
         @Override
-        public String getValue(ZoneDTO zoneDTO) {
-            return zoneDTO.getName();
+        public String getValue(ApplicationDTO applicationDTO) {
+            return applicationDTO.getName();
         }
     };
-    final Column<ZoneDTO, String> zoneCurrencyISOColumn = new Column<ZoneDTO, String>(
-            new ClickableTextCell()) {
-
-        @Override
-        public String getValue(ZoneDTO zoneDTO) {
-            return zoneDTO.getCurrencyISO();
-        }
-    };    
+   
     @UiField
-    CellTable<ZoneDTO> zoneCellTable = new CellTable<ZoneDTO>();
-    private SingleSelectionModel<ZoneDTO> selectionModel;
+    CellTable<ApplicationDTO> applicationCellTable = new CellTable<ApplicationDTO>();
+    private SingleSelectionModel<ApplicationDTO> selectionModel;
 
     @UiField
-    TextBox zoneCodeTextBox = new TextBox();
+    TextBox applicationVendorIDTextBox = new TextBox();
 
     @UiField
-    TextBox zoneNameTextBox = new TextBox();
+    TextBox applicationNameTextBox = new TextBox();
     
     @UiField
-    TextBox zoneCurrencyISOTextBox = new TextBox();
-    
-    @UiField
-    Button saveZone = new Button();
+    Button saveApplication = new Button();
 
     @UiField
-    Button deleteZone = new Button();
+    Button deleteApplication = new Button();
 
     @UiField
-    Button cancelUpdateZone = new Button();
+    Button cancelUpdateApplication = new Button();
 
 
     
-    @UiTemplate("ZoneManagement.ui.xml")
-    interface Binder extends UiBinder<Widget, ZoneManagement> {
+    @UiTemplate("ApplicationManagement.ui.xml")
+    interface Binder extends UiBinder<Widget, ApplicationManagement> {
     }
     
-    public ZoneManagement() {
+    public ApplicationManagement() {
         initWidget(uiBinder.createAndBindUi(this));
-        selectionModel = new SingleSelectionModel<ZoneDTO>();
-        zoneCellTable.setTableLayoutFixed(true);
-        zoneCellTable.addColumn(zoneCodeColumn,"Code ");
-        zoneCellTable.addColumn(zoneNameColumn,"Name ");
-        zoneCellTable.addColumn(zoneCurrencyISOColumn,"Currency ISO ");
-        zoneCellTable.setSelectionModel(selectionModel);
+        selectionModel = new SingleSelectionModel<ApplicationDTO>();
+        applicationCellTable.setTableLayoutFixed(true);
+        applicationCellTable.addColumn(applicationVendorIDColumn,"Vendor ID ");
+        applicationCellTable.addColumn(applicationNameColumn,"Name ");
+        applicationCellTable.setSelectionModel(selectionModel);
         selectionModel.addSelectionChangeHandler(getSelectionChangeHandler());
-        zoneCellTable.setPageSize(15);
-        pager.setDisplay(zoneCellTable);
+        applicationCellTable.setPageSize(15);
+        pager.setDisplay(applicationCellTable);
         pager.setRangeLimited(true);
 
-        provider.addDataDisplay(zoneCellTable);
-        zoneCodeTextBox
+        provider.addDataDisplay(applicationCellTable);
+        applicationVendorIDTextBox
                 .addValueChangeHandler(new ValueChangeHandler<String>() {
                     public void onValueChange(ValueChangeEvent<String> arg0) {
                         editionInProgress = true;
-                        cancelUpdateZone.setVisible(true);
+                        cancelUpdateApplication.setVisible(true);
                     }
                 });
-        zoneNameTextBox
+        applicationNameTextBox
                 .addValueChangeHandler(new ValueChangeHandler<String>() {
                     public void onValueChange(ValueChangeEvent<String> arg0) {
                         editionInProgress = true;
-                        cancelUpdateZone.setVisible(true);
+                        cancelUpdateApplication.setVisible(true);
                     }
                 });
-        zoneCurrencyISOTextBox
-        .addValueChangeHandler(new ValueChangeHandler<String>() {
-            public void onValueChange(ValueChangeEvent<String> arg0) {
-                editionInProgress = true;
-                cancelUpdateZone.setVisible(true);
-            }
-        });
-        zoneCodeTextBox.addKeyUpHandler(new KeyUpHandler() {
+
+        applicationVendorIDTextBox.addKeyUpHandler(new KeyUpHandler() {
             public void onKeyUp(KeyUpEvent arg0) {
                 editionInProgress = true;
-                cancelUpdateZone.setVisible(true);
-                oldZoneCodeTextBoxContent = zoneCodeTextBox.getText();
+                cancelUpdateApplication.setVisible(true);
+                oldApplicationVendorIDTextBoxContent = applicationVendorIDTextBox.getText();
             }
         });
 
-        zoneNameTextBox.addKeyUpHandler(new KeyUpHandler() {
+        applicationNameTextBox.addKeyUpHandler(new KeyUpHandler() {
             public void onKeyUp(KeyUpEvent arg0) {
                 editionInProgress = true;
-                cancelUpdateZone.setVisible(true);
-                oldZoneNameTextBoxContent = zoneNameTextBox.getText();
+                cancelUpdateApplication.setVisible(true);
+                oldApplicationNameTextBoxContent = applicationNameTextBox.getText();
             }
         });
 
-        zoneCurrencyISOTextBox.addKeyUpHandler(new KeyUpHandler() {
-            public void onKeyUp(KeyUpEvent arg0) {
-                editionInProgress = true;
-                cancelUpdateZone.setVisible(true);
-                oldZoneCurrencyISOTextBoxContent = zoneCurrencyISOTextBox.getText();
-            }
-        });
-        getZoneList();
+        getApplicationList();
     }
 
-    private void getZoneList() {
-        zoneService.getAllZones(new AsyncCallback<ArrayList<ZoneDTO>>() {
+    private void getApplicationList() {
+        applicationService.getAllApplications(new AsyncCallback<ArrayList<ApplicationDTO>>() {
             
             @Override
-            public void onSuccess(ArrayList<ZoneDTO> result) {
+            public void onSuccess(ArrayList<ApplicationDTO> result) {
                 if (currentPage == 999) {
                     currentPage = ((result.size() - 1) < 0) ? 0
                             : (result.size() - 1) / 10;
                 }
                 provider.getList().clear();
                 provider.getList().addAll(result);
-                zoneCellTable.setRowCount(result.size());
+                applicationCellTable.setRowCount(result.size());
                 pager.setPage(currentPage);                
             }
             
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Error fetching zone list :  "
+                Window.alert("Error fetching application list :  "
                         + caught.getMessage());                
             }
         });
@@ -194,12 +169,11 @@ public class ZoneManagement extends Composite implements WidgetSwitchManagement 
         return new SelectionChangeEvent.Handler() {
 
             public void onSelectionChange(SelectionChangeEvent event) {
-                if ((editionInProgress && selectionModel.getSelectedObject() != selectedZone)
+                if ((editionInProgress && selectionModel.getSelectedObject() != selectedApplication)
                         || reverseSelection) {
-                    selectionModel.setSelected(selectedZone, true);
-                    zoneCodeTextBox.setText(oldZoneCodeTextBoxContent);
-                    zoneNameTextBox.setText(oldZoneNameTextBoxContent);
-                    zoneCurrencyISOTextBox.setText(oldZoneCurrencyISOTextBoxContent);
+                    selectionModel.setSelected(selectedApplication, true);
+                    applicationVendorIDTextBox.setText(oldApplicationVendorIDTextBoxContent);
+                    applicationNameTextBox.setText(oldApplicationNameTextBoxContent);
                     if (!reverseSelection) {
                         showSaveAlert();
                         reverseSelection = true;
@@ -208,18 +182,17 @@ public class ZoneManagement extends Composite implements WidgetSwitchManagement 
                     }
                 } else {
                     reverseSelection = false;
-                    selectedZone = selectionModel
+                    selectedApplication = selectionModel
                             .getSelectedObject();
-                    if (selectedZone != null) {
-                                zoneCodeTextBox.setText(selectedZone
-                                        .getCode());
+                    if (selectedApplication != null) {
+                        applicationVendorIDTextBox.setText(selectedApplication
+                                        .getVendorID());
 
-                                zoneNameTextBox.setText(selectedZone
+                                applicationNameTextBox.setText(selectedApplication
                                         .getName());
-                                zoneCurrencyISOTextBox.setText(selectedZone.getCurrencyISO());
-                                cancelUpdateZone.setVisible(true);
-                                deleteZone.setVisible(true);
-                                saveZone.setText("Update");
+                                cancelUpdateApplication.setVisible(true);
+                                deleteApplication.setVisible(true);
+                                saveApplication.setText("Update");
                     }
 
 
@@ -229,55 +202,51 @@ public class ZoneManagement extends Composite implements WidgetSwitchManagement 
 
         };
     
-        @UiHandler("saveZone")
+        @UiHandler("saveApplication")
         void handleClickSave(ClickEvent e) {
-            if (zoneCodeTextBox.getText().length() > 0
-                    && zoneNameTextBox.getText().length() > 0 && zoneCurrencyISOTextBox.getText().length() > 0) {
-                if (selectedZone == null) {
-                    selectedZone = new ZoneDTO();
-                    selectedZone.setCode(zoneCodeTextBox.getText());
-                    selectedZone.setName(zoneNameTextBox.getText());
-                    selectedZone.setCurrencyISO(zoneCurrencyISOTextBox.getText());
-                    zoneService.createZone(selectedZone, new AsyncCallback<ZoneDTO>() {
+            if (applicationVendorIDTextBox.getText().length() > 0
+                    && applicationNameTextBox.getText().length() > 0 ) {
+                if (selectedApplication == null) {
+                    selectedApplication = new ApplicationDTO();
+                    selectedApplication.setVendorID(applicationVendorIDTextBox.getText());
+                    selectedApplication.setName(applicationNameTextBox.getText());
+                    applicationService.createApplication(selectedApplication, new AsyncCallback<ApplicationDTO>() {
                         
                         @Override
-                        public void onSuccess(ZoneDTO result) {
+                        public void onSuccess(ApplicationDTO result) {
                             currentPage = 999;
-                            getZoneList();
-                            zoneCodeTextBox.setText("");
-                            zoneNameTextBox.setText("");
-                            zoneCurrencyISOTextBox.setText("");
+                            getApplicationList();
+                            applicationVendorIDTextBox.setText("");
+                            applicationNameTextBox.setText("");
                             resetUpdateStatus();
                             
                         }
                         
                         @Override
                         public void onFailure(Throwable caught) {
-                            Window.alert("Error saving new zone :"
+                            Window.alert("Error saving new application :"
                                     + caught.getMessage());                            
                         }
                     });
                     
 
                 } else {
-                    selectedZone.setCode(zoneCodeTextBox.getText());
-                    selectedZone.setName(zoneNameTextBox.getText());
-                    selectedZone.setCurrencyISO(zoneCurrencyISOTextBox.getText());
+                    selectedApplication.setVendorID(applicationVendorIDTextBox.getText());
+                    selectedApplication.setName(applicationNameTextBox.getText());
                     currentPage = pager.getPage();
-                    zoneService.updateZone(selectedZone, new AsyncCallback<ZoneDTO>() {
+                    applicationService.updateApplication(selectedApplication, new AsyncCallback<ApplicationDTO>() {
 
                         @Override
                         public void onFailure(Throwable caught) {
-                            Window.alert("Error updating zone :"
+                            Window.alert("Error updating application :"
                                     + caught.getMessage());                                  
                         }
 
                         @Override
-                        public void onSuccess(ZoneDTO result) {
-                            getZoneList();
-                            zoneCodeTextBox.setText("");
-                            zoneNameTextBox.setText("");
-                            zoneCurrencyISOTextBox.setText("");
+                        public void onSuccess(ApplicationDTO result) {
+                            getApplicationList();
+                            applicationVendorIDTextBox.setText("");
+                            applicationNameTextBox.setText("");
                             resetUpdateStatus();                            
                         }
                     });
@@ -285,24 +254,24 @@ public class ZoneManagement extends Composite implements WidgetSwitchManagement 
             }
         }
     
-        @UiHandler("cancelUpdateZone")
+        @UiHandler("cancelUpdateApplication")
         void handleClickCancel(ClickEvent e) {
             resetUpdateStatus();
             currentPage = 999;
         }
         
-        @UiHandler("deleteZone")
+        @UiHandler("deleteApplication")
         void handleClickDelete(ClickEvent e) {
-            deleteZone();
+            deleteApplication();
             currentPage = 999;
         }
 
-        private void deleteZone() {
-            zoneService.deleteZone(selectedZone, new AsyncCallback<Void>() {
+        private void deleteApplication() {
+            applicationService.deleteApplication(selectedApplication, new AsyncCallback<Void>() {
 
                 @Override
                 public void onFailure(Throwable caught) {
-                    Window.alert("Error deleting zone :"
+                    Window.alert("Error deleting application :"
                             + caught.getMessage()); 
                     
                 }
@@ -310,21 +279,20 @@ public class ZoneManagement extends Composite implements WidgetSwitchManagement 
                 @Override
                 public void onSuccess(Void result) {
                     currentPage = 999;
-                    getZoneList();
+                    getApplicationList();
                     resetUpdateStatus();
                 }
             });
         }
         
     private void resetUpdateStatus() {
-        cancelUpdateZone.setVisible(false);
-        deleteZone.setVisible(false);
-        zoneCodeTextBox.setValue("");
-        zoneNameTextBox.setValue("");
-        zoneCurrencyISOTextBox.setValue("");
-        zoneCellTable.getSelectionModel().setSelected(null, true);
-        selectedZone = null;
-        saveZone.setText("Save Zone");
+        cancelUpdateApplication.setVisible(false);
+        deleteApplication.setVisible(false);
+        applicationVendorIDTextBox.setValue("");
+        applicationNameTextBox.setValue("");
+        applicationCellTable.getSelectionModel().setSelected(null, true);
+        selectedApplication = null;
+        saveApplication.setText("Save Application");
         editionInProgress = false;            
         }
 

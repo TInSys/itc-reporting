@@ -26,6 +26,7 @@ http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
             <value>com/tinsys/itc_reporting/hibernate/Period.hbm.xml</value>
             <value>com/tinsys/itc_reporting/hibernate/Tax.hbm.xml</value>            
             <value>com/tinsys/itc_reporting/hibernate/FXRate.hbm.xml</value>            
+            <value>com/tinsys/itc_reporting/hibernate/Application.hbm.xml</value>            
 			</list>
 		</property>
 

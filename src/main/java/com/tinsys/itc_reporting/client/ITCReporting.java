@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.tinsys.itc_reporting.client.widgets.ApplicationManagement;
 import com.tinsys.itc_reporting.client.widgets.FXRateManagementByMonth;
 import com.tinsys.itc_reporting.client.widgets.FXRateManagementByZone;
 import com.tinsys.itc_reporting.client.widgets.TaxManagement;
@@ -106,6 +107,23 @@ public class ITCReporting implements EntryPoint {
           mainPanel.add(new FXRateManagementByMonth());
       }
   }
+  
+  @UiHandler("ApplicationManagementPushButton")
+  void handleClickApplicationManagementPushButton(ClickEvent e) {
+      if (mainPanel.getWidget() != null) {
+          WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel
+                  .getWidget();
+          if (!widgetStatus.isEditing()) {
+              mainPanel.remove(mainPanel.getWidget());
+              mainPanel.add(new ApplicationManagement());
+          } else {
+              showSaveAlert();
+          }
+      } else {
+          mainPanel.add(new ApplicationManagement());
+      }
+  }
+  
   
   private void showSaveAlert() {
       final DialogBox simplePopup = new DialogBox(true);

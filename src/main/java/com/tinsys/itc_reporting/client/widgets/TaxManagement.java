@@ -460,11 +460,11 @@ public class TaxManagement extends Composite implements WidgetSwitchManagement {
 
     @UiHandler("deleteTax")
     void handleClickDelete(ClickEvent e) {
-        deletePredefinedComment();
+        deleteTax();
         currentPage = 999;
     }
 
-    private void deletePredefinedComment() {
+    private void deleteTax() {
         taxService.deleteTax(selectedTax, new AsyncCallback<Void>() {
 
             @Override

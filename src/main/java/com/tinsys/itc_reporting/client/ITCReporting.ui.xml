@@ -1,20 +1,7 @@
 <!-- <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent"> -->
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:c="urn:import:com.google.gwt.user.cellview.client">
-	<ui:style>
-		.stackButton {
-			margin: 1px;
-			padding: 2px;
-			text-align: center;
-			border: 1px solid;
-			height: 40px;
-			vertical-align: middle;
-		}
-		.pageHeader {
-	      text-align: center;
-	      font-size: x-large;
-	   }
-	</ui:style>
+	<ui:style src="mainStyles.css"/>
 	<g:HTMLPanel>
 	     <table width="100%">
          <tr>
@@ -39,6 +26,8 @@
                         text="Manage FX Rates by Zone" styleName="{style.stackButton}" />
                      <g:PushButton ui:field="FXRateManagementByMonthPushButton"
                         text="Manage FX Rates by Month" styleName="{style.stackButton}" />
+                     <g:PushButton ui:field="ApplicationManagementPushButton"
+                        text="Manage Applications" styleName="{style.stackButton}" />
 						</g:FlowPanel>
 					</g:stack>
 					<g:stack>

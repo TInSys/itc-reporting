@@ -378,11 +378,11 @@ public class FXRateManagementByZone extends Composite implements
 
    @UiHandler("deleteFXRate")
    void handleClickDelete(ClickEvent e) {
-      deletePredefinedComment();
+      deleteFXRate();
       currentPage = 999;
    }
 
-   private void deletePredefinedComment() {
+   private void deleteFXRate() {
       fxRateService.deleteFXRate(selectedFXRate, new AsyncCallback<Void>() {
 
          @Override

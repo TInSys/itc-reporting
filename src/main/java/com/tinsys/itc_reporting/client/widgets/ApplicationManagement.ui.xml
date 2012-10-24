@@ -1,0 +1,43 @@
+<!-- <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent"> -->
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:c="urn:import:com.google.gwt.user.cellview.client">
+   <ui:style src="../mainStyles.css"/>
+	<g:HorizontalPanel width="100%" borderWidth="1">
+		<g:VerticalPanel width="100%" styleName="{style.principal}">
+			<g:VerticalPanel>
+			<c:CellTable ui:field="applicationCellTable" />
+			<c:SimplePager ui:field='pager' location='CENTER'/>
+			</g:VerticalPanel>
+			
+			
+			<g:HTMLPanel>
+            <table>
+            <tr>
+         <td><g:Label text="Vendor Id "/></td>
+         <td><g:TextBox ui:field="applicationVendorIDTextBox"
+            visibleLength="20"  maxLength="20" styleName="{style.marge}" /></td>
+         </tr>
+         <tr>
+         <td><g:Label text="Name "/></td>
+         <td><g:TextBox ui:field="applicationNameTextBox"
+            visibleLength="50"  maxLength="50" styleName="{style.marge}"/>
+         </td></tr>
+         <tr>
+         <td></td>
+         <td colspan = "2">           <g:Button ui:field="saveApplication" text="Save Application"
+               styleName="{style.marge}" />
+            <g:Button ui:field="cancelUpdateApplication" text="Cancel current changes"
+               styleName="{style.marge}" visible="false" />
+            <g:Button ui:field="deleteApplication" text="Delete Application"
+               styleName="{style.marge}" visible="false" />
+           </td>       
+           
+           </tr>
+         </table>      
+         </g:HTMLPanel>
+			
+			
+		</g:VerticalPanel>
+	</g:HorizontalPanel>
+
+</ui:UiBinder> 
