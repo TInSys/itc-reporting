@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+                                   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.tinsys.itc_reporting.model.Sales" table="sales">
+		<id name="id" type="long">
+			<column name="id" />
+			<generator class="identity" />
+		</id>
+		<property generated="never" lazy="false" name="soldUnits"
+			type="int">
+			<column name="sold_units" not-null="true" />
+		</property>
+		<property name="totalPrice" type="big_decimal">
+			<column name="total_price" sql-type="NUMERIC(19,6)" />
+		</property>
+		<property name="individualPrice" type="big_decimal">
+			<column name="individual_price" sql-type="NUMERIC(19,6)" />
+		</property>
+		<property generated="never" lazy="false" name="countryCode"
+			type="string">
+			<column name="country_code" not-null="true" />
+		</property>
+		<many-to-one column="zone" name="zone" lazy="false"
+			unique="true" />
+		<many-to-one column="period" name="period" lazy="false"
+			unique="true" />
+		<many-to-one column="application" name="period" lazy="false"
+			unique="true" />
+	</class>
+</hibernate-mapping>

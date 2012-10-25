@@ -70,6 +70,7 @@ public class FXRateDAOImpl implements FXRateDAO {
             
             periodDTO.setMonth(cal.get(Calendar.MONTH)+1);
             periodDTO.setYear(cal.get(Calendar.YEAR));
+            periodDTO.setPeriodType(fxRate.getPeriod().getPeriodType());
             fxRateDTO.setPeriod(periodDTO);
             result.add(fxRateDTO);
         }
@@ -94,11 +95,12 @@ public class FXRateDAOImpl implements FXRateDAO {
         zone.setName(aFXRate.getZone().getName());
         zone.setCurrencyISO(aFXRate.getZone().getCurrencyISO());
         fxRate.setZone(zone);
-        PeriodDTO periodDTO = DateUtils.monthYearToPeriod(aFXRate.getPeriod().getId(),aFXRate.getPeriod().getMonth(), aFXRate.getPeriod().getYear());    
+        PeriodDTO periodDTO = DateUtils.monthYearToPeriod(aFXRate.getPeriod().getId(),aFXRate.getPeriod().getMonth(), aFXRate.getPeriod().getYear(),aFXRate.getPeriod().getPeriodType());    
         Period period = new Period();
         period.setStartDate(periodDTO.getStartDate());
         period.setStopDate(periodDTO.getStopDate());
         period.setId(aFXRate.getPeriod().getId());
+        period.setPeriodType(aFXRate.getPeriod().getPeriodType());
         fxRate.setPeriod(period);
         try {
             factory.getCurrentSession().persist(fxRate);
@@ -122,11 +124,12 @@ public class FXRateDAOImpl implements FXRateDAO {
         zone.setName(aFXRate.getZone().getName());
         zone.setCurrencyISO(aFXRate.getZone().getCurrencyISO());
         fxRate.setZone(zone);
-        PeriodDTO periodDTO = DateUtils.monthYearToPeriod(aFXRate.getPeriod().getId(),aFXRate.getPeriod().getMonth(), aFXRate.getPeriod().getYear());    
+        PeriodDTO periodDTO = DateUtils.monthYearToPeriod(aFXRate.getPeriod().getId(),aFXRate.getPeriod().getMonth(), aFXRate.getPeriod().getYear(),aFXRate.getPeriod().getPeriodType());    
         Period period = new Period();
         period.setStartDate(periodDTO.getStartDate());
         period.setStopDate(periodDTO.getStopDate());
         period.setId(aFXRate.getPeriod().getId());
+        period.setPeriodType(aFXRate.getPeriod().getPeriodType());
         fxRate.setPeriod(period);
         factory.getCurrentSession().saveOrUpdate(fxRate);
         return aFXRate;
@@ -143,11 +146,12 @@ public class FXRateDAOImpl implements FXRateDAO {
         zone.setName(aFXRate.getZone().getName());
         zone.setCurrencyISO(aFXRate.getZone().getCurrencyISO());
         fxRate.setZone(zone);
-        PeriodDTO periodDTO = DateUtils.monthYearToPeriod(aFXRate.getPeriod().getId(),aFXRate.getPeriod().getMonth(), aFXRate.getPeriod().getYear());    
+        PeriodDTO periodDTO = DateUtils.monthYearToPeriod(aFXRate.getPeriod().getId(),aFXRate.getPeriod().getMonth(), aFXRate.getPeriod().getYear(),aFXRate.getPeriod().getPeriodType());    
         Period period = new Period();
         period.setStartDate(periodDTO.getStartDate());
         period.setStopDate(periodDTO.getStopDate());
         period.setId(aFXRate.getPeriod().getId());
+        period.setPeriodType(aFXRate.getPeriod().getPeriodType());
         factory.getCurrentSession().delete(fxRate);
 
     }
@@ -175,7 +179,7 @@ public class FXRateDAOImpl implements FXRateDAO {
       }
       // fetch fx rate for given month
       try {
-          Query query = factory.getCurrentSession().createQuery("select fx from FXRate fx left join fx.zone Zone where fx.period.startDate = :sDate ");
+          Query query = factory.getCurrentSession().createQuery("select fx from FXRate fx where fx.period.startDate = :sDate ");
           query.setParameter("sDate", monthYearToPeriod.getStartDate());
           fxRateList = (ArrayList<FXRate>) query.list();
        } catch (Exception e) {
@@ -202,6 +206,7 @@ public class FXRateDAOImpl implements FXRateDAO {
               cal.setTime(fxRate.getPeriod().getStartDate());
               monthlyPeriod.setMonth(cal.get(Calendar.MONTH)+1);
               monthlyPeriod.setYear(cal.get(Calendar.YEAR));
+              monthlyPeriod.setPeriodType(fxRate.getPeriod().getPeriodType());
           }
           fxRateDTO.setPeriod(monthlyPeriod);
           result.add(fxRateDTO);
@@ -213,7 +218,8 @@ public class FXRateDAOImpl implements FXRateDAO {
           cal.setTime(monthYearToPeriod.getStartDate());
           monthlyPeriod.setMonth(cal.get(Calendar.MONTH)+1);
           monthlyPeriod.setYear(cal.get(Calendar.YEAR));
-      }
+          monthlyPeriod.setPeriodType(monthYearToPeriod.getPeriodType());
+     }
       for (ZoneDTO zoneDTO : zoneDTOList) {
           FXRateDTO fxRateDTO = new FXRateDTO();
           fxRateDTO.setZone(zoneDTO);
@@ -239,11 +245,12 @@ public void saveOrUpdate(List<FXRateDTO> fxRateList) {
         fxRate.setZone(zone);
         Period period = new Period();
         if (createdPeriod == null){
-        createdPeriod = DateUtils.monthYearToPeriod(fxRateDTO.getPeriod().getId(), fxRateDTO.getPeriod().getMonth(), fxRateDTO.getPeriod().getYear());
+        createdPeriod = DateUtils.monthYearToPeriod(fxRateDTO.getPeriod().getId(), fxRateDTO.getPeriod().getMonth(), fxRateDTO.getPeriod().getYear(), fxRateDTO.getPeriod().getPeriodType());
         }
         period.setId(createdPeriod.getId());
         period.setStartDate(createdPeriod.getStartDate());
         period.setStopDate(createdPeriod.getStopDate());
+        period.setPeriodType(createdPeriod.getPeriodType());
         if (period.getId()==null ){
             factory.getCurrentSession().save(period);
             createdPeriod.setId((Long) factory.getCurrentSession().getIdentifier(period));

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import com.tinsys.itc_reporting.model.Zone;
@@ -80,5 +81,11 @@ public class ZoneDAOImpl implements ZoneDAO {
         zone.setCurrencyISO(aZone.getCurrencyISO());
         factory.getCurrentSession().delete(zone);
     }
+
+   @Override
+   public Zone findZoneByCode(String code) {
+      Zone zone = (Zone) factory.getCurrentSession().createCriteria(Zone.class).add(Restrictions.eq("code", code)).uniqueResult();
+      return zone;
+   }
 
 }

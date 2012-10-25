@@ -67,4 +67,9 @@
    <bean id="applicationDAO" class="com.tinsys.itc_reporting.dao.ApplicationDAOImpl">
       <property name="factory" ref="sessionFactory" />
    </bean>
+
+   <bean id="salesDAO" class="com.tinsys.itc_reporting.dao.SalesDAOImpl">
+      <property name="factory" ref="sessionFactory" />
+   </bean>
+
 </beans>

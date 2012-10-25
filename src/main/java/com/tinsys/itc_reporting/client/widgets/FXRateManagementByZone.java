@@ -285,6 +285,7 @@ public class FXRateManagementByZone extends Composite implements
             MonthPeriodDTO monthPeriodDTO = new MonthPeriodDTO();
             monthPeriodDTO.setMonth(monthPeriod.getSelectedIndex()+1);
             monthPeriodDTO.setYear(yearPeriod.getSelectedIndex() + STARTING_YEAR);
+            monthPeriodDTO.setPeriodType("F");
             selectedFXRate.setPeriod(monthPeriodDTO);
             createFXRate();
          } else {
@@ -293,6 +294,7 @@ public class FXRateManagementByZone extends Composite implements
             monthPeriodDTO.setId(selectedFXRate.getPeriod().getId());
             monthPeriodDTO.setMonth(monthPeriod.getSelectedIndex()+1);
             monthPeriodDTO.setYear(yearPeriod.getSelectedIndex() + STARTING_YEAR);
+            monthPeriodDTO.setPeriodType(selectedFXRate.getPeriod().getPeriodType());
             selectedFXRate.setPeriod(monthPeriodDTO);
             currentPage = pager.getPage();
             fxRateService.updateFXRate(selectedFXRate,

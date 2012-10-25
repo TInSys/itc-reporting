@@ -13,6 +13,7 @@ public class Period implements Serializable {
     private Long id;
     private Date startDate;
     private Date stopDate;
+    private String periodType;
 
     public Long getId() {
         return id;
@@ -37,5 +38,13 @@ public class Period implements Serializable {
     public void setStopDate(Date stopDate) {
         this.stopDate = stopDate;
     }
+
+   public void setPeriodType(String periodType) {
+      this.periodType = periodType;
+   }
+
+   public String getPeriodType() {
+      return periodType;
+   }
 
 }

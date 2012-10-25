@@ -13,7 +13,8 @@ public class PeriodDTO implements Serializable {
     private Long id;
     private Date startDate;
     private Date stopDate;
-
+    private String periodType;
+    
     public Long getId() {
         return id;
     }
@@ -38,7 +39,15 @@ public class PeriodDTO implements Serializable {
         this.stopDate = stopDate;
     }
     
-    @Override
+    public void setPeriodType(String periodType) {
+      this.periodType = periodType;
+   }
+
+   public String getPeriodType() {
+      return periodType;
+   }
+
+   @Override
    public String toString() {
       return startDate +((stopDate!=null)?" to "+stopDate:" ");
    }

@@ -2,6 +2,7 @@ package com.tinsys.itc_reporting.dao;
 
 import java.util.ArrayList;
 
+import com.tinsys.itc_reporting.model.Zone;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
 public interface ZoneDAO {
@@ -15,4 +16,6 @@ public interface ZoneDAO {
     public ZoneDTO updateZone(ZoneDTO aZone);
 
     public void deleteZone(ZoneDTO aZone);
+
+   public Zone findZoneByCode(String code);
 }

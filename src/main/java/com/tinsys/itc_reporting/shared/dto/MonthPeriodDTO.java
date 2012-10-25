@@ -12,6 +12,7 @@ public class MonthPeriodDTO implements Serializable {
     private Long id;
     private int month;
     private int year;
+    private String periodType;
 
     public Long getId() {
         return id;
@@ -37,7 +38,15 @@ public class MonthPeriodDTO implements Serializable {
         this.year = year;
     }
 
-    @Override
+    public void setPeriodType(String periodType) {
+      this.periodType = periodType;
+   }
+
+   public String getPeriodType() {
+      return periodType;
+   }
+
+   @Override
    public String toString() {
       return month+"/"+year;
    }

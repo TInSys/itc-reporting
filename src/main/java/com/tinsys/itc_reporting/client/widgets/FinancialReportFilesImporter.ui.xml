@@ -5,10 +5,14 @@
 	
 <g:HTMLPanel>
 <g:FormPanel ui:field="form"> 
-<g:HorizontalPanel width="100%" borderWidth="1">
+<g:VerticalPanel width="40%" borderWidth="1">
+<g:HorizontalPanel>
 <g:FileUpload ui:field="uploadField" name="file" />
+
 <g:SubmitButton ui:field="submitButton">Upload</g:SubmitButton>
 </g:HorizontalPanel>
+<g:TextArea ui:field="uploadLog" height="15em" width="80em" readOnly="true"/>
+</g:VerticalPanel>
 </g:FormPanel>
 </g:HTMLPanel>	
 

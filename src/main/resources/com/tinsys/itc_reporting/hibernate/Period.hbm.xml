@@ -13,5 +13,8 @@
       <property generated="never" lazy="false" name="stopDate" type="date">
          <column name="stop_date" not-null="false" />
       </property>
+      <property generated="never" lazy="false" name="periodType" type="string">
+         <column name="period_type" not-null="false" />
+      </property>
 	</class>
 </hibernate-mapping>

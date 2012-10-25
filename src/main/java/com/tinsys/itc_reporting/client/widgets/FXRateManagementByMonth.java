@@ -187,6 +187,7 @@ public class FXRateManagementByMonth extends Composite implements
         monthPeriodDto.setId(null);
         monthPeriodDto.setMonth(currentMonth);
         monthPeriodDto.setYear(currentYear);
+        monthPeriodDto.setPeriodType("F");
         fxRateService.getAllFXRatesForPeriod(monthPeriodDto,
                 new AsyncCallback<ArrayList<FXRateDTO>>() {
 

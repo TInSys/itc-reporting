@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import com.tinsys.itc_reporting.model.Application;
@@ -75,5 +76,11 @@ public class ApplicationDAOImpl implements ApplicationDAO {
         application.setName(aApplication.getName());
         factory.getCurrentSession().delete(application);
     }
+
+   @Override
+   public Application findApplicationByVendorID(String vendorID) {
+      Application application = (Application) factory.getCurrentSession().createCriteria(Application.class).add(Restrictions.eq("vendorID", vendorID)).uniqueResult();
+      return application;
+   }
 
 }

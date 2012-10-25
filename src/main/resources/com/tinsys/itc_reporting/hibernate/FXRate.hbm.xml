@@ -10,7 +10,7 @@
    <property name="rate" type="big_decimal">
       <column name = "rate" sql-type="NUMERIC(19,6)"/>
    </property>
-   <many-to-one column="zone" name="zone" lazy="false" />
-   <many-to-one column="period" name="period" lazy="false" />
+   <many-to-one column="zone" name="zone" lazy="false" unique="true"/>
+   <many-to-one column="period" name="period" lazy="false" unique="true"/>
 	</class>
 </hibernate-mapping>

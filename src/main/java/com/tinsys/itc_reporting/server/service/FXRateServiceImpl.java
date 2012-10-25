@@ -41,15 +41,16 @@ public class FXRateServiceImpl implements FXRateService {
 
     @Override
     public FXRateDTO createFXRate(FXRateDTO aFXRate) {
-       PeriodDTO aPeriod = DateUtils.monthYearToPeriod(null,aFXRate.getPeriod().getMonth(), aFXRate.getPeriod().getYear());
+       PeriodDTO aPeriod = DateUtils.monthYearToPeriod(null,aFXRate.getPeriod().getMonth(), aFXRate.getPeriod().getYear(), aFXRate.getPeriod().getPeriodType());
        aPeriod = periodDAO.createPeriod(aPeriod);
        aFXRate.getPeriod().setId(aPeriod.getId());
+       aFXRate.getPeriod().setPeriodType("F");
        return fxRateDAO.createFXRate(aFXRate);
     }
 
     @Override
     public FXRateDTO updateFXRate(FXRateDTO aFXRate) {
-        periodDAO.updatePeriod(DateUtils.monthYearToPeriod(aFXRate.getPeriod().getId(),aFXRate.getPeriod().getMonth(), aFXRate.getPeriod().getYear()));
+        periodDAO.updatePeriod(DateUtils.monthYearToPeriod(aFXRate.getPeriod().getId(),aFXRate.getPeriod().getMonth(), aFXRate.getPeriod().getYear(),aFXRate.getPeriod().getPeriodType()));
         aFXRate.setPeriod(aFXRate.getPeriod());
         return fxRateDAO.updateFXRate(aFXRate);
     }
@@ -57,13 +58,13 @@ public class FXRateServiceImpl implements FXRateService {
     @Override
     public void deleteFXRate(FXRateDTO aFXRate) {
         fxRateDAO.deleteFXRate(aFXRate);
-        periodDAO.deletePeriod(DateUtils.monthYearToPeriod(aFXRate.getPeriod().getId(),aFXRate.getPeriod().getMonth(), aFXRate.getPeriod().getYear()));
+        periodDAO.deletePeriod(DateUtils.monthYearToPeriod(aFXRate.getPeriod().getId(),aFXRate.getPeriod().getMonth(), aFXRate.getPeriod().getYear(),aFXRate.getPeriod().getPeriodType()));
 
     }
 
    @Override
    public ArrayList<FXRateDTO> getAllFXRatesForPeriod(MonthPeriodDTO monthPeriodDto) {
-      return fxRateDAO.getAllFXRatesForPeriod(DateUtils.monthYearToPeriod(null, monthPeriodDto.getMonth(), monthPeriodDto.getYear()));
+      return fxRateDAO.getAllFXRatesForPeriod(DateUtils.monthYearToPeriod(null, monthPeriodDto.getMonth(), monthPeriodDto.getYear(),monthPeriodDto.getPeriodType()));
    }
 
 @Override

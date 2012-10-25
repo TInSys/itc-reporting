@@ -280,6 +280,7 @@ public class TaxManagement extends Composite implements WidgetSwitchManagement {
                 PeriodDTO periodDTO = new PeriodDTO();
                 periodDTO.setStartDate(taxPeriodStartDateDateBox.getValue());
                 periodDTO.setStopDate(taxPeriodStopDateDateBox.getValue());
+                periodDTO.setPeriodType("T");
                 selectedTax.setPeriod(periodDTO);
                 createTax();
             } else {
@@ -288,6 +289,7 @@ public class TaxManagement extends Composite implements WidgetSwitchManagement {
                 periodDTO.setId(selectedTax.getPeriod().getId());
                 periodDTO.setStartDate(taxPeriodStartDateDateBox.getValue());
                 periodDTO.setStopDate(taxPeriodStopDateDateBox.getValue());
+                periodDTO.setPeriodType(selectedTax.getPeriod().getPeriodType());
                 selectedTax.setPeriod(periodDTO);
                 currentPage = pager.getPage();
                 taxService.updateTax(selectedTax, new AsyncCallback<TaxDTO>() {

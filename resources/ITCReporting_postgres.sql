@@ -16,6 +16,7 @@ CREATE TABLE period
   id serial NOT NULL,
   start_date date,
   stop_date date,
+  period_type character varying(1),
   CONSTRAINT period_pkey PRIMARY KEY (id)
 );
 ALTER TABLE period OWNER TO "ITCReporting";
@@ -113,9 +114,7 @@ CREATE TABLE application
   name character varying(50),
   CONSTRAINT application_pkey PRIMARY KEY (id )
 )
-WITH (
-  OIDS=FALSE
-);
+
 ALTER TABLE application
   OWNER TO "ITCReporting";
 
@@ -145,9 +144,7 @@ CREATE TABLE sales
       REFERENCES zone (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 )
-WITH (
-  OIDS=FALSE
-);
+
 ALTER TABLE sales
   OWNER TO "ITCReporting";
 
