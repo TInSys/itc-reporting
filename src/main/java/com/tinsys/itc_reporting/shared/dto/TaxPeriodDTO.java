@@ -3,7 +3,7 @@ package com.tinsys.itc_reporting.shared.dto;
 import java.io.Serializable;
 import java.util.Date;
 
-public class PeriodDTO implements Serializable {
+public class TaxPeriodDTO implements Serializable {
 
     /**
      * 
@@ -13,7 +13,6 @@ public class PeriodDTO implements Serializable {
     private Long id;
     private Date startDate;
     private Date stopDate;
-    private String periodType;
     
     public Long getId() {
         return id;
@@ -38,14 +37,6 @@ public class PeriodDTO implements Serializable {
     public void setStopDate(Date stopDate) {
         this.stopDate = stopDate;
     }
-    
-    public void setPeriodType(String periodType) {
-      this.periodType = periodType;
-   }
-
-   public String getPeriodType() {
-      return periodType;
-   }
 
    @Override
    public String toString() {

@@ -14,7 +14,7 @@ public class Sales implements Serializable {
     private BigDecimal individualPrice;
     private BigDecimal totalPrice;
     private String countryCode;
-    private Period period;
+    private FiscalPeriod period;
     private Zone zone;
     private Application application;
     
@@ -48,10 +48,10 @@ public class Sales implements Serializable {
     public void setCountryCode(String countryCode) {
         this.countryCode = countryCode;
     }
-    public Period getPeriod() {
+    public FiscalPeriod getPeriod() {
         return period;
     }
-    public void setPeriod(Period period) {
+    public void setPeriod(FiscalPeriod period) {
         this.period = period;
     }
     public Zone getZone() {

@@ -13,7 +13,7 @@ public class FXRateDTO implements Serializable,Comparable<FXRateDTO> {
     private Long id;
     private BigDecimal rate;
     private ZoneDTO zone;
-    private MonthPeriodDTO period;
+    private FiscalPeriodDTO period;
 
     public Long getId() {
         return id;
@@ -39,11 +39,11 @@ public class FXRateDTO implements Serializable,Comparable<FXRateDTO> {
         this.zone = zone;
     }
 
-    public MonthPeriodDTO getPeriod() {
+    public FiscalPeriodDTO getPeriod() {
         return period;
     }
 
-    public void setPeriod(MonthPeriodDTO period) {
+    public void setPeriod(FiscalPeriodDTO period) {
         this.period = period;
     }
 

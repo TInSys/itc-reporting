@@ -43,7 +43,7 @@ import com.tinsys.itc_reporting.client.service.FXRateServiceAsync;
 import com.tinsys.itc_reporting.client.service.ZoneService;
 import com.tinsys.itc_reporting.client.service.ZoneServiceAsync;
 import com.tinsys.itc_reporting.shared.dto.FXRateDTO;
-import com.tinsys.itc_reporting.shared.dto.MonthPeriodDTO;
+import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
 public class FXRateManagementByZone extends Composite implements
@@ -282,19 +282,18 @@ public class FXRateManagementByZone extends Composite implements
             selectedFXRate.setZone(currentZone);
 
             selectedFXRate.setRate(new BigDecimal(fxRateRateTextBox.getText()));
-            MonthPeriodDTO monthPeriodDTO = new MonthPeriodDTO();
+            FiscalPeriodDTO monthPeriodDTO = new FiscalPeriodDTO();
             monthPeriodDTO.setMonth(monthPeriod.getSelectedIndex()+1);
             monthPeriodDTO.setYear(yearPeriod.getSelectedIndex() + STARTING_YEAR);
-            monthPeriodDTO.setPeriodType("F");
             selectedFXRate.setPeriod(monthPeriodDTO);
             createFXRate();
          } else {
             selectedFXRate.setRate(new BigDecimal(fxRateRateTextBox.getText()));
-            MonthPeriodDTO monthPeriodDTO = new MonthPeriodDTO();
+            FiscalPeriodDTO monthPeriodDTO = new FiscalPeriodDTO();
+            
             monthPeriodDTO.setId(selectedFXRate.getPeriod().getId());
             monthPeriodDTO.setMonth(monthPeriod.getSelectedIndex()+1);
             monthPeriodDTO.setYear(yearPeriod.getSelectedIndex() + STARTING_YEAR);
-            monthPeriodDTO.setPeriodType(selectedFXRate.getPeriod().getPeriodType());
             selectedFXRate.setPeriod(monthPeriodDTO);
             currentPage = pager.getPage();
             fxRateService.updateFXRate(selectedFXRate,

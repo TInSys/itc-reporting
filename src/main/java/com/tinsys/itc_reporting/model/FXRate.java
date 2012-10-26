@@ -13,7 +13,7 @@ public class FXRate implements Serializable {
     private Long id;
     private BigDecimal rate;
     private Zone zone;
-    private Period period;
+    private FiscalPeriod period;
 
     public Long getId() {
         return id;
@@ -39,11 +39,11 @@ public class FXRate implements Serializable {
         this.zone = zone;
     }
 
-    public Period getPeriod() {
+    public FiscalPeriod getPeriod() {
         return period;
     }
 
-    public void setPeriod(Period period) {
+    public void setPeriod(FiscalPeriod period) {
         this.period = period;
     }
 

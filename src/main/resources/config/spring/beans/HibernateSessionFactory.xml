@@ -23,7 +23,8 @@ http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 		<property name="mappingResources">
 			<list>
 				<value>com/tinsys/itc_reporting/hibernate/Zone.hbm.xml</value>
-            <value>com/tinsys/itc_reporting/hibernate/Period.hbm.xml</value>
+            <value>com/tinsys/itc_reporting/hibernate/TaxPeriod.hbm.xml</value>
+            <value>com/tinsys/itc_reporting/hibernate/FiscalPeriod.hbm.xml</value>
             <value>com/tinsys/itc_reporting/hibernate/Tax.hbm.xml</value>            
             <value>com/tinsys/itc_reporting/hibernate/FXRate.hbm.xml</value>            
             <value>com/tinsys/itc_reporting/hibernate/Application.hbm.xml</value>            

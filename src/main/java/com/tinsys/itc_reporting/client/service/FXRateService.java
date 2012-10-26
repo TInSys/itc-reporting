@@ -6,7 +6,7 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.tinsys.itc_reporting.shared.dto.FXRateDTO;
-import com.tinsys.itc_reporting.shared.dto.MonthPeriodDTO;
+import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
 @RemoteServiceRelativePath("springGwtServices/fxRateService")
@@ -22,7 +22,7 @@ public interface FXRateService extends RemoteService {
 
     public void deleteFXRate(FXRateDTO aFXRate);
     
-    ArrayList<FXRateDTO> getAllFXRatesForPeriod(MonthPeriodDTO monthPeriodDto);
+    ArrayList<FXRateDTO> getAllFXRatesForPeriod(FiscalPeriodDTO fiscalPeriodDto);
     
     void saveOrUpdate(List<FXRateDTO> fxRateList);
 }

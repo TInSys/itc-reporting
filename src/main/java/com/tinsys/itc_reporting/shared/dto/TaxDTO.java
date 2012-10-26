@@ -12,7 +12,7 @@ public class TaxDTO implements Serializable {
     private Long id;
     private BigDecimal rate;
     private ZoneDTO zone;
-    private PeriodDTO period;
+    private TaxPeriodDTO period;
 
     public Long getId() {
         return id;
@@ -38,11 +38,11 @@ public class TaxDTO implements Serializable {
         this.zone = zone;
     }
 
-    public PeriodDTO getPeriod() {
+    public TaxPeriodDTO getPeriod() {
         return period;
     }
 
-    public void setPeriod(PeriodDTO period) {
+    public void setPeriod(TaxPeriodDTO period) {
         this.period = period;
     }
 

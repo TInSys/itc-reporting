@@ -12,7 +12,7 @@ public class Tax implements Serializable {
     private Long id;
     private BigDecimal rate;
     private Zone zone;
-    private Period period;
+    private TaxPeriod period;
 
     public Long getId() {
         return id;
@@ -38,11 +38,11 @@ public class Tax implements Serializable {
         this.zone = zone;
     }
 
-    public Period getPeriod() {
+    public TaxPeriod getPeriod() {
         return period;
     }
 
-    public void setPeriod(Period period) {
+    public void setPeriod(TaxPeriod period) {
         this.period = period;
     }
 

@@ -3,7 +3,7 @@ package com.tinsys.itc_reporting.model;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Period implements Serializable {
+public class TaxPeriod implements Serializable {
 
     /**
      * 

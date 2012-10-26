@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+                                   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.tinsys.itc_reporting.model.FiscalPeriod" table="fiscal_period">
+		<id name="id" type="long">
+			<column name="id" />
+			<generator class="identity" />
+		</id>
+      <property generated="never" lazy="false" name="month" type="int">
+         <column name="month" not-null="false" />
+      </property>
+      <property generated="never" lazy="false" name="year" type="int">
+         <column name="year" not-null="false" />
+      </property>
+	</class>
+</hibernate-mapping>

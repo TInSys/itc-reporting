@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
                                    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-	<class name="com.tinsys.itc_reporting.model.Period" table="period">
+	<class name="com.tinsys.itc_reporting.model.TaxPeriod" table="tax_period">
 		<id name="id" type="long">
 			<column name="id" />
 			<generator class="identity" />
@@ -12,9 +12,6 @@
 		</property>
       <property generated="never" lazy="false" name="stopDate" type="date">
          <column name="stop_date" not-null="false" />
-      </property>
-      <property generated="never" lazy="false" name="periodType" type="string">
-         <column name="period_type" not-null="false" />
       </property>
 	</class>
 </hibernate-mapping>

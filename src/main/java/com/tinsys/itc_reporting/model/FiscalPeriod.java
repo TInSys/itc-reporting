@@ -1,8 +1,8 @@
-package com.tinsys.itc_reporting.shared.dto;
+package com.tinsys.itc_reporting.model;
 
 import java.io.Serializable;
 
-public class MonthPeriodDTO implements Serializable {
+public class FiscalPeriod implements Serializable {
 
     /**
      * 
@@ -12,8 +12,7 @@ public class MonthPeriodDTO implements Serializable {
     private Long id;
     private int month;
     private int year;
-    private String periodType;
-
+    
     public Long getId() {
         return id;
     }
@@ -21,7 +20,7 @@ public class MonthPeriodDTO implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    
+
     public int getMonth() {
         return month;
     }
@@ -37,18 +36,5 @@ public class MonthPeriodDTO implements Serializable {
     public void setYear(int year) {
         this.year = year;
     }
-
-    public void setPeriodType(String periodType) {
-      this.periodType = periodType;
-   }
-
-   public String getPeriodType() {
-      return periodType;
-   }
-
-   @Override
-   public String toString() {
-      return month+"/"+year;
-   }
 
 }

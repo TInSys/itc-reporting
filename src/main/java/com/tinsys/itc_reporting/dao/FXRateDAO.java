@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.tinsys.itc_reporting.shared.dto.FXRateDTO;
-import com.tinsys.itc_reporting.shared.dto.PeriodDTO;
+import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
 public interface FXRateDAO {
@@ -20,7 +20,7 @@ public interface FXRateDAO {
     public void deleteFXRate(FXRateDTO aFXRate);
 
    public ArrayList<FXRateDTO> getAllFXRatesForPeriod(
-         PeriodDTO monthYearToPeriod);
+         FiscalPeriodDTO monthYearToPeriod);
    
    public void saveOrUpdate(List<FXRateDTO> fxRateList);
 }

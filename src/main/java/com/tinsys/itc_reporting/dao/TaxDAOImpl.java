@@ -8,11 +8,11 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
-import com.tinsys.itc_reporting.model.Period;
 import com.tinsys.itc_reporting.model.Tax;
+import com.tinsys.itc_reporting.model.TaxPeriod;
 import com.tinsys.itc_reporting.model.Zone;
-import com.tinsys.itc_reporting.shared.dto.PeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.TaxDTO;
+import com.tinsys.itc_reporting.shared.dto.TaxPeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
 @Repository
@@ -55,7 +55,7 @@ public class TaxDAOImpl implements TaxDAO {
             taxDTO.setId(tax.getId());
             taxDTO.setRate(tax.getRate());
             taxDTO.setZone(zoneDTO);
-            PeriodDTO periodDTO = new PeriodDTO();
+            TaxPeriodDTO periodDTO = new TaxPeriodDTO();
             periodDTO.setId(tax.getPeriod().getId());
             periodDTO.setStartDate(tax.getPeriod().getStartDate());
             periodDTO.setStopDate(tax.getPeriod().getStopDate());
@@ -83,7 +83,7 @@ public class TaxDAOImpl implements TaxDAO {
         zone.setName(aTax.getZone().getName());
         zone.setCurrencyISO(aTax.getZone().getCurrencyISO());
         tax.setZone(zone);
-        Period period = new Period();
+        TaxPeriod period = new TaxPeriod();
         period.setStartDate(aTax.getPeriod().getStartDate());
         period.setStopDate(aTax.getPeriod().getStopDate());
         period.setId(aTax.getPeriod().getId());
@@ -110,7 +110,7 @@ public class TaxDAOImpl implements TaxDAO {
         zone.setName(aTax.getZone().getName());
         zone.setCurrencyISO(aTax.getZone().getCurrencyISO());
         tax.setZone(zone);
-        Period period = new Period();
+        TaxPeriod period = new TaxPeriod();
         period.setStartDate(aTax.getPeriod().getStartDate());
         period.setStopDate(aTax.getPeriod().getStopDate());
         period.setId(aTax.getPeriod().getId());
@@ -130,7 +130,7 @@ public class TaxDAOImpl implements TaxDAO {
         zone.setName(aTax.getZone().getName());
         zone.setCurrencyISO(aTax.getZone().getCurrencyISO());
         tax.setZone(zone);
-        Period period = new Period();
+        TaxPeriod period = new TaxPeriod();
         period.setStartDate(aTax.getPeriod().getStartDate());
         period.setStopDate(aTax.getPeriod().getStopDate());
         period.setId(aTax.getPeriod().getId());

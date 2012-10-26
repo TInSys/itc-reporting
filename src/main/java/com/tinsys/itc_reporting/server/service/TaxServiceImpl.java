@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tinsys.itc_reporting.client.service.TaxService;
-import com.tinsys.itc_reporting.dao.PeriodDAO;
 import com.tinsys.itc_reporting.dao.TaxDAO;
-import com.tinsys.itc_reporting.shared.dto.PeriodDTO;
+import com.tinsys.itc_reporting.dao.TaxPeriodDAO;
 import com.tinsys.itc_reporting.shared.dto.TaxDTO;
+import com.tinsys.itc_reporting.shared.dto.TaxPeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
 @Service("taxService")
@@ -22,8 +22,8 @@ public class TaxServiceImpl implements TaxService {
     @Qualifier("taxDAO")
     private TaxDAO taxDAO;
     @Autowired
-    @Qualifier("periodDAO")
-    private PeriodDAO periodDAO;
+    @Qualifier("taxPeriodDAO")
+    private TaxPeriodDAO periodDAO;
 
     @Override
     public ArrayList<TaxDTO> getAllTaxs(ZoneDTO zoneDTO) {
@@ -37,11 +37,11 @@ public class TaxServiceImpl implements TaxService {
     }
 
     @Override
-    public TaxDTO createTax(TaxDTO aTax, PeriodDTO aPeriod) {
+    public TaxDTO createTax(TaxDTO aTax, TaxPeriodDTO aPeriod) {
         if (aPeriod != null) {
             periodDAO.updatePeriod(aPeriod);
         }
-        aTax.setPeriod(periodDAO.createPeriod(aTax.getPeriod()));
+       aTax.setPeriod(periodDAO.createPeriod(aTax.getPeriod()));
         return taxDAO.createTax(aTax);
     }
 
@@ -57,5 +57,4 @@ public class TaxServiceImpl implements TaxService {
         periodDAO.deletePeriod(aTax.getPeriod());
 
     }
-
 }

@@ -1,4 +1,4 @@
-﻿-- Database: "ITCReporting"
+-- Database: "ITCReporting"
 
 -- DROP DATABASE "ITCReporting";
 
@@ -8,19 +8,37 @@ CREATE DATABASE "ITCReporting"
        TABLESPACE = pg_default
        CONNECTION LIMIT = -1;
 
--- Table: period
+-- Table: tax_period
 
--- DROP TABLE period;
-CREATE TABLE period
+-- DROP TABLE tax_period;
+
+CREATE TABLE tax_period
 (
   id serial NOT NULL,
   start_date date,
   stop_date date,
-  period_type character varying(1),
-  CONSTRAINT period_pkey PRIMARY KEY (id)
+  CONSTRAINT tax_period_pkey PRIMARY KEY (id )
 );
-ALTER TABLE period OWNER TO "ITCReporting";
 
+ALTER TABLE tax_period
+  OWNER TO "ITCReporting";
+  
+-- Table: fiscal_period
+
+-- DROP TABLE fiscal_period;
+
+CREATE TABLE fiscal_period
+(
+  id serial NOT NULL,
+  month smallint,
+  year smallint,
+  CONSTRAINT fiscal_period_pkey PRIMARY KEY (id )
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE fiscal_period
+  OWNER TO "ITCReporting";
 
 -- Table: "zone"
 
@@ -40,68 +58,76 @@ ALTER TABLE "zone" OWNER TO "ITCReporting";
 -- Table: fx_rate
 
 -- DROP TABLE fx_rate;
+
 CREATE TABLE fx_rate
 (
   id serial NOT NULL,
   rate numeric(19,6),
-  "zone" bigint,
+  zone bigint,
   period bigint,
   currency_iso character varying(3),
-  CONSTRAINT fx_rate_pkey PRIMARY KEY (id),
+  CONSTRAINT fx_rate_pkey PRIMARY KEY (id ),
   CONSTRAINT period_fkey FOREIGN KEY (period)
-      REFERENCES period (id) MATCH SIMPLE
+      REFERENCES fiscal_period (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT zone_fkey FOREIGN KEY ("zone")
-      REFERENCES "zone" (id) MATCH SIMPLE
+  CONSTRAINT zone_fkey FOREIGN KEY (zone)
+      REFERENCES zone (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
-
-ALTER TABLE fx_rate OWNER TO "ITCReporting";
+ALTER TABLE fx_rate
+  OWNER TO "ITCReporting";
 
 -- Index: fki_period_id
 
 -- DROP INDEX fki_period_id;
+
 CREATE INDEX fki_period_id
   ON fx_rate
   USING btree
-  (id);
+  (id );
+
+
 
 
 -- Table: tax
 
 -- DROP TABLE tax;
+
 CREATE TABLE tax
 (
   id serial NOT NULL,
   rate numeric(19,6),
-  "zone" bigint,
+  zone bigint,
   period bigint,
-  CONSTRAINT tax_pkey PRIMARY KEY (id),
+  CONSTRAINT tax_pkey PRIMARY KEY (id ),
   CONSTRAINT period_fkey FOREIGN KEY (period)
-      REFERENCES period (id) MATCH SIMPLE
+      REFERENCES tax_period (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT zone_fkey FOREIGN KEY ("zone")
-      REFERENCES "zone" (id) MATCH SIMPLE
+  CONSTRAINT zone_fkey FOREIGN KEY (zone)
+      REFERENCES zone (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
-
-ALTER TABLE tax OWNER TO "ITCReporting";
+ALTER TABLE tax
+  OWNER TO "ITCReporting";
 
 -- Index: fki_period_fkey
 
 -- DROP INDEX fki_period_fkey;
+
 CREATE INDEX fki_period_fkey
   ON tax
   USING btree
-  (period);
+  (period );
 
 -- Index: fki_zone_fkey
 
 -- DROP INDEX fki_zone_fkey;
+
 CREATE INDEX fki_zone_fkey
   ON tax
   USING btree
-  (id);
+  (id );
+
 
 -- Table: application
 
@@ -113,7 +139,7 @@ CREATE TABLE application
   vendor_id character varying(20),
   name character varying(50),
   CONSTRAINT application_pkey PRIMARY KEY (id )
-)
+);
 
 ALTER TABLE application
   OWNER TO "ITCReporting";
@@ -138,13 +164,12 @@ CREATE TABLE sales
       REFERENCES application (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT period_fkey FOREIGN KEY (period)
-      REFERENCES period (id) MATCH SIMPLE
+      REFERENCES fiscal_period (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT zone_fkey FOREIGN KEY (zone)
       REFERENCES zone (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
-)
-
+);
 ALTER TABLE sales
   OWNER TO "ITCReporting";
 

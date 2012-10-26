@@ -22,14 +22,10 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.Ostermiller.util.CSVParser;
 import com.Ostermiller.util.LabeledCSVParser;
 import com.tinsys.itc_reporting.model.Application;
-import com.tinsys.itc_reporting.model.Period;
+import com.tinsys.itc_reporting.model.FiscalPeriod;
 import com.tinsys.itc_reporting.model.Sales;
 import com.tinsys.itc_reporting.model.Zone;
 import com.tinsys.itc_reporting.server.service.SaleService;
-import com.tinsys.itc_reporting.shared.dto.PeriodDTO;
-
-
-
 
 public class FileUploadServlet extends HttpServlet {
 
@@ -41,93 +37,110 @@ public class FileUploadServlet extends HttpServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-      super.init(config);
+        super.init(config);
 
-      ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(config.getServletContext());
-      saleService = (SaleService) ctx.getBean("saleService");
-    }
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-      super.doGet(req, resp);
+        ApplicationContext ctx = WebApplicationContextUtils
+                .getRequiredWebApplicationContext(config.getServletContext());
+        saleService = (SaleService) ctx.getBean("saleService");
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        super.doGet(req, resp);
+    }
 
-      // process only multipart requests
-      if (ServletFileUpload.isMultipartContent(req)) {
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
 
-        // Create a factory for disk-based file items
-        FileItemFactory factory = new DiskFileItemFactory();
+        // process only multipart requests
+        if (ServletFileUpload.isMultipartContent(req)) {
 
-        // Create a new file upload handler
-        ServletFileUpload upload = new ServletFileUpload(factory);
+            // Create a factory for disk-based file items
+            FileItemFactory factory = new DiskFileItemFactory();
 
-        // Parse the request
-        try {
-            resp.setContentType("text/html");
-          @SuppressWarnings("unchecked")
-          List<FileItem> items = upload.parseRequest(req);
+            // Create a new file upload handler
+            ServletFileUpload upload = new ServletFileUpload(factory);
 
-          //TODO zipped file management
-          resp.getOutputStream().print("Files added :"+System.getProperty("line.separator")+System.getProperty("line.separator"));
-          for (FileItem item : items) {
-             int periodIndex = item.getName().indexOf("_");
-             int zoneIndex = item.getName().indexOf("_",periodIndex+1);
-             String code = item.getName().substring(zoneIndex+1,zoneIndex+3);
-             String fileMonth = item.getName().substring(periodIndex+1,periodIndex+3);
-             String fileYear = item.getName().substring(periodIndex+3,periodIndex+5);
-             PeriodDTO periodDTO = DateUtils.monthYearToPeriod(null, Integer.parseInt(fileMonth), Integer.parseInt(fileYear),"F");
-             Period period= new Period();
-             period.setStartDate(periodDTO.getStartDate());
-             period.setStopDate(periodDTO.getStopDate());
-             period.setPeriodType(periodDTO.getPeriodType());
-             
+            // Parse the request
+            try {
+                resp.setContentType("text/html");
+                @SuppressWarnings("unchecked")
+                List<FileItem> items = upload.parseRequest(req);
 
-             Zone zone = saleService.findZone(code);
-             period = saleService.findPeriod(period);
-             if (item.isFormField())
-              continue;
-            InputStream fis;             
-            GZIPInputStream gfis;
-            LabeledCSVParser lcsvp; 
-            if (item.getContentType().equalsIgnoreCase("application/x-gzip")){
-               gfis = new GZIPInputStream(item.getInputStream());
-               lcsvp = new LabeledCSVParser(new CSVParser(gfis));
-            } else {
-               fis = item.getInputStream();  
-               lcsvp = new LabeledCSVParser(new CSVParser(fis));
+                resp.getOutputStream().print(
+                        "Files added :" + System.getProperty("line.separator")
+                                + System.getProperty("line.separator"));
+                for (FileItem item : items) {
+                    int periodIndex = item.getName().indexOf("_");
+                    int zoneIndex = item.getName()
+                            .indexOf("_", periodIndex + 1);
+                    String code = item.getName().substring(zoneIndex + 1,
+                            zoneIndex + 3);
+                    String fileMonth = item.getName().substring(
+                            periodIndex + 1, periodIndex + 3);
+                    String fileYear = item.getName().substring(periodIndex + 3,
+                            periodIndex + 5);
+                    FiscalPeriod period = new FiscalPeriod();
+                    period.setMonth(Integer.parseInt(fileMonth));
+                    period.setYear(Integer.parseInt(fileYear));
+
+                    Zone zone = saleService.findZone(code);
+                    period = saleService.findPeriod(period);
+                    if (item.isFormField())
+                        continue;
+                    InputStream fis;
+                    GZIPInputStream gfis;
+                    LabeledCSVParser lcsvp;
+                    if (item.getContentType().equalsIgnoreCase(
+                            "application/x-gzip")) {
+                        gfis = new GZIPInputStream(item.getInputStream());
+                        lcsvp = new LabeledCSVParser(new CSVParser(gfis));
+                    } else {
+                        fis = item.getInputStream();
+                        lcsvp = new LabeledCSVParser(new CSVParser(fis));
+                    }
+                    fis = item.getInputStream();
+                    lcsvp.changeDelimiter('\t');
+                    while (lcsvp.getLine() != null
+                            && lcsvp.getValueByLabel("Quantity") != null) {
+                        Sales tmpSale = new Sales();
+                        Application application = saleService
+                                .findApplication(lcsvp
+                                        .getValueByLabel("Vendor Identifier"));
+                        tmpSale.setPeriod(period);
+                        tmpSale.setZone(zone);
+                        tmpSale.setApplication(application);
+                        tmpSale.setCountryCode(lcsvp
+                                .getValueByLabel("Country Of Sale"));
+                        tmpSale.setIndividualPrice(new BigDecimal(lcsvp
+                                .getValueByLabel("Customer Price")));
+                        tmpSale.setSoldUnits(Integer.parseInt(lcsvp
+                                .getValueByLabel("Quantity")));
+                        saleService.summarizeSale(tmpSale);
+                    }
+                    resp.getOutputStream().print(
+                            item.getName()
+                                    + System.getProperty("line.separator"));
+                }
+                saleService.saveOrUpdate();
+
+                resp.flushBuffer();
+            } catch (Exception e) {
+                resp.setContentType("text/plain");
+                resp.getOutputStream().print(
+                        "error parsing file : " + e.getMessage());
+                resp.flushBuffer();
+                e.printStackTrace();
+
             }
-            fis = item.getInputStream();
-            lcsvp.changeDelimiter('\t');
-            while(lcsvp.getLine() != null && lcsvp.getValueByLabel("Quantity")!=null){
-               Sales tmpSale = new Sales();
-               Application application = saleService.findApplication(lcsvp.getValueByLabel("Vendor Identifier"));
-               tmpSale.setPeriod(period);
-               tmpSale.setZone(zone);
-               tmpSale.setApplication(application);
-               tmpSale.setCountryCode(lcsvp.getValueByLabel("Country Of Sale"));
-               tmpSale.setIndividualPrice(new BigDecimal(lcsvp.getValueByLabel("Customer Price")));
-               tmpSale.setSoldUnits(Integer.parseInt(lcsvp.getValueByLabel("Quantity")));
-               saleService.summarizeSale(tmpSale);
-            }       
-            resp.getOutputStream().print(item.getName()+System.getProperty("line.separator"));
-            }
-             saleService.saveOrUpdate();
 
-          resp.flushBuffer();
-        } catch (Exception e) {
-          resp.setContentType("text/plain");
-          resp.getOutputStream().print("error parsing file : "+e.getMessage());
-          resp.flushBuffer();
-          e.printStackTrace();
-
+        } else {
+            resp.setContentType("text/plain");
+            resp.getWriter()
+                    .write("ERROR : Request contents type is not supported by the servlet.");
+            resp.flushBuffer();
         }
-
-      } else {
-        resp.setContentType("text/plain");
-        resp.getWriter().write("ERROR : Request contents type is not supported by the servlet.");
-        resp.flushBuffer();
-      }
     }
 }

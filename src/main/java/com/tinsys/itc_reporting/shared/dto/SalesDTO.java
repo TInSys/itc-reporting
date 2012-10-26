@@ -14,7 +14,7 @@ public class SalesDTO implements Serializable {
     private BigDecimal individualPrice;
     private BigDecimal totalPrice;
     private String countryCode;
-    private PeriodDTO periodDTO;
+    private FiscalPeriodDTO periodDTO;
     private ZoneDTO zoneDTO;
     private ApplicationDTO applicationDTO;
 
@@ -58,11 +58,11 @@ public class SalesDTO implements Serializable {
         this.countryCode = countryCode;
     }
 
-    public PeriodDTO getPeriod() {
+    public FiscalPeriodDTO getPeriod() {
         return periodDTO;
     }
 
-    public void setPeriod(PeriodDTO periodDTO) {
+    public void setPeriod(FiscalPeriodDTO periodDTO) {
         this.periodDTO = periodDTO;
     }
 

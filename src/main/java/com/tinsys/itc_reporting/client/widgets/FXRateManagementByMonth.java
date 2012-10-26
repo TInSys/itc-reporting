@@ -37,7 +37,7 @@ import com.tinsys.itc_reporting.client.service.FXRateServiceAsync;
 import com.tinsys.itc_reporting.client.service.ZoneService;
 import com.tinsys.itc_reporting.client.service.ZoneServiceAsync;
 import com.tinsys.itc_reporting.shared.dto.FXRateDTO;
-import com.tinsys.itc_reporting.shared.dto.MonthPeriodDTO;
+import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
 public class FXRateManagementByMonth extends Composite implements
@@ -183,11 +183,10 @@ public class FXRateManagementByMonth extends Composite implements
     }
 
     private void getFXRateList() {
-        MonthPeriodDTO monthPeriodDto = new MonthPeriodDTO();
+        FiscalPeriodDTO monthPeriodDto = new FiscalPeriodDTO();
         monthPeriodDto.setId(null);
         monthPeriodDto.setMonth(currentMonth);
         monthPeriodDto.setYear(currentYear);
-        monthPeriodDto.setPeriodType("F");
         fxRateService.getAllFXRatesForPeriod(monthPeriodDto,
                 new AsyncCallback<ArrayList<FXRateDTO>>() {
 

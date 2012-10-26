@@ -1,29 +1,29 @@
 package com.tinsys.itc_reporting.server.utils;
 
 import com.tinsys.itc_reporting.model.Application;
-import com.tinsys.itc_reporting.model.Period;
+import com.tinsys.itc_reporting.model.FiscalPeriod;
+import com.tinsys.itc_reporting.model.TaxPeriod;
 import com.tinsys.itc_reporting.model.Zone;
 import com.tinsys.itc_reporting.shared.dto.ApplicationDTO;
-import com.tinsys.itc_reporting.shared.dto.PeriodDTO;
+import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
+import com.tinsys.itc_reporting.shared.dto.TaxPeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
 public class DTOUtils {
 
-   public static PeriodDTO periodToPeriodDTO(Period aPeriod){
-      PeriodDTO periodDTO = new PeriodDTO();
+   public static FiscalPeriodDTO periodToPeriodDTO(FiscalPeriod aPeriod){
+      FiscalPeriodDTO periodDTO = new FiscalPeriodDTO();
       periodDTO.setId(aPeriod.getId());
-      periodDTO.setPeriodType(aPeriod.getPeriodType());
-      periodDTO.setStartDate(aPeriod.getStartDate());
-      periodDTO.setStopDate(aPeriod.getStopDate());
+      periodDTO.setMonth(aPeriod.getMonth());
+      periodDTO.setYear(aPeriod.getYear());
       return periodDTO;
    }
 
-   public static Period periodDTOtoPeriod(PeriodDTO aPeriodDTO){
-      Period period = new Period();
+   public static FiscalPeriod periodDTOtoPeriod(FiscalPeriodDTO aPeriodDTO){
+      FiscalPeriod period = new FiscalPeriod();
       period.setId(aPeriodDTO.getId());
-      period.setPeriodType(aPeriodDTO.getPeriodType());
-      period.setStartDate(aPeriodDTO.getStartDate());
-      period.setStopDate(aPeriodDTO.getStopDate());
+      period.setMonth(aPeriodDTO.getMonth());
+      period.setYear(aPeriodDTO.getYear());
       return period;
    }
    
@@ -60,5 +60,21 @@ public class DTOUtils {
       application.setName(aApplicationDTO.getName());
       return application;
    }
-   
+
+public static TaxPeriod taxPeriodDTOtoTaxPeriod(TaxPeriodDTO aPeriodDTO) {
+    TaxPeriod taxPeriod = new TaxPeriod();
+    taxPeriod.setId(aPeriodDTO.getId());
+    taxPeriod.setStartDate(aPeriodDTO.getStartDate());
+    taxPeriod.setStopDate(aPeriodDTO.getStopDate());
+    return taxPeriod;
+}
+
+public static TaxPeriodDTO taxPeriodtoTaxPeriodDTO(TaxPeriod aPeriod) {
+    TaxPeriodDTO taxPeriodDTO = new TaxPeriodDTO();
+    taxPeriodDTO.setId(aPeriod.getId());
+    taxPeriodDTO.setStartDate(aPeriod.getStartDate());
+    taxPeriodDTO.setStopDate(aPeriod.getStopDate());
+    return taxPeriodDTO;
+}
+
 }

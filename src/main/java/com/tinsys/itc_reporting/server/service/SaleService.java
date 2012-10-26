@@ -11,15 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.tinsys.itc_reporting.dao.ApplicationDAO;
 import com.tinsys.itc_reporting.dao.FXRateDAO;
-import com.tinsys.itc_reporting.dao.PeriodDAO;
+import com.tinsys.itc_reporting.dao.FiscalPeriodDAO;
 import com.tinsys.itc_reporting.dao.SalesDAO;
 import com.tinsys.itc_reporting.dao.ZoneDAO;
 import com.tinsys.itc_reporting.model.Application;
-import com.tinsys.itc_reporting.model.Period;
+import com.tinsys.itc_reporting.model.FiscalPeriod;
 import com.tinsys.itc_reporting.model.Sales;
 import com.tinsys.itc_reporting.model.Zone;
-import com.tinsys.itc_reporting.server.utils.DTOUtils;
-import com.tinsys.itc_reporting.shared.dto.SalesDTO;
 
 @Service("saleService")
 @Transactional
@@ -34,8 +32,8 @@ public class SaleService {
    private FXRateDAO fxRateDAO;
 
    @Autowired
-   @Qualifier("periodDAO")
-   private PeriodDAO periodDAO;
+   @Qualifier("fiscalPeriodDAO")
+   private FiscalPeriodDAO periodDAO;
 
    @Autowired
    @Qualifier("zoneDAO")
@@ -47,8 +45,8 @@ public class SaleService {
 
    private List<Sales> summarizedSales;
 
-   public Period findPeriod(Period period) {
-      Period result = periodDAO.findPeriod(period);
+   public FiscalPeriod findPeriod(FiscalPeriod period) {
+      FiscalPeriod result = periodDAO.findPeriod(period);
       return result;
    }
 

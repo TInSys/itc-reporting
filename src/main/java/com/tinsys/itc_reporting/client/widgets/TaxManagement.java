@@ -44,8 +44,8 @@ import com.tinsys.itc_reporting.client.service.TaxService;
 import com.tinsys.itc_reporting.client.service.TaxServiceAsync;
 import com.tinsys.itc_reporting.client.service.ZoneService;
 import com.tinsys.itc_reporting.client.service.ZoneServiceAsync;
-import com.tinsys.itc_reporting.shared.dto.PeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.TaxDTO;
+import com.tinsys.itc_reporting.shared.dto.TaxPeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
 public class TaxManagement extends Composite implements WidgetSwitchManagement {
@@ -62,7 +62,7 @@ public class TaxManagement extends Composite implements WidgetSwitchManagement {
     private boolean reverseSelection = false;
     private ZoneDTO currentZone;
     private List<TaxDTO> taxList;
-    private PeriodDTO periodToClose;
+    private TaxPeriodDTO periodToClose;
     private ZoneDTO dummyZone;
 
     SimplePager.Resources pagerResources = GWT
@@ -277,19 +277,17 @@ public class TaxManagement extends Composite implements WidgetSwitchManagement {
                 selectedTax = new TaxDTO();
                 selectedTax.setZone(currentZone);
                 selectedTax.setRate(new BigDecimal(taxRateTextBox.getText()));
-                PeriodDTO periodDTO = new PeriodDTO();
+                TaxPeriodDTO periodDTO = new TaxPeriodDTO();
                 periodDTO.setStartDate(taxPeriodStartDateDateBox.getValue());
                 periodDTO.setStopDate(taxPeriodStopDateDateBox.getValue());
-                periodDTO.setPeriodType("T");
                 selectedTax.setPeriod(periodDTO);
                 createTax();
             } else {
                 selectedTax.setRate(new BigDecimal(taxRateTextBox.getText()));
-                PeriodDTO periodDTO = new PeriodDTO();
+                TaxPeriodDTO periodDTO = new TaxPeriodDTO();
                 periodDTO.setId(selectedTax.getPeriod().getId());
                 periodDTO.setStartDate(taxPeriodStartDateDateBox.getValue());
                 periodDTO.setStopDate(taxPeriodStopDateDateBox.getValue());
-                periodDTO.setPeriodType(selectedTax.getPeriod().getPeriodType());
                 selectedTax.setPeriod(periodDTO);
                 currentPage = pager.getPage();
                 taxService.updateTax(selectedTax, new AsyncCallback<TaxDTO>() {
@@ -372,12 +370,12 @@ public class TaxManagement extends Composite implements WidgetSwitchManagement {
                     errors.remove(periodError);
                 } else {
                 if (taxPosition == 0){
-                    PeriodDTO existingPeriodTaxToCheck = taxList.get(1).getPeriod();
+                    TaxPeriodDTO existingPeriodTaxToCheck = taxList.get(1).getPeriod();
                     if (newStopDate < existingPeriodTaxToCheck.getStartDate().getTime()){
                         errors.remove(periodError);
                     }
                 } else if(taxPosition == lastDateindex){
-                    PeriodDTO existingPeriodTaxToCheck = taxList.get(lastDateindex-1).getPeriod();
+                    TaxPeriodDTO existingPeriodTaxToCheck = taxList.get(lastDateindex-1).getPeriod();
                     if (newStartDate > existingPeriodTaxToCheck.getStopDate().getTime()){
                         errors.remove(periodError);                        
                     }
