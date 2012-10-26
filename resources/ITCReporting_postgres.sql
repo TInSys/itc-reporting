@@ -160,7 +160,7 @@ CREATE TABLE sales
   zone bigint,
   application bigint,
   CONSTRAINT sales_pkey PRIMARY KEY (id ),
-  CONSTRAINT application_fkey FOREIGN KEY (id)
+  CONSTRAINT application_fkey FOREIGN KEY (application)
       REFERENCES application (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT period_fkey FOREIGN KEY (period)

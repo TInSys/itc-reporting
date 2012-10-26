@@ -3,6 +3,7 @@ package com.tinsys.itc_reporting.server.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
@@ -34,6 +35,10 @@ public class FileUploadServlet extends HttpServlet {
      */
     private static final long serialVersionUID = 1L;
     private SaleService saleService;
+    private List<String> errorList = new ArrayList<String>();
+    private List<String> duplicateFileCheck = new ArrayList<String>();
+    private List<String> processedFiles = new ArrayList<String>();
+    private List<String> notProcessedFiles = new ArrayList<String>();
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -54,76 +59,23 @@ public class FileUploadServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        // process only multipart requests
         if (ServletFileUpload.isMultipartContent(req)) {
-
-            // Create a factory for disk-based file items
             FileItemFactory factory = new DiskFileItemFactory();
-
-            // Create a new file upload handler
             ServletFileUpload upload = new ServletFileUpload(factory);
-
-            // Parse the request
             try {
                 resp.setContentType("text/html");
                 @SuppressWarnings("unchecked")
                 List<FileItem> items = upload.parseRequest(req);
-
-                resp.getOutputStream().print(
-                        "Files added :" + System.getProperty("line.separator")
-                                + System.getProperty("line.separator"));
+                saleService.reset();
+                errorList.clear();
+                duplicateFileCheck.clear();
+                processedFiles.clear();
+                notProcessedFiles.clear();
                 for (FileItem item : items) {
-                    int periodIndex = item.getName().indexOf("_");
-                    int zoneIndex = item.getName()
-                            .indexOf("_", periodIndex + 1);
-                    String code = item.getName().substring(zoneIndex + 1,
-                            zoneIndex + 3);
-                    String fileMonth = item.getName().substring(
-                            periodIndex + 1, periodIndex + 3);
-                    String fileYear = item.getName().substring(periodIndex + 3,
-                            periodIndex + 5);
-                    FiscalPeriod period = new FiscalPeriod();
-                    period.setMonth(Integer.parseInt(fileMonth));
-                    period.setYear(Integer.parseInt(fileYear));
-
-                    Zone zone = saleService.findZone(code);
-                    period = saleService.findPeriod(period);
-                    if (item.isFormField())
-                        continue;
-                    InputStream fis;
-                    GZIPInputStream gfis;
-                    LabeledCSVParser lcsvp;
-                    if (item.getContentType().equalsIgnoreCase(
-                            "application/x-gzip")) {
-                        gfis = new GZIPInputStream(item.getInputStream());
-                        lcsvp = new LabeledCSVParser(new CSVParser(gfis));
-                    } else {
-                        fis = item.getInputStream();
-                        lcsvp = new LabeledCSVParser(new CSVParser(fis));
-                    }
-                    fis = item.getInputStream();
-                    lcsvp.changeDelimiter('\t');
-                    while (lcsvp.getLine() != null
-                            && lcsvp.getValueByLabel("Quantity") != null) {
-                        Sales tmpSale = new Sales();
-                        Application application = saleService
-                                .findApplication(lcsvp
-                                        .getValueByLabel("Vendor Identifier"));
-                        tmpSale.setPeriod(period);
-                        tmpSale.setZone(zone);
-                        tmpSale.setApplication(application);
-                        tmpSale.setCountryCode(lcsvp
-                                .getValueByLabel("Country Of Sale"));
-                        tmpSale.setIndividualPrice(new BigDecimal(lcsvp
-                                .getValueByLabel("Customer Price")));
-                        tmpSale.setSoldUnits(Integer.parseInt(lcsvp
-                                .getValueByLabel("Quantity")));
-                        saleService.summarizeSale(tmpSale);
-                    }
-                    resp.getOutputStream().print(
-                            item.getName()
-                                    + System.getProperty("line.separator"));
+                    parseFile(item);
                 }
+                resp.getOutputStream().print(processLog());
+                
                 saleService.saveOrUpdate();
 
                 resp.flushBuffer();
@@ -142,5 +94,113 @@ public class FileUploadServlet extends HttpServlet {
                     .write("ERROR : Request contents type is not supported by the servlet.");
             resp.flushBuffer();
         }
+    }
+
+    private String processLog() {
+        processedFiles.removeAll(notProcessedFiles);
+        String processLog="";
+        String ls = System.getProperty("line.separator");
+        processLog += "Files processed :" +ls+ls;
+        for (String file : processedFiles) {
+            processLog += file + ls;            
+        }
+        processLog += ls+"Files not processed :" +ls+ls;
+        for (String file : notProcessedFiles) {
+            processLog += file + ls;            
+        }
+        processLog += ls+"Errors :" +ls+ls;
+        for (String error : errorList) {
+            processLog += error + ls;
+        }
+        return processLog;
+    }
+
+    private void parseFile(FileItem item) throws IOException {
+
+        if (item.isFormField()) {
+            return;
+        }
+        int periodIndex = item.getName().indexOf("_");
+        int zoneIndex = item.getName().indexOf("_", periodIndex + 1);
+        if (periodIndex == -1 || zoneIndex == -1){
+            errorList.add("Unknow file name format for file "+item.getName());
+            notProcessedFiles.add(item.getName());
+            return;
+        }
+        String code = item.getName().substring(zoneIndex + 1, zoneIndex + 3);
+        String fileMonth = item.getName().substring(periodIndex + 1,
+                periodIndex + 3);
+        String fileYear = item.getName().substring(periodIndex + 3,
+                periodIndex + 5);
+        if ((!fileMonth.matches("[0-9]+") || Integer.parseInt(fileMonth) < 1 || Integer.parseInt(fileMonth) > 12)
+                || !fileYear.matches("[0-9]+")){
+            errorList.add("Period can't be parsed in the file name :"+item.getName());
+            notProcessedFiles.add(item.getName());
+            return;
+        }
+        String fileName = item.getName().substring(0,
+                item.getName().indexOf('.'));
+        FiscalPeriod period = new FiscalPeriod();
+        period.setMonth(Integer.parseInt(fileMonth));
+        period.setYear(Integer.parseInt("20" + fileYear));
+        if (!duplicateFileCheck.contains(fileName)) {
+            duplicateFileCheck.add(fileName);
+            Zone zone = saleService.findZone(code);
+            period = saleService.findOrCreatePeriod(period);
+            if (zone == null) {
+                errorList.add("No corresponding Zone found in database for :"
+                        + code + " . File " + item.getName()
+                        + " won't be processed");
+                notProcessedFiles.add(item.getName());
+                return;
+            }
+            InputStream fis;
+            GZIPInputStream gfis;
+            LabeledCSVParser lcsvp;
+            if (item.getContentType().equalsIgnoreCase("application/x-gzip")) {
+                gfis = new GZIPInputStream(item.getInputStream());
+                lcsvp = new LabeledCSVParser(new CSVParser(gfis));
+            } else {
+                fis = item.getInputStream();
+                lcsvp = new LabeledCSVParser(new CSVParser(fis));
+            }
+            fis = item.getInputStream();
+            lcsvp.changeDelimiter('\t');
+            while (lcsvp.getLine() != null
+                    && lcsvp.getValueByLabel("Quantity") != null) {
+                Sales tmpSale = new Sales();
+                String fileApp = lcsvp.getValueByLabel("Vendor Identifier");
+                Application application = saleService.findApplication(fileApp);
+                if (application == null) {
+                    errorList
+                            .add("No corresponding Application found in database for :"
+                                    + fileApp
+                                    + " . File "
+                                    + item.getName()
+                                    + " won't be processed");
+                    notProcessedFiles.add(item.getName());
+                    continue;
+                }
+                System.out.println(" Appl " + application.getId());
+                tmpSale.setPeriod(period);
+                tmpSale.setZone(zone);
+                tmpSale.setApplication(application);
+                tmpSale.setCountryCode(lcsvp.getValueByLabel("Country Of Sale"));
+                tmpSale.setIndividualPrice(new BigDecimal(lcsvp
+                        .getValueByLabel("Customer Price")));
+                tmpSale.setSoldUnits(Integer.parseInt(lcsvp
+                        .getValueByLabel("Quantity")));
+                tmpSale.setTotalPrice(tmpSale.getIndividualPrice().multiply(
+                        new BigDecimal(tmpSale.getSoldUnits())));
+                if (errorList.size() == 0) {
+                    saleService.summarizeSale(tmpSale);
+                }
+            }
+                processedFiles.add(item.getName());
+        } else {
+            errorList.add("There's already a file with name "+fileName+" in this batch");
+            notProcessedFiles.add(item.getName());
+        }
+
     }
 }
