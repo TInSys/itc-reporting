@@ -134,7 +134,7 @@ CREATE TABLE application
 (
   id serial NOT NULL,
   vendor_id character varying(20),
-  name character varying(50),
+  name character varying(100),
   CONSTRAINT application_pkey PRIMARY KEY (id )
 );
 

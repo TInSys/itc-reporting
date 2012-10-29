@@ -20,7 +20,7 @@
          <tr>
          <td><g:Label text="Name "/></td>
          <td><g:TextBox ui:field="applicationNameTextBox"
-            visibleLength="50"  maxLength="50" styleName="{style.marge}"/>
+            visibleLength="100"  maxLength="100" styleName="{style.marge}"/>
          </td></tr>
          <tr>
          <td></td>
