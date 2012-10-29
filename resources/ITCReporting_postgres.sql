@@ -33,9 +33,6 @@ CREATE TABLE fiscal_period
   month smallint,
   year smallint,
   CONSTRAINT fiscal_period_pkey PRIMARY KEY (id )
-)
-WITH (
-  OIDS=FALSE
 );
 ALTER TABLE fiscal_period
   OWNER TO "ITCReporting";
