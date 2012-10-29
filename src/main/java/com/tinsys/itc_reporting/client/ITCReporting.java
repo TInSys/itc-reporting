@@ -43,6 +43,23 @@ public class ITCReporting implements EntryPoint {
    */
   public void onModuleLoad() {
       RootLayoutPanel.get().add(binder.createAndBindUi(this));
+      //TODO load preferences (+add a warning if non prefs defined ?)
+  }
+  
+  @UiHandler("preferencesPushButton")
+  void handleClickPreferencesPushButton(ClickEvent e) {
+      if (mainPanel.getWidget() != null) {
+          WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel
+                  .getWidget();
+          if (!widgetStatus.isEditing()) {
+              mainPanel.remove(mainPanel.getWidget());
+//              mainPanel.add(new ZoneManagement());
+          } else {
+              showSaveAlert();
+          }
+      } else {
+//          mainPanel.add(new ZoneManagement());
+      }
   }
   
   @UiHandler("zoneManagementPushButton")

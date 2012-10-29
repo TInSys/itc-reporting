@@ -179,3 +179,14 @@ CREATE INDEX fki_application_fkey
   USING btree
   (id );
 
+-- Table: preferences
+
+-- DROP TABLE preferences;
+
+CREATE TABLE preferences
+(
+  id serial NOT NULL,
+  reference_currency character varying(3),
+  CONSTRAINT preferences_pkey PRIMARY KEY (id)
+);
+ALTER TABLE preferences OWNER TO "ITCReporting";

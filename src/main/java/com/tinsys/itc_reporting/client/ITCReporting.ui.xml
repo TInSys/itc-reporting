@@ -18,8 +18,10 @@
 							Basic Data
 						</g:header>
 						<g:FlowPanel>
-							<g:PushButton ui:field="zoneManagementPushButton"
-								text="Manage Zones" styleName="{style.stackButton}" />
+						   <g:PushButton ui:field="preferencesPushButton"
+                        text="Preferences" styleName="{style.stackButton}" />
+                     <g:PushButton ui:field="zoneManagementPushButton"
+                        text="Manage Zones" styleName="{style.stackButton}" />
 							<g:PushButton ui:field="taxManagementPushButton"
                         text="Manage Tax Rates" styleName="{style.stackButton}" />
                      <g:PushButton ui:field="FXRateManagementByZonePushButton"
