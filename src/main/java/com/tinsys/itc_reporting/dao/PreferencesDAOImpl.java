@@ -41,6 +41,12 @@ public class PreferencesDAOImpl implements PreferencesDAO {
       Preferences preferences = (Preferences) factory.getCurrentSession()
             .createCriteria(Preferences.class).uniqueResult();
       PreferencesDTO result = new PreferencesDTO();
+      if (preferences == null){
+          result.setReferenceCurrency("");
+          this.createPreference(result);
+          preferences = (Preferences) factory.getCurrentSession()
+                  .createCriteria(Preferences.class).uniqueResult();
+      }
       result.setReferenceCurrency(preferences.getReferenceCurrency());
       return result;
    }

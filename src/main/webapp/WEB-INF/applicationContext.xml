@@ -76,4 +76,7 @@
       <property name="factory" ref="sessionFactory" />
    </bean>
 
+   <bean id="preferencesDAO" class="com.tinsys.itc_reporting.dao.PreferencesDAOImpl">
+      <property name="factory" ref="sessionFactory" />
+   </bean>
 </beans>

@@ -9,6 +9,8 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
@@ -16,18 +18,25 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.tinsys.itc_reporting.client.service.PreferencesService;
+import com.tinsys.itc_reporting.client.service.PreferencesServiceAsync;
 import com.tinsys.itc_reporting.client.widgets.ApplicationManagement;
 import com.tinsys.itc_reporting.client.widgets.FXRateManagementByMonth;
 import com.tinsys.itc_reporting.client.widgets.FXRateManagementByZone;
 import com.tinsys.itc_reporting.client.widgets.FinancialReportFilesImporter;
+import com.tinsys.itc_reporting.client.widgets.PreferencesManagement;
 import com.tinsys.itc_reporting.client.widgets.TaxManagement;
 import com.tinsys.itc_reporting.client.widgets.WidgetSwitchManagement;
 import com.tinsys.itc_reporting.client.widgets.ZoneManagement;
+import com.tinsys.itc_reporting.shared.dto.PreferencesDTO;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class ITCReporting implements EntryPoint {
+
+    private PreferencesDTO preferences;
+    private PreferencesServiceAsync preferencesService = GWT.create(PreferencesService.class);
 
     @UiField
     ScrollPanel mainPanel;
@@ -43,23 +52,39 @@ public class ITCReporting implements EntryPoint {
    */
   public void onModuleLoad() {
       RootLayoutPanel.get().add(binder.createAndBindUi(this));
-      //TODO load preferences (+add a warning if non prefs defined ?)
+      preferences = new PreferencesDTO();
+      preferencesService.findPreference(preferences, new AsyncCallback<PreferencesDTO>() {
+        
+        @Override
+        public void onSuccess(PreferencesDTO result) {
+            preferences = result;
+            
+        }
+        
+        @Override
+        public void onFailure(Throwable caught) {
+            Window.alert("Error fetching preferences :  "
+                    + caught.getMessage());       
+        }
+    });
   }
   
   @UiHandler("preferencesPushButton")
   void handleClickPreferencesPushButton(ClickEvent e) {
+      PreferencesManagement preferencesWidget = new PreferencesManagement(preferences);
       if (mainPanel.getWidget() != null) {
           WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel
                   .getWidget();
           if (!widgetStatus.isEditing()) {
               mainPanel.remove(mainPanel.getWidget());
-//              mainPanel.add(new ZoneManagement());
+              mainPanel.add(preferencesWidget);
           } else {
               showSaveAlert();
           }
       } else {
-//          mainPanel.add(new ZoneManagement());
+          mainPanel.add(preferencesWidget);
       }
+      
   }
   
   @UiHandler("zoneManagementPushButton")

@@ -1,0 +1,31 @@
+<!-- <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent"> -->
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:c="urn:import:com.google.gwt.user.cellview.client">
+	<ui:style src="../mainStyles.css" />	
+	<g:HorizontalPanel width="100%" borderWidth="1">
+		<g:VerticalPanel width="100%" styleName="{style.principal}">
+			<g:HTMLPanel>
+				<table>
+					<tr>
+						<td>
+							<g:Label text="Reference Currency " />
+						</td>
+						<td>
+							<g:TextBox ui:field="referenceCurrencyTextBox"
+								visibleLength="3" maxLength="3" styleName="{style.marge}" />
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td colspan="2">
+							<g:Button ui:field="savePreferences" text="Save Preferences"
+								styleName="{style.marge}" />
+							<g:Button ui:field="cancelUpdatePreferences" text="Cancel unsaved changes"
+								styleName="{style.marge}" visible="false" />
+						</td>
+					</tr>
+				</table>
+			</g:HTMLPanel>
+		</g:VerticalPanel>
+	</g:HorizontalPanel>
+</ui:UiBinder> 
