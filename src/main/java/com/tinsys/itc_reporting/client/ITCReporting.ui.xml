@@ -41,6 +41,15 @@
                         text="Import Financial Files" styleName="{style.stackButton}" />
                    </g:FlowPanel>
 					</g:stack>
+					<g:stack>
+                  <g:header size='3'>
+                     Reports
+                  </g:header>
+                  <g:FlowPanel>
+                  <g:PushButton ui:field="byPeriodReport"
+                        text="By Period Report" styleName="{style.stackButton}" />
+                   </g:FlowPanel>
+               </g:stack>
 				</g:StackLayoutPanel>
 			</g:west>
 			<g:center>

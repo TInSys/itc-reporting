@@ -3,11 +3,19 @@ package com.tinsys.itc_reporting.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import com.tinsys.itc_reporting.model.Application;
+import com.tinsys.itc_reporting.model.FiscalPeriod;
 import com.tinsys.itc_reporting.model.Sales;
+import com.tinsys.itc_reporting.model.Zone;
+import com.tinsys.itc_reporting.shared.dto.ApplicationReportSummary;
+import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
+import com.tinsys.itc_reporting.shared.dto.MonthReportSummary;
 import com.tinsys.itc_reporting.shared.dto.SalesDTO;
 
 @Repository
@@ -52,7 +60,9 @@ public class SalesDAOImpl implements SalesDAO {
                 .add(Restrictions.eq("countryCode", aSale.getCountryCode()))
                 .add(Restrictions.eq("individualPrice",
                         aSale.getIndividualPrice())).uniqueResult();
-        System.out.println("Found sale "+((sales!=null)?sales.getId():sales)+" for "+aSale.getApplication().getId());
+        System.out.println("Found sale "
+                + ((sales != null) ? sales.getId() : sales) + " for "
+                + aSale.getApplication().getId());
         return sales;
     }
 
@@ -73,7 +83,30 @@ public class SalesDAOImpl implements SalesDAO {
         for (Sales sale : summarizedSales) {
             factory.getCurrentSession().merge(sale);
         }
+    }
 
+    @Override
+    public List<Sales> getAllSales(FiscalPeriodDTO aFiscalPeriodDTO) {
+        FiscalPeriod period = (FiscalPeriod) factory.getCurrentSession()
+                .createCriteria(FiscalPeriod.class)
+                .add(Restrictions.eq("month", aFiscalPeriodDTO.getMonth()))
+                .add(Restrictions.eq("year", aFiscalPeriodDTO.getYear()))
+                .uniqueResult();
+        if (period != null) {
+            Criteria criteria = factory.getCurrentSession().createCriteria(
+                    Sales.class);
+            Criteria subCriteriaZone = criteria.createCriteria("zone");
+            subCriteriaZone.addOrder(Order.asc("name"));
+            Criteria subCriteriaApplication = criteria
+                    .createCriteria("application");
+            subCriteriaApplication.addOrder(Order.asc("name"));
+            @SuppressWarnings("unchecked")
+            List<Sales> sales = criteria.add(Restrictions.eq("period", period))
+                    .list();
+            
+            return sales;
+        }
+        return null;
     }
 
 }

@@ -24,6 +24,7 @@ import com.tinsys.itc_reporting.client.widgets.ApplicationManagement;
 import com.tinsys.itc_reporting.client.widgets.FXRateManagementByMonth;
 import com.tinsys.itc_reporting.client.widgets.FXRateManagementByZone;
 import com.tinsys.itc_reporting.client.widgets.FinancialReportFilesImporter;
+import com.tinsys.itc_reporting.client.widgets.MonthlySalesReport;
 import com.tinsys.itc_reporting.client.widgets.PreferencesManagement;
 import com.tinsys.itc_reporting.client.widgets.TaxManagement;
 import com.tinsys.itc_reporting.client.widgets.WidgetSwitchManagement;
@@ -183,6 +184,21 @@ public class ITCReporting implements EntryPoint {
       }
   }
   
+  @UiHandler("byPeriodReport")
+  void handleClickByPeriodReportPushButton(ClickEvent e) {
+      if (mainPanel.getWidget() != null) {
+          WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel
+                  .getWidget();
+          if (!widgetStatus.isEditing()) {
+              mainPanel.remove(mainPanel.getWidget());
+              mainPanel.add(new MonthlySalesReport());
+          } else {
+              showSaveAlert();
+          }
+      } else {
+          mainPanel.add(new MonthlySalesReport());
+      }
+  }
   private void showSaveAlert() {
       final DialogBox simplePopup = new DialogBox(true);
       simplePopup.setWidth("500px");
