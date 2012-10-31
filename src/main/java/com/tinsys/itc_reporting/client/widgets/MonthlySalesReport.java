@@ -12,9 +12,11 @@ import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.cellview.client.AbstractCellTable.Style;
 import com.google.gwt.user.cellview.client.AbstractHeaderOrFooterBuilder;
@@ -28,8 +30,10 @@ import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.tinsys.itc_reporting.client.service.SalesReportService;
@@ -239,6 +243,18 @@ public class MonthlySalesReport extends Composite implements
    public boolean isEditing() {
       return this.editionInProgress;
    }
+   
+   @UiHandler("exportToXLS")
+   void onClickDownloadProjectors(ClickEvent e) {
+      String fileDownloadURL = GWT.getModuleBaseURL() + "download?month="+currentMonth+"&year="+currentYear;
+      Frame fileDownloadFrame = new Frame(fileDownloadURL);
+      fileDownloadFrame.setSize("0px", "0px");
+      fileDownloadFrame.setVisible(false);
+      RootPanel panel = RootPanel.get("__gwt_downloadFrame");
+      while (panel.getWidgetCount() > 0)
+          panel.remove(0);
+      panel.add(fileDownloadFrame);
+  }
 
    private class CustomHeaderBuilder extends
          AbstractHeaderOrFooterBuilder<MonthReportSummary> {
@@ -256,7 +272,8 @@ public class MonthlySalesReport extends Composite implements
          TableRowBuilder tr = startRow();
          tr.startTH().colSpan(1).rowSpan(1);
          tr.endTH();
-         String styleDescription = "text-align:center;background-color:#F8F8F8;";
+                  
+         String styleDescription = "padding: 3px 15px;font-size: 1.1em; text-align:center;color: #4B4A4A;text-shadow: 1px 1px 0 #DDDDFF;background-color:#F8F8F8;";
          TableCellBuilder th = tr.startTH().colSpan(3).attribute("style", styleDescription);
          for (int i = 1; i < headers.size(); i++) {
             th.text(headers.get(i)).endTH(); 

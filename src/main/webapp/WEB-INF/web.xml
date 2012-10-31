@@ -45,4 +45,14 @@
     <url-pattern>/ITCreporting/upload</url-pattern>
   </servlet-mapping>
 
+     <!-- File upload servlet -->
+  <servlet>
+    <servlet-name>downloadServlet</servlet-name>
+    <servlet-class>com.tinsys.itc_reporting.server.utils.FileDownloadServlet</servlet-class>
+  </servlet>   
+    <servlet-mapping>
+    <servlet-name>downloadServlet</servlet-name>
+    <url-pattern>/ITCreporting/download</url-pattern>
+  </servlet-mapping>
+
 </web-app>
