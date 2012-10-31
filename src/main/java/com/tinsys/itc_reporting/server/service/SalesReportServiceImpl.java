@@ -53,10 +53,14 @@ public class SalesReportServiceImpl implements SalesReportService {
         ApplicationReportSummary applicationSumary = null;
         MonthReportSummary monthReportLine = new MonthReportSummary();
         monthReportLine.setApplications(new ArrayList<ApplicationReportSummary>());
-        if (sales != null){
+        if (sales != null && sales.size()>0){
         for (Sales sale : sales) {
             Zone zone = sale.getZone();
             if (zone != currentZone && monthReportList != null) {
+               if (applicationSumary != null){
+                  monthReportLine.getApplications().add(applicationSumary);
+                  applicationSumary = null; 
+               }
                 monthReportList.add(monthReportLine);
                 monthReportLine = new MonthReportSummary();
                 monthReportLine.setApplications(new ArrayList<ApplicationReportSummary>());
@@ -106,9 +110,14 @@ public class SalesReportServiceImpl implements SalesReportService {
             }
             
         }
-        monthReportList.add(monthReportLine);
+        if (applicationSumary !=null && monthReportLine != null){
+           monthReportLine.getApplications().add(applicationSumary);
+        }
+        if (monthReportLine!=null && monthReportList !=null){
+        monthReportList.add(monthReportLine);}
         return monthReportList;
         }
-        return null;
+        monthReportList = new ArrayList<MonthReportSummary>(); 
+        return monthReportList;
     }
 }

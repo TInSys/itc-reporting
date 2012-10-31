@@ -9,13 +9,9 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
-import com.tinsys.itc_reporting.model.Application;
 import com.tinsys.itc_reporting.model.FiscalPeriod;
 import com.tinsys.itc_reporting.model.Sales;
-import com.tinsys.itc_reporting.model.Zone;
-import com.tinsys.itc_reporting.shared.dto.ApplicationReportSummary;
 import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
-import com.tinsys.itc_reporting.shared.dto.MonthReportSummary;
 import com.tinsys.itc_reporting.shared.dto.SalesDTO;
 
 @Repository

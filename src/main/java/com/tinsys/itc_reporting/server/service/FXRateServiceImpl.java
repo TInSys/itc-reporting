@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.tinsys.itc_reporting.client.service.FXRateService;
 import com.tinsys.itc_reporting.dao.FXRateDAO;
 import com.tinsys.itc_reporting.dao.FiscalPeriodDAO;
+import com.tinsys.itc_reporting.model.FiscalPeriod;
+import com.tinsys.itc_reporting.server.utils.DTOUtils;
 import com.tinsys.itc_reporting.shared.dto.FXRateDTO;
 import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
@@ -40,7 +42,10 @@ public class FXRateServiceImpl implements FXRateService {
     @Override
     public FXRateDTO createFXRate(FXRateDTO aFXRate) {
        FiscalPeriodDTO aPeriod;
-       aPeriod = periodDAO.createPeriod(aFXRate.getPeriod());
+       FiscalPeriod period = DTOUtils.periodDTOtoPeriod(aFXRate.getPeriod());
+       aPeriod = DTOUtils.periodToPeriodDTO(periodDAO.findPeriod(period));
+       if (aPeriod == null){
+       aPeriod = periodDAO.createPeriod(aFXRate.getPeriod());}
        aFXRate.getPeriod().setId(aPeriod.getId());
        return fxRateDAO.createFXRate(aFXRate);
     }
@@ -55,13 +60,19 @@ public class FXRateServiceImpl implements FXRateService {
     @Override
     public void deleteFXRate(FXRateDTO aFXRate) {
         fxRateDAO.deleteFXRate(aFXRate);
-        periodDAO.deletePeriod(aFXRate.getPeriod());
-
     }
 
    @Override
    public ArrayList<FXRateDTO> getAllFXRatesForPeriod(FiscalPeriodDTO fiscalPeriodDTO) {
-      return fxRateDAO.getAllFXRatesForPeriod(fiscalPeriodDTO);
+      FiscalPeriodDTO aPeriod;
+      FiscalPeriod period = DTOUtils.periodDTOtoPeriod(fiscalPeriodDTO);
+      period = periodDAO.findPeriod(period);
+      if (period == null){
+         aPeriod = periodDAO.createPeriod(fiscalPeriodDTO);
+      } else {
+         aPeriod = DTOUtils.periodToPeriodDTO(period);
+      }
+      return fxRateDAO.getAllFXRatesForPeriod(aPeriod);
    }
 
 @Override
