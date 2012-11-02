@@ -127,9 +127,26 @@ public class FileDownloadServlet extends HttpServlet {
        dataRow.setHeight((short) (14*20));
        Cell dataCell;
        dataCell = dataRow.createCell(0);
+       dataCell.setCellValue(reportLine.getZoneName());
 
-          dataCell.setCellValue(reportLine.getZoneName());
+       for (int i = 0; i < applications.size(); i++) {
+           
+           for (ApplicationReportSummary applicationReportSummary : reportLine
+                   .getApplications()) {
+               if (applicationReportSummary
+                       .getApplicationName().equals(
+                               applications.get(i))) {
+                   dataCell = dataRow.createCell((i*3)+1);
+                   dataCell.setCellValue(applicationReportSummary.getSalesNumber());
+                   dataCell = dataRow.createCell((i*3)+2);
+                   dataCell.setCellValue(applicationReportSummary.getOriginalCurrencyAmount().doubleValue());
+                   dataCell = dataRow.createCell((i*3)+3);
+                   dataCell.setCellValue(applicationReportSummary.getReferenceCurrencyAmount().doubleValue());
 
+               }
+           }
+           
+    }
        currentIndex +=1;
    }
     
