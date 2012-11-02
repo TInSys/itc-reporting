@@ -78,13 +78,14 @@ public class FileDownloadServlet extends HttpServlet {
        for (ApplicationReportSummary applicationReportSummary : monthReportSummary
              .getApplications()) {
           if (!applications.contains(applicationReportSummary
-                .getApplicationName())) {
+                .getApplicationName())&& !applicationReportSummary
+                .getApplicationName().equals("Total ")) {
              applications.add(applicationReportSummary
                    .getApplicationName());
           }
        }
     }
-    
+    applications.add("Total ");
     
     HSSFWorkbook workbook = new HSSFWorkbook();
     Map<String, CellStyle> styles = createStyles(workbook);
@@ -139,7 +140,8 @@ public class FileDownloadServlet extends HttpServlet {
                    dataCell = dataRow.createCell((i*3)+1);
                    dataCell.setCellValue(applicationReportSummary.getSalesNumber());
                    dataCell = dataRow.createCell((i*3)+2);
-                   dataCell.setCellValue(applicationReportSummary.getOriginalCurrencyAmount().doubleValue());
+                   if (applicationReportSummary.getOriginalCurrencyAmount()!=null){
+                   dataCell.setCellValue(applicationReportSummary.getOriginalCurrencyAmount().doubleValue());};
                    dataCell = dataRow.createCell((i*3)+3);
                    dataCell.setCellValue(applicationReportSummary.getReferenceCurrencyAmount().doubleValue());
 

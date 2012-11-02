@@ -14,7 +14,7 @@ public class ApplicationReportSummary implements Serializable {
     private BigDecimal originalCurrencyAmount;
     private String originalCurrency;
     private BigDecimal referenceCurrencyAmount;
-    private String referenceCurrency;
+    private String referenceCurrency;  
     
     public String getApplicationName() {
         return applicationName;

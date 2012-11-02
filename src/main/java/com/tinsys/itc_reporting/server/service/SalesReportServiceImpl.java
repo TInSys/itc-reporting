@@ -51,6 +51,8 @@ public class SalesReportServiceImpl implements SalesReportService {
         MonthReportSummary monthReportLine = new MonthReportSummary();
         monthReportLine
                 .setApplications(new ArrayList<ApplicationReportSummary>());
+        MonthReportSummary monthReportLineTotal = new MonthReportSummary();
+        monthReportLineTotal.setApplications(new ArrayList<ApplicationReportSummary>());
         if (sales != null && sales.size() > 0) {
             for (Sales sale : sales) {
                 Zone zone = sale.getZone();
@@ -61,6 +63,7 @@ public class SalesReportServiceImpl implements SalesReportService {
                         applicationSumary = null;
                     }
                     monthReportList.add(monthReportLine);
+                    monthReportLineTotal = appsTotal(monthReportLineTotal, monthReportLine);
                     monthReportLine = new MonthReportSummary();
                     monthReportLine
                             .setApplications(new ArrayList<ApplicationReportSummary>());
@@ -128,10 +131,44 @@ public class SalesReportServiceImpl implements SalesReportService {
             }
             if (monthReportLine != null && monthReportList != null) {
                 monthReportList.add(monthReportLine);
+                monthReportLineTotal = appsTotal(monthReportLineTotal, monthReportLine);
             }
+            monthReportLineTotal = appsTotal(monthReportLineTotal, monthReportLineTotal);
+            monthReportList.add(monthReportLineTotal);
             return monthReportList;
         }
         monthReportList = new ArrayList<MonthReportSummary>();
         return monthReportList;
+    }
+
+    private MonthReportSummary appsTotal(
+            MonthReportSummary monthReportLineTotal,
+            MonthReportSummary monthReportLine) {
+        monthReportLineTotal.setZoneName("Total :");
+        ApplicationReportSummary total = new  ApplicationReportSummary();
+        total.setReferenceCurrencyAmount(new BigDecimal(0));
+        for ( ApplicationReportSummary reportSummary: monthReportLine.getApplications()) {
+            total.setApplicationName("Total ");
+            total.setReferenceCurrencyAmount(total.getReferenceCurrencyAmount().add(reportSummary.getReferenceCurrencyAmount()));
+            total.setSalesNumber(total.getSalesNumber()+reportSummary.getSalesNumber());
+            boolean appFound = false;
+            if (monthReportLineTotal != monthReportLine){
+            for (ApplicationReportSummary reportSummaryTotal : monthReportLineTotal.getApplications()){
+                if (reportSummaryTotal.getApplicationName().equals(reportSummary.getApplicationName())){
+                    appFound = true;
+                    reportSummaryTotal.setSalesNumber(reportSummaryTotal.getSalesNumber()+reportSummary.getSalesNumber());
+                    reportSummaryTotal.setReferenceCurrencyAmount(reportSummaryTotal.getReferenceCurrencyAmount().add(reportSummary.getReferenceCurrencyAmount()));
+                }
+            }
+            if (!appFound){
+                ApplicationReportSummary reportSummaryTotal = new ApplicationReportSummary();
+                reportSummaryTotal.setApplicationName(reportSummary.getApplicationName());
+                reportSummaryTotal.setSalesNumber(reportSummary.getSalesNumber());
+                reportSummaryTotal.setReferenceCurrencyAmount(reportSummary.getReferenceCurrencyAmount());
+                monthReportLineTotal.getApplications().add(reportSummaryTotal);
+            }}
+        }
+        monthReportLine.getApplications().add(total);
+        return monthReportLineTotal;
     }
 }

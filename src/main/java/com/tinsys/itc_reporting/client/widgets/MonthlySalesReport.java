@@ -146,12 +146,14 @@ public class MonthlySalesReport extends Composite implements
                 for (ApplicationReportSummary applicationReportSummary : monthReportSummary
                         .getApplications()) {
                     if (!applications.contains(applicationReportSummary
-                            .getApplicationName())) {
+                            .getApplicationName()) && !applicationReportSummary
+                            .getApplicationName().equals("Total ")) {
                         applications.add(applicationReportSummary
                                 .getApplicationName());
                     }
                 }
             }
+            applications.add("Total ");
             headers.clear();
             for (int i = 0; i < (applications.size() + 1); i++) {
                 TextColumn<MonthReportSummary> aColumn;
@@ -195,9 +197,11 @@ public class MonthlySalesReport extends Composite implements
                                 if (applicationReportSummary
                                         .getApplicationName().equals(
                                                 applications.get(index - 1))) {
+                                    if (applicationReportSummary
+                                            .getOriginalCurrencyAmount()!=null){
                                     content = applicationReportSummary
                                             .getOriginalCurrencyAmount()
-                                            .setScale(2).toString();
+                                            .setScale(2).toString();}
                                 }
                             }
                             return content;
