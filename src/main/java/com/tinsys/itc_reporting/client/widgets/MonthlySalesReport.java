@@ -38,12 +38,12 @@ import com.tinsys.itc_reporting.client.service.SalesReportService;
 import com.tinsys.itc_reporting.client.service.SalesReportServiceAsync;
 import com.tinsys.itc_reporting.shared.dto.ApplicationReportSummary;
 import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
-import com.tinsys.itc_reporting.shared.dto.MonthReportSummary;
+import com.tinsys.itc_reporting.shared.dto.ZoneReportSummary;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
 public class MonthlySalesReport extends Composite implements
         WidgetSwitchManagement {
-
+    private final static String ZONE_TOTAL_COLUMN = "Total by Zone";
     private static Binder uiBinder = GWT.create(Binder.class);
     private SalesReportServiceAsync salesReportService = GWT
             .create(SalesReportService.class);
@@ -61,7 +61,7 @@ public class MonthlySalesReport extends Composite implements
     SimplePager pager = new SimplePager(SimplePager.TextLocation.CENTER,
             pagerResources, false, 0, true);
 
-    ListDataProvider<MonthReportSummary> provider = new ListDataProvider<MonthReportSummary>();
+    ListDataProvider<ZoneReportSummary> provider = new ListDataProvider<ZoneReportSummary>();
 
     @UiField
     ListBox monthPeriodListBox = new ListBox();
@@ -70,7 +70,7 @@ public class MonthlySalesReport extends Composite implements
     ListBox yearPeriodListBox = new ListBox();
 
     @UiField
-    CellTable<MonthReportSummary> salesDataGrid = new CellTable<MonthReportSummary>();
+    CellTable<ZoneReportSummary> salesDataGrid = new CellTable<ZoneReportSummary>();
     protected ArrayList<ZoneDTO> zoneList;
 
     @UiTemplate("MonthlySalesReport.ui.xml")
@@ -123,7 +123,7 @@ public class MonthlySalesReport extends Composite implements
             salesDataGrid.removeColumn(i);
         }
         salesReportService.getMonthlyReport(monthPeriodDto,
-                new AsyncCallback<List<MonthReportSummary>>() {
+                new AsyncCallback<List<ZoneReportSummary>>() {
 
                     @Override
                     public void onFailure(Throwable caught) {
@@ -132,104 +132,49 @@ public class MonthlySalesReport extends Composite implements
                     }
 
                     @Override
-                    public void onSuccess(List<MonthReportSummary> result) {
+                    public void onSuccess(List<ZoneReportSummary> result) {
                         showResult(result);
                     }
                 });
     }
 
-    protected void showResult(List<MonthReportSummary> result) {
+    protected void showResult(List<ZoneReportSummary> result) {
         final List<String> applications = new ArrayList<String>();
         if (result.size() > 0) {
             // find all applications that will be displayed
-            for (MonthReportSummary monthReportSummary : result) {
-                for (ApplicationReportSummary applicationReportSummary : monthReportSummary
+            for (ZoneReportSummary zoneReportSummary : result) {
+                for (ApplicationReportSummary applicationReportSummary : zoneReportSummary
                         .getApplications()) {
                     if (!applications.contains(applicationReportSummary
-                            .getApplicationName()) && !applicationReportSummary
-                            .getApplicationName().equals("Total ")) {
+                            .getApplicationName())
+                            && !applicationReportSummary.getApplicationName()
+                                    .equals(ZONE_TOTAL_COLUMN)) {
                         applications.add(applicationReportSummary
                                 .getApplicationName());
                     }
                 }
             }
-            applications.add("Total ");
+            applications.add(ZONE_TOTAL_COLUMN);
             headers.clear();
             for (int i = 0; i < (applications.size() + 1); i++) {
-                TextColumn<MonthReportSummary> aColumn;
+                TextColumn<ZoneReportSummary> aColumn;
                 final int index = i;
                 if (i == 0) {
-                    aColumn = new TextColumn<MonthReportSummary>() {
-                        public String getValue(MonthReportSummary object) {
+                    aColumn = new TextColumn<ZoneReportSummary>() {
+                        public String getValue(ZoneReportSummary object) {
                             return object.getZoneName();
                         }
                     };
                     salesDataGrid.addColumn(aColumn, "Zone ");
                     headers.add("Zone");
-                    salesDataGrid.setColumnWidth(aColumn, 100, Unit.PX);
+                    salesDataGrid.setColumnWidth(aColumn, 200, Unit.PX);
                 } else {
-                    aColumn = new TextColumn<MonthReportSummary>() {
-                        public String getValue(MonthReportSummary object) {
-                            String content = "";
-                            for (ApplicationReportSummary applicationReportSummary : object
-                                    .getApplications()) {
-                                if (applicationReportSummary
-                                        .getApplicationName().equals(
-                                                applications.get(index - 1))) {
-                                    content = String
-                                            .valueOf(applicationReportSummary
-                                                    .getSalesNumber());
-
-                                }
-                            }
-                            return content;
-                        }
-                    };
-                    salesDataGrid.addColumn(aColumn,
-                            applications.get(index - 1));
-                    salesDataGrid.setColumnWidth(aColumn, 150, Unit.PX);
-                    
-                    aColumn = new TextColumn<MonthReportSummary>() {
-                        public String getValue(MonthReportSummary object) {
-                            String content = "";
-                            for (ApplicationReportSummary applicationReportSummary : object
-                                    .getApplications()) {
-                                if (applicationReportSummary
-                                        .getApplicationName().equals(
-                                                applications.get(index - 1))) {
-                                    if (applicationReportSummary
-                                            .getOriginalCurrencyAmount()!=null){
-                                    content = applicationReportSummary
-                                            .getOriginalCurrencyAmount()
-                                            .setScale(2).toString();}
-                                }
-                            }
-                            return content;
-                        }
-                    };
-                    salesDataGrid.addColumn(aColumn,
-                            applications.get(index - 1));
-                    salesDataGrid.setColumnWidth(aColumn, 150, Unit.PX);
-                    
-                    aColumn = new TextColumn<MonthReportSummary>() {
-                        public String getValue(MonthReportSummary object) {
-                            String content = "";
-                            for (ApplicationReportSummary applicationReportSummary : object
-                                    .getApplications()) {
-                                if (applicationReportSummary
-                                        .getApplicationName().equals(
-                                                applications.get(index - 1))) {
-                                    content = applicationReportSummary
-                                            .getReferenceCurrencyAmount()
-                                            .setScale(2).toString();
-                                }
-                            }
-                            return content;
-                        }
-                    };
-                    salesDataGrid.addColumn(aColumn,
-                            applications.get(index - 1));
-                    salesDataGrid.setColumnWidth(aColumn, 150, Unit.PX);
+                    generateColumn("SalesNumber",
+                            applications, index);
+                    generateColumn("OriginalCurrencyAmount",
+                            applications, index);
+                    generateColumn("ReferenceCurrencyAmount",
+                            applications, index);
                 }
             }
             headers.addAll(applications);
@@ -240,8 +185,8 @@ public class MonthlySalesReport extends Composite implements
             salesDataGrid.getHeaderBuilder().buildHeader();
         }
         salesDataGrid.setRowCount(result.size(), true);
-        salesDataGrid.setWidth("1000px");
-        salesDataGrid.setPageSize(15);
+//        salesDataGrid.setWidth("1000px");
+        salesDataGrid.setPageSize(20);
         if (pager.getDisplay() == null) {
             pager.setDisplay(salesDataGrid);
         }
@@ -253,6 +198,41 @@ public class MonthlySalesReport extends Composite implements
         provider.addDataDisplay(salesDataGrid);
         provider.refresh();
         provider.getList().addAll(result);
+    }
+
+    private void generateColumn(final String col,
+            final List<String> applications, final int index) {
+        TextColumn<ZoneReportSummary> aColumn = new TextColumn<ZoneReportSummary>() {
+            public String getValue(ZoneReportSummary object) {
+                String content = "";
+                for (ApplicationReportSummary applicationReportSummary : object
+                        .getApplications()) {
+                    if (applicationReportSummary.getApplicationName().equals(
+                            applications.get(index - 1))) {
+                        if (col.equals("OriginalCurrencyAmount")) {
+                            if (applicationReportSummary
+                                    .getOriginalCurrencyAmount() != null) {
+                                content = applicationReportSummary
+                                        .getOriginalCurrencyAmount()
+                                        .setScale(2).toString();
+                            }
+                        } else if (col.equals("ReferenceCurrencyAmount")) {
+                            content = applicationReportSummary
+                                    .getReferenceCurrencyAmount()
+                                    .setScale(2).toString();
+                        } else if (col.equals("SalesNumber")) {
+                            content = String
+                                    .valueOf(applicationReportSummary
+                                            .getSalesNumber());
+                        }
+                    }
+                }
+                return content;
+            }
+        };
+        salesDataGrid.addColumn(aColumn,
+                applications.get(index - 1));
+        salesDataGrid.setColumnWidth(aColumn, 150, Unit.PX);
     }
 
     @Override
@@ -274,7 +254,7 @@ public class MonthlySalesReport extends Composite implements
     }
 
     private class CustomHeaderBuilder extends
-            AbstractHeaderOrFooterBuilder<MonthReportSummary> {
+            AbstractHeaderOrFooterBuilder<ZoneReportSummary> {
 
         public CustomHeaderBuilder() {
             super(salesDataGrid, false);
@@ -293,8 +273,8 @@ public class MonthlySalesReport extends Composite implements
             for (int i = 1; i < headers.size(); i++) {
                 th.text(headers.get(i)).endTH();
                 styleDescription = styleToggle(styleDescription,
-                        "background-color:#F8F8F8;",
-                        "background-color:#E8E8E8;");
+                        "background-color:#E8E8E8;",
+                        "background-color:#A8A8A8;");
                 th = tr.startTH().colSpan(3)
                         .attribute("style", styleDescription);
             }
@@ -367,7 +347,7 @@ public class MonthlySalesReport extends Composite implements
          *            true if this the last column
          */
         private void buildHeader(TableRowBuilder out, Header<?> header,
-                Column<MonthReportSummary, ?> column, boolean isFirst,
+                Column<ZoneReportSummary, ?> column, boolean isFirst,
                 boolean isLast) {
             // Choose the classes to include with the element.
             Style style = salesDataGrid.getResources().style();

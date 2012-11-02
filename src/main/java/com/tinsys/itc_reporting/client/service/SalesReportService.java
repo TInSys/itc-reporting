@@ -5,10 +5,10 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
-import com.tinsys.itc_reporting.shared.dto.MonthReportSummary;
+import com.tinsys.itc_reporting.shared.dto.ZoneReportSummary;
 
 @RemoteServiceRelativePath("springGwtServices/salesReportService")
 public interface SalesReportService extends RemoteService {
 
-    public List<MonthReportSummary> getMonthlyReport(FiscalPeriodDTO period);
+    public List<ZoneReportSummary> getMonthlyReport(FiscalPeriodDTO period);
 }

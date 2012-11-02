@@ -19,13 +19,14 @@ import com.tinsys.itc_reporting.model.Zone;
 import com.tinsys.itc_reporting.shared.dto.ApplicationReportSummary;
 import com.tinsys.itc_reporting.shared.dto.FXRateDTO;
 import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
-import com.tinsys.itc_reporting.shared.dto.MonthReportSummary;
+import com.tinsys.itc_reporting.shared.dto.ZoneReportSummary;
 import com.tinsys.itc_reporting.shared.dto.PreferencesDTO;
 
 @Service("salesReportService")
 @Transactional
 public class SalesReportServiceImpl implements SalesReportService {
 
+    private final static String ZONE_TOTAL_COLUMN = "Total by Zone"; 
     @Autowired
     @Qualifier("salesDAO")
     private SalesDAO salesDAO;
@@ -39,19 +40,19 @@ public class SalesReportServiceImpl implements SalesReportService {
     private FXRateDAO fxRateDAO;
 
     @Override
-    public List<MonthReportSummary> getMonthlyReport(FiscalPeriodDTO period) {
+    public List<ZoneReportSummary> getMonthlyReport(FiscalPeriodDTO period) {
         PreferencesDTO preferences = preferencesDAO.findPreference(null);
         List<Sales> sales = salesDAO.getAllSales(period);
         ArrayList<FXRateDTO> fxRates = fxRateDAO.getAllFXRatesForPeriod(period);
         BigDecimal changeRate = new BigDecimal(0);
         Zone currentZone = null;
         Application currentApplication = null;
-        List<MonthReportSummary> monthReportList = null;
+        List<ZoneReportSummary> monthReportList = null;
         ApplicationReportSummary applicationSumary = null;
-        MonthReportSummary monthReportLine = new MonthReportSummary();
+        ZoneReportSummary monthReportLine = new ZoneReportSummary();
         monthReportLine
                 .setApplications(new ArrayList<ApplicationReportSummary>());
-        MonthReportSummary monthReportLineTotal = new MonthReportSummary();
+        ZoneReportSummary monthReportLineTotal = new ZoneReportSummary();
         monthReportLineTotal.setApplications(new ArrayList<ApplicationReportSummary>());
         if (sales != null && sales.size() > 0) {
             for (Sales sale : sales) {
@@ -64,7 +65,7 @@ public class SalesReportServiceImpl implements SalesReportService {
                     }
                     monthReportList.add(monthReportLine);
                     monthReportLineTotal = appsTotal(monthReportLineTotal, monthReportLine);
-                    monthReportLine = new MonthReportSummary();
+                    monthReportLine = new ZoneReportSummary();
                     monthReportLine
                             .setApplications(new ArrayList<ApplicationReportSummary>());
                     changeRate = new BigDecimal(0);
@@ -122,7 +123,7 @@ public class SalesReportServiceImpl implements SalesReportService {
                 currentZone = zone;
 
                 if (monthReportList == null) {
-                    monthReportList = new ArrayList<MonthReportSummary>();
+                    monthReportList = new ArrayList<ZoneReportSummary>();
                 }
 
             }
@@ -137,18 +138,18 @@ public class SalesReportServiceImpl implements SalesReportService {
             monthReportList.add(monthReportLineTotal);
             return monthReportList;
         }
-        monthReportList = new ArrayList<MonthReportSummary>();
+        monthReportList = new ArrayList<ZoneReportSummary>();
         return monthReportList;
     }
 
-    private MonthReportSummary appsTotal(
-            MonthReportSummary monthReportLineTotal,
-            MonthReportSummary monthReportLine) {
-        monthReportLineTotal.setZoneName("Total :");
+    private ZoneReportSummary appsTotal(
+            ZoneReportSummary monthReportLineTotal,
+            ZoneReportSummary monthReportLine) {
+        monthReportLineTotal.setZoneName("Total by App :");
         ApplicationReportSummary total = new  ApplicationReportSummary();
         total.setReferenceCurrencyAmount(new BigDecimal(0));
         for ( ApplicationReportSummary reportSummary: monthReportLine.getApplications()) {
-            total.setApplicationName("Total ");
+            total.setApplicationName(ZONE_TOTAL_COLUMN);
             total.setReferenceCurrencyAmount(total.getReferenceCurrencyAmount().add(reportSummary.getReferenceCurrencyAmount()));
             total.setSalesNumber(total.getSalesNumber()+reportSummary.getSalesNumber());
             boolean appFound = false;

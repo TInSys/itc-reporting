@@ -4,11 +4,11 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
-import com.tinsys.itc_reporting.shared.dto.MonthReportSummary;
+import com.tinsys.itc_reporting.shared.dto.ZoneReportSummary;
 
 public interface SalesReportServiceAsync {
 
     void getMonthlyReport(FiscalPeriodDTO period,
-            AsyncCallback<List<MonthReportSummary>> callback);
+            AsyncCallback<List<ZoneReportSummary>> callback);
 
 }

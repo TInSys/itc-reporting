@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 
-public class MonthReportSummary implements Serializable {
+public class ZoneReportSummary implements Serializable {
 
     /**
      * 
