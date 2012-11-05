@@ -161,7 +161,7 @@ public class SalesReportServiceImpl implements SalesReportService {
     private ZoneReportSummary appsTotal(
             ZoneReportSummary monthReportLineTotal,
             ZoneReportSummary monthReportLine) {
-        monthReportLineTotal.setZoneName("Total by App :");
+        monthReportLineTotal.setZoneName("Total by App :");
         ApplicationReportSummary total = new  ApplicationReportSummary();
         total.setReferenceCurrencyAmount(new BigDecimal(0));
         for ( ApplicationReportSummary reportSummary: monthReportLine.getApplications()) {
