@@ -36,5 +36,11 @@ public class FiscalPeriod implements Serializable {
     public void setYear(int year) {
         this.year = year;
     }
+    
+    @Override
+   public String toString() {
+      // TODO Auto-generated method stub
+      return this.month+"/"+this.year;
+   }
 
 }

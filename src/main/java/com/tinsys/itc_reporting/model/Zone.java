@@ -45,5 +45,10 @@ public class Zone implements Serializable {
     public void setCurrencyISO(String currencyISO) {
         this.currencyISO = currencyISO;
     }
+    
+    @Override
+   public String toString() {
+      return this.getCode();
+   }
 
 }

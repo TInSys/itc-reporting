@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import com.tinsys.itc_reporting.shared.dto.PreferencesDTO;
 @Transactional
 public class SalesReportServiceImpl implements SalesReportService {
 
+   private static final Logger logger = Logger.getLogger(SalesReportServiceImpl.class);
     private final static String ZONE_TOTAL_COLUMN = "Total by Zone"; 
     @Autowired
     @Qualifier("salesDAO")
@@ -41,6 +43,7 @@ public class SalesReportServiceImpl implements SalesReportService {
 
     @Override
     public List<ZoneReportSummary> getMonthlyReport(FiscalPeriodDTO period) {
+       logger.debug("Preparing report");
         PreferencesDTO preferences = preferencesDAO.findPreference(null);
         List<Sales> sales = salesDAO.getAllSales(period);
         ArrayList<FXRateDTO> fxRates = fxRateDAO.getAllFXRatesForPeriod(period);
@@ -55,6 +58,7 @@ public class SalesReportServiceImpl implements SalesReportService {
         ZoneReportSummary monthReportLineTotal = new ZoneReportSummary();
         monthReportLineTotal.setApplications(new ArrayList<ApplicationReportSummary>());
         if (sales != null && sales.size() > 0) {
+           logger.debug("Processing  "+sales.size()+" lines");
             for (Sales sale : sales) {
                 Zone zone = sale.getZone();
                 if (zone != currentZone && monthReportList != null) {
@@ -111,10 +115,16 @@ public class SalesReportServiceImpl implements SalesReportService {
                         .getSalesNumber() + sale.getSoldUnits());
                 applicationSumary.setOriginalCurrency(sale.getZone()
                         .getCurrencyISO());
+                if (applicationSumary.getOriginalCurrencyAmount()==null){
+                   applicationSumary.setOriginalCurrencyAmount(new BigDecimal(0));
+                }
                 applicationSumary.setOriginalCurrencyAmount(applicationSumary
                         .getOriginalCurrencyAmount().add(sale.getTotalPrice()));
                 applicationSumary.setReferenceCurrency(preferences
                         .getReferenceCurrency());
+                if (applicationSumary.getReferenceCurrencyAmount()==null){
+                   applicationSumary.setReferenceCurrencyAmount(new BigDecimal(0));
+                }
                 applicationSumary.setReferenceCurrencyAmount(applicationSumary
                         .getReferenceCurrencyAmount().add(
                                 sale.getTotalPrice().multiply(changeRate)));
@@ -137,6 +147,9 @@ public class SalesReportServiceImpl implements SalesReportService {
             monthReportLineTotal = appsTotal(monthReportLineTotal, monthReportLineTotal);
             monthReportList.add(monthReportLineTotal);
             return monthReportList;
+        } else {
+           logger.debug("No sales found for period  "+period.getMonth()+"/"+period.getYear());
+
         }
         monthReportList = new ArrayList<ZoneReportSummary>();
         return monthReportList;

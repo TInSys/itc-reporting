@@ -56,9 +56,6 @@ public class SalesDAOImpl implements SalesDAO {
                 .add(Restrictions.eq("countryCode", aSale.getCountryCode()))
                 .add(Restrictions.eq("individualPrice",
                         aSale.getIndividualPrice())).uniqueResult();
-        System.out.println("Found sale "
-                + ((sales != null) ? sales.getId() : sales) + " for "
-                + aSale.getApplication().getId());
         return sales;
     }
 

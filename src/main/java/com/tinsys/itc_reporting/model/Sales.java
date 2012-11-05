@@ -67,4 +67,9 @@ public class Sales implements Serializable {
         this.application = application;
     }
     
+    @Override
+   public String toString() {
+      // TODO Auto-generated method stub
+      return "Id:"+this.getId()+"  SoldUnits:"+this.getSoldUnits()+" IndividualPrice:"+this.getIndividualPrice()+" TotaPrice:"+this.getTotalPrice()+" Country code:"+this.getCountryCode()+" Period:"+this.getPeriod()+" Zone:"+this.getZone()+" App:"+this.getApplication();
+   }
 }

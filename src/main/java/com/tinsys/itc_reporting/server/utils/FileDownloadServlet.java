@@ -174,8 +174,6 @@ public class FileDownloadServlet extends HttpServlet {
             InputStream is = ctx.getResourceAsStream("/resources/"
                     + req.getParameter("year") + "_"
                     + req.getParameter("month") + ".xls");
-            System.out.println("/resources/" + req.getParameter("year") + "_"
-                    + req.getParameter("month") + ".xls");
             resp.addHeader("Content-Disposition",
                     "attachment; filename=\"" + req.getParameter("year") + "_"
                             + req.getParameter("month") + ".xls" + "\"");
