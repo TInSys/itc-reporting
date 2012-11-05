@@ -13,6 +13,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -38,8 +39,8 @@ import com.tinsys.itc_reporting.client.service.SalesReportService;
 import com.tinsys.itc_reporting.client.service.SalesReportServiceAsync;
 import com.tinsys.itc_reporting.shared.dto.ApplicationReportSummary;
 import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
-import com.tinsys.itc_reporting.shared.dto.ZoneReportSummary;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
+import com.tinsys.itc_reporting.shared.dto.ZoneReportSummary;
 
 public class MonthlySalesReport extends Composite implements
         WidgetSwitchManagement {
@@ -202,6 +203,7 @@ public class MonthlySalesReport extends Composite implements
 
     private void generateColumn(final String col,
             final List<String> applications, final int index) {
+       final NumberFormat myFormatter = NumberFormat.getFormat("####.##");
         TextColumn<ZoneReportSummary> aColumn = new TextColumn<ZoneReportSummary>() {
             public String getValue(ZoneReportSummary object) {
                 String content = "";
@@ -212,14 +214,13 @@ public class MonthlySalesReport extends Composite implements
                         if (col.equals("OriginalCurrencyAmount")) {
                             if (applicationReportSummary
                                     .getOriginalCurrencyAmount() != null) {
-                                content = applicationReportSummary
-                                        .getOriginalCurrencyAmount()
-                                        .setScale(2).toString();
+                                content = myFormatter.format(applicationReportSummary
+                                        .getOriginalCurrencyAmount());
                             }
                         } else if (col.equals("ReferenceCurrencyAmount")) {
-                            content = applicationReportSummary
-                                    .getReferenceCurrencyAmount()
-                                    .setScale(2).toString();
+                            
+                            content = myFormatter.format(applicationReportSummary
+                                    .getReferenceCurrencyAmount());
                         } else if (col.equals("SalesNumber")) {
                             content = String
                                     .valueOf(applicationReportSummary
@@ -241,7 +242,7 @@ public class MonthlySalesReport extends Composite implements
     }
 
     @UiHandler("exportToXLS")
-    void onClickDownloadProjectors(ClickEvent e) {
+    void onClickExportToXLS(ClickEvent e) {
         String fileDownloadURL = GWT.getModuleBaseURL() + "download?month="
                 + currentMonth + "&year=" + currentYear;
         Frame fileDownloadFrame = new Frame(fileDownloadURL);

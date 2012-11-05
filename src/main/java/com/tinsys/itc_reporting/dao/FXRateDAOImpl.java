@@ -180,6 +180,7 @@ public class FXRateDAOImpl implements FXRateDAO {
             FXRateDTO fxRateDTO = new FXRateDTO();
             fxRateDTO.setId(fxRate.getId());
             fxRateDTO.setRate(fxRate.getRate());
+            fxRateDTO.setCurrencyIso(fxRate.getCurrencyIso());
 
             fxRateDTO.setZone(zoneDTO);
             if (monthlyPeriod == null) {
@@ -208,6 +209,7 @@ public class FXRateDAOImpl implements FXRateDAO {
             FXRate fxRate = new FXRate();
             fxRate.setId(fxRateDTO.getId());
             fxRate.setRate(fxRateDTO.getRate());
+            fxRate.setCurrencyIso(fxRateDTO.getCurrencyIso());
             Zone zone = new Zone();
             zone.setId(fxRateDTO.getZone().getId());
             zone.setCode(fxRateDTO.getZone().getCode());

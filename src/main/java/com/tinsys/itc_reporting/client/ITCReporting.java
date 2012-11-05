@@ -122,33 +122,38 @@ public class ITCReporting implements EntryPoint {
 
   @UiHandler("FXRateManagementByZonePushButton")
   void handleClickFXRateManagementByZonePushButton(ClickEvent e) {
+     FXRateManagementByZone fXRateManagementByZone = new FXRateManagementByZone();
+     fXRateManagementByZone.setPrefs(preferences);
       if (mainPanel.getWidget() != null) {
           WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel
                   .getWidget();
           if (!widgetStatus.isEditing()) {
+             
               mainPanel.remove(mainPanel.getWidget());
-              mainPanel.add(new FXRateManagementByZone());
+              mainPanel.add(fXRateManagementByZone);
           } else {
               showSaveAlert();
           }
       } else {
-          mainPanel.add(new FXRateManagementByZone());
+          mainPanel.add(fXRateManagementByZone);
       }
   }
   
   @UiHandler("FXRateManagementByMonthPushButton")
   void handleClickFXRateManagementByMonthPushButton(ClickEvent e) {
+     FXRateManagementByMonth fXRateManagementByMonth = new FXRateManagementByMonth();
+     fXRateManagementByMonth.setPrefs(preferences);
       if (mainPanel.getWidget() != null) {
           WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel
                   .getWidget();
           if (!widgetStatus.isEditing()) {
               mainPanel.remove(mainPanel.getWidget());
-              mainPanel.add(new FXRateManagementByMonth());
+              mainPanel.add(fXRateManagementByMonth);
           } else {
               showSaveAlert();
           }
       } else {
-          mainPanel.add(new FXRateManagementByMonth());
+          mainPanel.add(fXRateManagementByMonth);
       }
   }
   

@@ -44,6 +44,7 @@ import com.tinsys.itc_reporting.client.service.ZoneService;
 import com.tinsys.itc_reporting.client.service.ZoneServiceAsync;
 import com.tinsys.itc_reporting.shared.dto.FXRateDTO;
 import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
+import com.tinsys.itc_reporting.shared.dto.PreferencesDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
 public class FXRateManagementByZone extends Composite implements
@@ -64,7 +65,8 @@ public class FXRateManagementByZone extends Composite implements
    private static int STARTING_YEAR = 2008;
    private int currentYear;
    private ZoneDTO dummyZone;
-
+   private PreferencesDTO prefs;
+   
    SimplePager.Resources pagerResources = GWT
          .create(SimplePager.Resources.class);
 
@@ -141,6 +143,14 @@ public class FXRateManagementByZone extends Composite implements
 
    @UiTemplate("FXRateManagementByZone.ui.xml")
    interface Binder extends UiBinder<Widget, FXRateManagementByZone> {
+   }
+
+   public void setPrefs(PreferencesDTO prefs) {
+      this.prefs = prefs;
+   }
+
+   public PreferencesDTO getPrefs() {
+      return prefs;
    }
 
    public FXRateManagementByZone() {

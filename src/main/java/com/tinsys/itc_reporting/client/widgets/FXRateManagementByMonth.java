@@ -38,6 +38,7 @@ import com.tinsys.itc_reporting.client.service.ZoneService;
 import com.tinsys.itc_reporting.client.service.ZoneServiceAsync;
 import com.tinsys.itc_reporting.shared.dto.FXRateDTO;
 import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
+import com.tinsys.itc_reporting.shared.dto.PreferencesDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
 public class FXRateManagementByMonth extends Composite implements
@@ -48,6 +49,7 @@ public class FXRateManagementByMonth extends Composite implements
     private ZoneServiceAsync zoneService = GWT.create(ZoneService.class);
     private int currentPage = 0;
     private boolean editionInProgress;
+    private PreferencesDTO prefs;
 
     private List<FXRateDTO> fxRateList;
     private static int STARTING_YEAR = 2008;
@@ -71,8 +73,10 @@ public class FXRateManagementByMonth extends Composite implements
                     + fxRateDTO.getZone().getName();
         }
     };
+    CustomTextInputCell fxRateRateCell = new CustomTextInputCell();
+
     final Column<FXRateDTO, String> fxRateRateColumn = new Column<FXRateDTO, String>(
-            new CustomTextInputCell()) {
+          fxRateRateCell) {
 
         @Override
         public String getValue(FXRateDTO fxRateDTO) {
@@ -80,7 +84,16 @@ public class FXRateManagementByMonth extends Composite implements
                     .toString() : "0";
         }
     };
+    CustomTextInputCell fxRateISOCurrencyCell = new CustomTextInputCell();
+    final Column<FXRateDTO, String> fxRateISOCurrencyColumn = new Column<FXRateDTO, String>(
+          fxRateISOCurrencyCell) {
 
+      @Override
+      public String getValue(FXRateDTO fxRateDTO) {
+          return (fxRateDTO.getCurrencyIso() != null) ? fxRateDTO.getCurrencyIso()
+                  .toString() : prefs.getReferenceCurrency();
+      }
+  };
     final Column<FXRateDTO, String> deleteFXRateColumn = new Column<FXRateDTO, String>(
             new ButtonCell()) {
 
@@ -108,8 +121,18 @@ public class FXRateManagementByMonth extends Composite implements
     interface Binder extends UiBinder<Widget, FXRateManagementByMonth> {
     }
 
-    public FXRateManagementByMonth() {
+    public PreferencesDTO getPrefs() {
+      return prefs;
+   }
+
+   public void setPrefs(PreferencesDTO prefs) {
+      this.prefs = prefs;
+   }
+
+   public FXRateManagementByMonth() {
         initWidget(uiBinder.createAndBindUi(this));
+        fxRateISOCurrencyCell.setMaxLength("3");
+        fxRateRateCell.setMaxLength("15");
         for (int i = 1; i <= 12; i++) {
             monthPeriodListBox.addItem(Integer.toString(i));
         }
@@ -158,6 +181,8 @@ public class FXRateManagementByMonth extends Composite implements
         fxRateCellTable.setTableLayoutFixed(true);
         fxRateCellTable.addColumn(fxRateZoneColumn, "Zone ");
         fxRateCellTable.addColumn(fxRateRateColumn, "Rate ");
+        fxRateCellTable.addColumn(fxRateISOCurrencyColumn,"Currency ISO");
+        fxRateCellTable.setColumnWidth(fxRateISOCurrencyColumn, "50px");
         fxRateCellTable.setPageSize(15);
         pager.setDisplay(fxRateCellTable);
         pager.setRangeLimited(true);
@@ -180,6 +205,16 @@ public class FXRateManagementByMonth extends Composite implements
                 }
             }
         });
+        
+        fxRateISOCurrencyColumn.setFieldUpdater(new FieldUpdater<FXRateDTO, String>() {
+
+         @Override
+         public void update(int index, FXRateDTO object, String value) {
+            editionInProgress = true;
+            cancelUpdateFXRate.setVisible(true);
+               object.setCurrencyIso(value);
+         }
+      });
     }
 
     private void getFXRateList() {

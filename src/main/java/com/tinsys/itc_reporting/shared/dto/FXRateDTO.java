@@ -14,7 +14,8 @@ public class FXRateDTO implements Serializable,Comparable<FXRateDTO> {
     private BigDecimal rate;
     private ZoneDTO zone;
     private FiscalPeriodDTO period;
-
+    private String currencyIso;
+    
     public Long getId() {
         return id;
     }
@@ -47,7 +48,15 @@ public class FXRateDTO implements Serializable,Comparable<FXRateDTO> {
         this.period = period;
     }
 
-    @Override
+    public void setCurrencyIso(String currencyIso) {
+      this.currencyIso = currencyIso;
+   }
+
+   public String getCurrencyIso() {
+      return currencyIso;
+   }
+
+   @Override
     public int compareTo(FXRateDTO fxRateDTO) {
         String zoneCode = fxRateDTO.getZone().getCode();
         return this.getZone().getCode().compareTo(zoneCode);

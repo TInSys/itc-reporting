@@ -18,10 +18,12 @@ import com.google.gwt.text.shared.SafeHtmlRenderer;
  */
 public class CustomTextInputCell extends
     AbstractInputCell<String, CustomTextInputCell.ViewData> {
+   
+   private String maxLength;
 
   interface Template extends SafeHtmlTemplates {
-    @Template("<input type=\"text\" value=\"{0}\" ></input>")
-    SafeHtml input(String value);
+    @Template("<input type=\"text\" value=\"{0}\" maxlength=\"{1}\" size=\"{1}\" ></input>")
+    SafeHtml input(String value,String maxLength);
   }
 
   /**
@@ -117,7 +119,15 @@ public class CustomTextInputCell extends
 
   private static Template template;
 
-  /**
+  public void setMaxLength(String maxLength) {
+   this.maxLength = maxLength;
+}
+
+public String getMaxLength() {
+   return maxLength;
+}
+
+/**
    * Constructs a TextInputCell that renders its text without HTML markup.
    */
   public CustomTextInputCell() {
@@ -158,6 +168,9 @@ public class CustomTextInputCell extends
     } else if (BrowserEvents.KEYUP.equals(eventType)) {
       // Record keys as they are typed.
       ViewData vd = getViewData(key);
+      if (vd!=null && value.length()>3){
+         return;
+      }
       if (vd == null) {
         vd = new ViewData(value);
         setViewData(key, vd);
@@ -178,7 +191,7 @@ public class CustomTextInputCell extends
 
     String s = (viewData != null) ? viewData.getCurrentValue() : value;
     if (s != null) {
-           sb.append(template.input(s));
+           sb.append(template.input(s,maxLength));
     } else {
       sb.appendHtmlConstant("<input type=\"text\" ></input>");
     }

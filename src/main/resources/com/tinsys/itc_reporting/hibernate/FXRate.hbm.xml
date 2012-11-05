@@ -10,6 +10,9 @@
    <property name="rate" type="big_decimal">
       <column name = "rate" sql-type="NUMERIC(19,6)"/>
    </property>
+   <property name="currencyIso" type="string">
+      <column name = "currency_iso"/>
+   </property>
    <many-to-one column="zone" name="zone" lazy="false" unique="true"/>
    <many-to-one column="period" name="period" lazy="false" unique="true"/>
 	</class>
