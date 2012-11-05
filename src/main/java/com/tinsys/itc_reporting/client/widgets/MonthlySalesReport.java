@@ -218,7 +218,6 @@ public class MonthlySalesReport extends Composite implements
                                         .getOriginalCurrencyAmount());
                             }
                         } else if (col.equals("ReferenceCurrencyAmount")) {
-                            
                             content = myFormatter.format(applicationReportSummary
                                     .getReferenceCurrencyAmount());
                         } else if (col.equals("SalesNumber")) {

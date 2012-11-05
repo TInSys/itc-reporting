@@ -8,7 +8,7 @@
 				<table>
 					<tr>
 						<td>
-							<g:Label text="Reference Currency " />
+							<g:Label text="Default Reference Currency " />
 						</td>
 						<td>
 							<g:TextBox ui:field="referenceCurrencyTextBox"

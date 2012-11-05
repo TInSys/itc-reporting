@@ -60,6 +60,7 @@ public class FXRateDAOImpl implements FXRateDAO {
             FXRateDTO fxRateDTO = new FXRateDTO();
             fxRateDTO.setId(fxRate.getId());
             fxRateDTO.setRate(fxRate.getRate());
+            fxRateDTO.setCurrencyIso(fxRate.getCurrencyIso());
             fxRateDTO.setZone(zoneDTO);
             FiscalPeriodDTO periodDTO = new FiscalPeriodDTO();
             periodDTO = DTOUtils.periodToPeriodDTO(fxRate.getPeriod());
@@ -90,6 +91,7 @@ public class FXRateDAOImpl implements FXRateDAO {
         FiscalPeriod period = new FiscalPeriod();
         period = DTOUtils.periodDTOtoPeriod(aFXRate.getPeriod());
         fxRate.setPeriod(period);
+        fxRate.setCurrencyIso(aFXRate.getCurrencyIso());
         try {
             factory.getCurrentSession().persist(fxRate);
             Long id = (Long) factory.getCurrentSession().getIdentifier(fxRate);
@@ -114,6 +116,7 @@ public class FXRateDAOImpl implements FXRateDAO {
         fxRate.setZone(zone);
         FiscalPeriod period = DTOUtils.periodDTOtoPeriod(aFXRate.getPeriod());
         fxRate.setPeriod(period);
+        fxRate.setCurrencyIso(aFXRate.getCurrencyIso());
         factory.getCurrentSession().saveOrUpdate(fxRate);
         return aFXRate;
     }
@@ -129,6 +132,7 @@ public class FXRateDAOImpl implements FXRateDAO {
         zone.setName(aFXRate.getZone().getName());
         zone.setCurrencyISO(aFXRate.getZone().getCurrencyISO());
         fxRate.setZone(zone);
+        fxRate.setCurrencyIso(aFXRate.getCurrencyIso());
         fxRate.setPeriod(DTOUtils.periodDTOtoPeriod(aFXRate.getPeriod()));
         factory.getCurrentSession().delete(fxRate);
 

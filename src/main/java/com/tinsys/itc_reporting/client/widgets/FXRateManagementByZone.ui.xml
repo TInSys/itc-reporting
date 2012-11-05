@@ -43,8 +43,17 @@
                   </td>
 
                </tr>
+               <tr>
+                  <td>
+                     <g:Label text="Currency ISO " styleName="{style.marge}"/>
+                  </td>
+                  <td colspan = "3">
+                     <g:TextBox ui:field="currencyISOTextBox" visibleLength="3"
+                        maxLength="3" styleName="{style.marge}" />
+                  </td>
+               </tr>
             </table>
-<table>
+            <table>
                <tr>
                   <td>						                  <g:HorizontalPanel>
 							<g:Button ui:field="saveFXRate" text="Save FXRate"

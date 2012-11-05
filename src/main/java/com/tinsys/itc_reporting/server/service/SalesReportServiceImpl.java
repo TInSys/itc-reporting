@@ -48,6 +48,7 @@ public class SalesReportServiceImpl implements SalesReportService {
         List<Sales> sales = salesDAO.getAllSales(period);
         ArrayList<FXRateDTO> fxRates = fxRateDAO.getAllFXRatesForPeriod(period);
         BigDecimal changeRate = new BigDecimal(0);
+        String currency = new String();
         Zone currentZone = null;
         Application currentApplication = null;
         List<ZoneReportSummary> monthReportList = null;
@@ -73,10 +74,12 @@ public class SalesReportServiceImpl implements SalesReportService {
                     monthReportLine
                             .setApplications(new ArrayList<ApplicationReportSummary>());
                     changeRate = new BigDecimal(0);
+                    currency = new String();
                     for (FXRateDTO fxRate : fxRates) {
                         if (fxRate.getId() != null
                                 && fxRate.getZone().getId() == zone.getId()) {
                             changeRate = fxRate.getRate();
+                            currency = fxRate.getCurrencyIso();
                             break;
                         }
                     }
@@ -87,6 +90,7 @@ public class SalesReportServiceImpl implements SalesReportService {
                             if (fxRate.getId() != null
                                     && fxRate.getZone().getId() == zone.getId()) {
                                 changeRate = fxRate.getRate();
+                                currency = fxRate.getCurrencyIso();
                                 break;
                             }
                         }
@@ -120,8 +124,7 @@ public class SalesReportServiceImpl implements SalesReportService {
                 }
                 applicationSumary.setOriginalCurrencyAmount(applicationSumary
                         .getOriginalCurrencyAmount().add(sale.getTotalPrice()));
-                applicationSumary.setReferenceCurrency(preferences
-                        .getReferenceCurrency());
+                applicationSumary.setReferenceCurrency(currency);
                 if (applicationSumary.getReferenceCurrencyAmount()==null){
                    applicationSumary.setReferenceCurrencyAmount(new BigDecimal(0));
                 }
@@ -164,6 +167,7 @@ public class SalesReportServiceImpl implements SalesReportService {
         for ( ApplicationReportSummary reportSummary: monthReportLine.getApplications()) {
             total.setApplicationName(ZONE_TOTAL_COLUMN);
             total.setReferenceCurrencyAmount(total.getReferenceCurrencyAmount().add(reportSummary.getReferenceCurrencyAmount()));
+            total.setReferenceCurrency(reportSummary.getReferenceCurrency());
             total.setSalesNumber(total.getSalesNumber()+reportSummary.getSalesNumber());
             boolean appFound = false;
             if (monthReportLineTotal != monthReportLine){
