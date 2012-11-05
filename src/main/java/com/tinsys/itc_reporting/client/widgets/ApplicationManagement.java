@@ -1,6 +1,7 @@
 package com.tinsys.itc_reporting.client.widgets;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.cell.client.ClickableTextCell;
 import com.google.gwt.core.client.GWT;
@@ -175,8 +176,10 @@ public class ApplicationManagement extends Composite implements WidgetSwitchMana
                     applicationVendorIDTextBox.setText(oldApplicationVendorIDTextBoxContent);
                     applicationNameTextBox.setText(oldApplicationNameTextBoxContent);
                     if (!reverseSelection) {
-                        showSaveAlert();
-                        reverseSelection = true;
+                       List<String> errors = new ArrayList<String>();
+                       errors.add("Please save or cancel changes before changing selection");
+                       showSaveAlert(errors);
+                       reverseSelection = true;
                     } else {
                         reverseSelection = false;
                     }
@@ -228,7 +231,6 @@ public class ApplicationManagement extends Composite implements WidgetSwitchMana
                                     + caught.getMessage());                            
                         }
                     });
-                    
 
                 } else {
                     selectedApplication.setVendorID(applicationVendorIDTextBox.getText());
@@ -251,6 +253,15 @@ public class ApplicationManagement extends Composite implements WidgetSwitchMana
                         }
                     });
                 }
+            } else {
+               List<String> errors = new ArrayList<String>();
+               if (applicationVendorIDTextBox.getText().length() == 0){
+                  errors.add("Vendor Id should not be empty ");
+               }
+               if (applicationNameTextBox.getText().length() == 0 ){
+                  errors.add("Name should not be empty ");                  
+               }
+               showSaveAlert(errors);
             }
         }
     
@@ -273,7 +284,6 @@ public class ApplicationManagement extends Composite implements WidgetSwitchMana
                 public void onFailure(Throwable caught) {
                     Window.alert("Error deleting application :"
                             + caught.getMessage()); 
-                    
                 }
 
                 @Override
@@ -301,25 +311,25 @@ public class ApplicationManagement extends Composite implements WidgetSwitchMana
         return this.editionInProgress;
     }
     
-    private void showSaveAlert() {
-        final DialogBox simplePopup = new DialogBox(true);
-        simplePopup.setWidth("500px");
-        simplePopup.setText("");
-        VerticalPanel dialogContent = new VerticalPanel();
-        dialogContent
-                .add(new HTML(
-                        "Please save or cancel changes before changing selection"));
-        simplePopup.center();
-        simplePopup.show();
-        simplePopup.setAutoHideEnabled(true);
-        Button closeButton = new Button("Fermer", new ClickHandler() {
-
-            public void onClick(ClickEvent arg0) {
+    private void showSaveAlert(List<String> content) {
+       if (content.size() > 0) {
+          final DialogBox simplePopup = new DialogBox(true);
+          simplePopup.setWidth("500px");
+          simplePopup.setText("Error !");
+          VerticalPanel dialogContent = new VerticalPanel();
+          for (String line : content) {
+             dialogContent.add(new HTML(line));
+          }
+          simplePopup.center();
+          simplePopup.show();
+          simplePopup.setAutoHideEnabled(true);
+          Button closeButton = new Button("Close", new ClickHandler() {
+             public void onClick(ClickEvent arg0) {
                 simplePopup.hide();
-
-            }
-        });
-        dialogContent.add(closeButton);
-        simplePopup.add(dialogContent);
+             }
+          });
+          dialogContent.add(closeButton);
+          simplePopup.add(dialogContent);
+       }
     }
 }

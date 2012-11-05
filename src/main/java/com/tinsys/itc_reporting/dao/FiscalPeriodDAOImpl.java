@@ -42,7 +42,7 @@ public class FiscalPeriodDAOImpl implements FiscalPeriodDAO {
                 FiscalPeriod.class, aPeriod.getId());
         try {
             period.setMonth(aPeriod.getMonth());
-            period.setYear(aPeriod.getMonth());
+            period.setYear(aPeriod.getYear());
             factory.getCurrentSession().saveOrUpdate(period);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -56,7 +56,7 @@ public class FiscalPeriodDAOImpl implements FiscalPeriodDAO {
                 FiscalPeriod.class, aPeriod.getId());
         try {
             period.setMonth(aPeriod.getMonth());
-            period.setYear(aPeriod.getMonth());
+            period.setYear(aPeriod.getYear());
             factory.getCurrentSession().delete(period);
         } catch (Exception e) {
             throw new RuntimeException(e);

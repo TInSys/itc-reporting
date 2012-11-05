@@ -74,9 +74,10 @@ public class FXRateManagementByZone extends Composite implements
 
             @Override
             public String render(ZoneDTO object) {
-               if (object != null){
-               return (object.getCode() + " " + object.getName() + " " + object
-                     .getCurrencyISO());}
+               if (object != null) {
+                  return (object.getCode() + " " + object.getName() + " " + object
+                        .getCurrencyISO());
+               }
                return null;
             }
 
@@ -99,7 +100,12 @@ public class FXRateManagementByZone extends Composite implements
 
       @Override
       public String getValue(FXRateDTO fxRateDTO) {
-         return fxRateDTO.getRate().toString();
+         if (fxRateDTO.getRate() != null) {
+            return fxRateDTO.getRate().toString();
+         } else {
+            fxRateDTO.setRate(new BigDecimal(0));
+            return fxRateDTO.getRate().toString();
+         }
       }
    };
    final Column<FXRateDTO, String> fxRatePeriodColumn = new Column<FXRateDTO, String>(
@@ -167,8 +173,8 @@ public class FXRateManagementByZone extends Composite implements
       }
       Date today = new Date();
       currentYear = new Integer(DateTimeFormat.getFormat("yyyy").format(today));
-      
-      yearPeriod.setSelectedIndex(currentYear-STARTING_YEAR);
+
+      yearPeriod.setSelectedIndex(currentYear - STARTING_YEAR);
       selectionModel = new SingleSelectionModel<FXRateDTO>();
       fxRateCellTable.setTableLayoutFixed(true);
       fxRateCellTable.addColumn(fxRateRateColumn, "Rate ");
@@ -194,7 +200,6 @@ public class FXRateManagementByZone extends Composite implements
             oldFXRateRateTextBoxContent = fxRateRateTextBox.getText();
          }
       });
-
 
       zoneListBox.addValueChangeHandler(new ValueChangeHandler<ZoneDTO>() {
          @Override
@@ -261,9 +266,9 @@ public class FXRateManagementByZone extends Composite implements
                   fxRateRateTextBox.setText(selectedFXRate.getRate()
                         .toPlainString());
                   monthPeriod.setItemSelected(selectedFXRate.getPeriod()
-                        .getMonth(), true);
+                        .getMonth()-1, true);
                   yearPeriod.setItemSelected(selectedFXRate.getPeriod()
-                        .getYear()-STARTING_YEAR, true);
+                        .getYear() - STARTING_YEAR, true);
                   cancelUpdateFXRate.setVisible(true);
                   deleteFXRate.setVisible(true);
                   saveFXRate.setText("Update");
@@ -276,6 +281,7 @@ public class FXRateManagementByZone extends Composite implements
 
    @UiHandler("saveFXRate")
    void handleClickSave(ClickEvent e) {
+
       if (fxRateIsValid()) {
          if (selectedFXRate == null) {
             selectedFXRate = new FXRateDTO();
@@ -283,17 +289,20 @@ public class FXRateManagementByZone extends Composite implements
 
             selectedFXRate.setRate(new BigDecimal(fxRateRateTextBox.getText()));
             FiscalPeriodDTO monthPeriodDTO = new FiscalPeriodDTO();
-            monthPeriodDTO.setMonth(monthPeriod.getSelectedIndex()+1);
-            monthPeriodDTO.setYear(yearPeriod.getSelectedIndex() + STARTING_YEAR);
+            monthPeriodDTO.setMonth(monthPeriod.getSelectedIndex() + 1);
+            monthPeriodDTO.setYear(yearPeriod.getSelectedIndex()
+                  + STARTING_YEAR);
             selectedFXRate.setPeriod(monthPeriodDTO);
             createFXRate();
          } else {
             selectedFXRate.setRate(new BigDecimal(fxRateRateTextBox.getText()));
             FiscalPeriodDTO monthPeriodDTO = new FiscalPeriodDTO();
-            
+
             monthPeriodDTO.setId(selectedFXRate.getPeriod().getId());
-            monthPeriodDTO.setMonth(monthPeriod.getSelectedIndex()+1);
-            monthPeriodDTO.setYear(yearPeriod.getSelectedIndex() + STARTING_YEAR);
+            monthPeriodDTO.setMonth(monthPeriod.getSelectedIndex() + 1);
+
+            monthPeriodDTO.setYear(yearPeriod.getSelectedIndex()
+                  + STARTING_YEAR);
             selectedFXRate.setPeriod(monthPeriodDTO);
             currentPage = pager.getPage();
             fxRateService.updateFXRate(selectedFXRate,
@@ -311,8 +320,8 @@ public class FXRateManagementByZone extends Composite implements
                         fxRateRateTextBox.setText("");
                         monthPeriod.setItemSelected(
                               monthPeriod.getSelectedIndex(), false);
-                        yearPeriod.setItemSelected(
-                              currentYear-STARTING_YEAR, true);
+                        yearPeriod.setItemSelected(currentYear - STARTING_YEAR,
+                              true);
                         resetUpdateStatus();
                      }
                   });
@@ -331,8 +340,7 @@ public class FXRateManagementByZone extends Composite implements
                   fxRateRateTextBox.setText("");
                   monthPeriod.setItemSelected(monthPeriod.getSelectedIndex(),
                         false);
-                  yearPeriod.setItemSelected(currentYear-STARTING_YEAR,
-                        true);
+                  yearPeriod.setItemSelected(currentYear - STARTING_YEAR, true);
                   resetUpdateStatus();
 
                }
@@ -347,16 +355,16 @@ public class FXRateManagementByZone extends Composite implements
 
    private boolean fxRateIsValid() {
       List<String> errors = new ArrayList<String>();
-      if (currentZone.getId()  == -1) {
+      if (currentZone.getId() == -1) {
          errors.add("Please select a Zone ");
       }
       if (fxRateRateTextBox.getText().length() == 0
             || !fxRateRateTextBox.getText().matches("\\-?[0-9]*\\.?[0-9]*")) {
          errors.add("Rate should not be empty and be numeric");
       }
-
-      for (FXRateDTO fxRateDTO : fxRateList) {
-         if (fxRateDTO != selectedFXRate) {
+      if (fxRateList != null) {
+         for (FXRateDTO fxRateDTO : fxRateList) {
+            if (fxRateDTO != selectedFXRate) {
                if (fxRateDTO.getPeriod().getMonth() == Integer
                      .parseInt(monthPeriod.getValue(monthPeriod
                            .getSelectedIndex()))
@@ -365,6 +373,7 @@ public class FXRateManagementByZone extends Composite implements
                                  .getSelectedIndex()))) {
                   errors.add("Duplicate of fxRate rates is not allowed");
                }
+            }
          }
       }
       showAlert(errors);
@@ -407,7 +416,7 @@ public class FXRateManagementByZone extends Composite implements
       fxRateRateTextBox.setValue("");
       zoneListBox.setValue(dummyZone);
       monthPeriod.setItemSelected(monthPeriod.getSelectedIndex(), false);
-      yearPeriod.setItemSelected(currentYear-STARTING_YEAR, true);
+      yearPeriod.setItemSelected(currentYear - STARTING_YEAR, true);
       fxRateCellTable.getSelectionModel().setSelected(null, true);
       selectedFXRate = null;
       saveFXRate.setText("Save FXRate");
