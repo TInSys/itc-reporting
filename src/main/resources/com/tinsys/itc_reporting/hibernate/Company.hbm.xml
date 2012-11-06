@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+                                   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.tinsys.itc_reporting.model.Company" table="company">
+		<id name="id" type="long">
+			<column name="id" />
+			<generator class="identity" />
+		</id>
+		<property generated="never" lazy="false" name="name" type="string">
+			<column name="name" not-null="true" />
+		</property>
+		<property generated="never" lazy="false" name="currencyISO"
+			type="string">
+			<column name="currency_iso" not-null="true" />
+		</property>
+	</class>
+</hibernate-mapping>

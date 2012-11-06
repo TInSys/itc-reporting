@@ -30,6 +30,7 @@ http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
             <value>com/tinsys/itc_reporting/hibernate/Application.hbm.xml</value>            
             <value>com/tinsys/itc_reporting/hibernate/Sales.hbm.xml</value>          
             <value>com/tinsys/itc_reporting/hibernate/Preferences.hbm.xml</value>          
+            <value>com/tinsys/itc_reporting/hibernate/Company.hbm.xml</value>          
 			</list>
 		</property>
 

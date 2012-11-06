@@ -30,6 +30,8 @@
                         text="Manage FX Rates by Month" styleName="{style.stackButton}" />
                      <g:PushButton ui:field="ApplicationManagementPushButton"
                         text="Manage Applications" styleName="{style.stackButton}" />
+                     <g:PushButton ui:field="CompanyManagementPushButton"
+                        text="Manage Companies" styleName="{style.stackButton}" />
 						</g:FlowPanel>
 					</g:stack>
 					<g:stack>

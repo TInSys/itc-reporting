@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.tinsys.itc_reporting.client.service.PreferencesService;
 import com.tinsys.itc_reporting.client.service.PreferencesServiceAsync;
 import com.tinsys.itc_reporting.client.widgets.ApplicationManagement;
+import com.tinsys.itc_reporting.client.widgets.CompanyManagement;
 import com.tinsys.itc_reporting.client.widgets.FXRateManagementByMonth;
 import com.tinsys.itc_reporting.client.widgets.FXRateManagementByZone;
 import com.tinsys.itc_reporting.client.widgets.FinancialReportFilesImporter;
@@ -170,6 +171,23 @@ public class ITCReporting implements EntryPoint {
           }
       } else {
           mainPanel.add(new ApplicationManagement());
+      }
+  }
+  
+  
+  @UiHandler("CompanyManagementPushButton")
+  void handleClickCompanyManagementPushButton(ClickEvent e) {
+      if (mainPanel.getWidget() != null) {
+          WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel
+                  .getWidget();
+          if (!widgetStatus.isEditing()) {
+              mainPanel.remove(mainPanel.getWidget());
+              mainPanel.add(new CompanyManagement());
+          } else {
+              showSaveAlert();
+          }
+      } else {
+          mainPanel.add(new CompanyManagement());
       }
   }
   
