@@ -18,8 +18,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -109,7 +113,11 @@ public class FileDownloadServlet extends HttpServlet {
                 CellRangeAddress region = new CellRangeAddress(0, 0,
                         (j * 5) + 1, (j * 5) + 5);
                 sheet.addMergedRegion(region);
-                firstHeaderCell.setCellStyle(styles.get("appFirstHeader"));
+                if ((j % 2)==0){
+                    firstHeaderCell.setCellStyle(styles.get("appFirstHeader1"));
+                } else {
+                    firstHeaderCell.setCellStyle(styles.get("appFirstHeader2"));                    
+                }
                 sheet.setColumnWidth(0, 30 * 256);
             }
 
@@ -135,6 +143,10 @@ public class FileDownloadServlet extends HttpServlet {
                 sheet.setColumnWidth(0, 30 * 256);
             }
             int currentIndex = 0;
+            HSSFCellStyle cs = workbook.createCellStyle();
+            HSSFDataFormat df = workbook.
+                    createDataFormat();
+                      cs.setDataFormat(df.getFormat("#####.##"));
             for (ZoneReportSummary reportLine : report) {
                 Row dataRow = sheet.createRow(2 + currentIndex);
                 dataRow.setHeight((short) (14 * 20));
@@ -154,12 +166,14 @@ public class FileDownloadServlet extends HttpServlet {
                             dataCell = dataRow.createCell((i * 5) + 2);
                             if (applicationReportSummary
                                     .getOriginalCurrencyAmount() != null) {
+                                dataCell.setCellStyle(cs);
                                 dataCell.setCellValue(applicationReportSummary
                                         .getOriginalCurrencyAmount()
                                         .doubleValue());
                             }
                             ;
                             dataCell = dataRow.createCell((i * 5) + 3);
+                            dataCell.setCellStyle(cs);
                             dataCell.setCellValue(applicationReportSummary
                                     .getReferenceCurrencyAmount().doubleValue());
                             
@@ -167,12 +181,14 @@ public class FileDownloadServlet extends HttpServlet {
                             dataCell = dataRow.createCell((i * 5) + 4);
                             if (applicationReportSummary
                                     .getOriginalCurrencyProceeds() != null) {
+                                dataCell.setCellStyle(cs);
                                 dataCell.setCellValue(applicationReportSummary
                                         .getOriginalCurrencyProceeds()
                                         .doubleValue());
                             }
                             ;
                             dataCell = dataRow.createCell((i * 5) + 5);
+                            dataCell.setCellStyle(cs);
                             dataCell.setCellValue(applicationReportSummary
                                     .getReferenceCurrencyProceeds().doubleValue());
                         }
@@ -222,17 +238,25 @@ public class FileDownloadServlet extends HttpServlet {
     /**
      * Create a library of cell styles
      */
-    private static Map<String, CellStyle> createStyles(Workbook wb) {
+    private static Map<String, CellStyle> createStyles(HSSFWorkbook wb) {
         Map<String, CellStyle> styles = new HashMap<String, CellStyle>();
         CellStyle style;
-        Font firstHeaderFont = wb.createFont();
+        HSSFFont firstHeaderFont = wb.createFont();
         firstHeaderFont.setFontHeightInPoints((short) 12);
         style = wb.createCellStyle();
         style.setAlignment(CellStyle.ALIGN_CENTER);
         style.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
         style.setFont(firstHeaderFont);
-        styles.put("appFirstHeader", style);
-
+        styles.put("appFirstHeader1", style);
+        
+        style = wb.createCellStyle();
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+        style.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+        style.setFont(firstHeaderFont);
+        style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        styles.put("appFirstHeader2", style);
+        
         Font secondHeaderFont = wb.createFont();
         secondHeaderFont.setFontHeightInPoints((short) 10);
         style = wb.createCellStyle();
@@ -241,17 +265,6 @@ public class FileDownloadServlet extends HttpServlet {
         style.setFont(secondHeaderFont);
         styles.put("secondHeader", style);
 
-        Font monthFont = wb.createFont();
-        monthFont.setFontHeightInPoints((short) 11);
-        monthFont.setColor(IndexedColors.WHITE.getIndex());
-        style = wb.createCellStyle();
-        style.setAlignment(CellStyle.ALIGN_CENTER);
-        style.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
-        style.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
-        style.setFont(monthFont);
-        style.setWrapText(true);
-        styles.put("header", style);
 
         return styles;
     }

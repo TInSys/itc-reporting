@@ -175,13 +175,25 @@ public class SalesReportServiceImpl implements SalesReportService {
         ApplicationReportSummary total = new  ApplicationReportSummary();
         total.setReferenceCurrencyAmount(new BigDecimal(0));
         total.setReferenceCurrencyProceeds(new BigDecimal(0));
+        total.setOriginalCurrencyAmount(new BigDecimal(0));
+        total.setOriginalCurrencyProceeds(new BigDecimal(0));
         for ( ApplicationReportSummary reportSummary: monthReportLine.getApplications()) {
             total.setApplicationName(ZONE_TOTAL_COLUMN);
+            if (reportSummary.getOriginalCurrencyAmount()!=null){
+            total.setOriginalCurrencyAmount(total.getOriginalCurrencyAmount().add(reportSummary.getOriginalCurrencyAmount()));
+            }
+            if (reportSummary.getOriginalCurrencyProceeds()!=null){
+            total.setOriginalCurrencyProceeds(total.getOriginalCurrencyProceeds().add(reportSummary.getOriginalCurrencyProceeds()));
+            }
             total.setReferenceCurrencyAmount(total.getReferenceCurrencyAmount().add(reportSummary.getReferenceCurrencyAmount()));
             total.setReferenceCurrencyProceeds(total.getReferenceCurrencyProceeds().add(reportSummary.getReferenceCurrencyProceeds()));
             total.setReferenceCurrency(reportSummary.getReferenceCurrency());
             total.setSalesNumber(total.getSalesNumber()+reportSummary.getSalesNumber());
             boolean appFound = false;
+            if (monthReportLineTotal == monthReportLine){
+                total.setOriginalCurrencyAmount(null);
+                total.setOriginalCurrencyProceeds(null); 
+            }
             if (monthReportLineTotal != monthReportLine){
             for (ApplicationReportSummary reportSummaryTotal : monthReportLineTotal.getApplications()){
                 if (reportSummaryTotal.getApplicationName().equals(reportSummary.getApplicationName())){
