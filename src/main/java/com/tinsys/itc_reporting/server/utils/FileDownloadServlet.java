@@ -104,10 +104,10 @@ public class FileDownloadServlet extends HttpServlet {
             firstHeaderRow.setHeight((short) (16 * 20));
             Cell firstHeaderCell;
             for (int j = 0; j < applications.size(); j++) {
-                firstHeaderCell = firstHeaderRow.createCell((j * 3) + 1);
+                firstHeaderCell = firstHeaderRow.createCell((j * 5) + 1);
                 firstHeaderCell.setCellValue(applications.get(j));
                 CellRangeAddress region = new CellRangeAddress(0, 0,
-                        (j * 3) + 1, (j * 3) + 3);
+                        (j * 5) + 1, (j * 5) + 5);
                 sheet.addMergedRegion(region);
                 firstHeaderCell.setCellStyle(styles.get("appFirstHeader"));
                 sheet.setColumnWidth(0, 30 * 256);
@@ -117,14 +117,20 @@ public class FileDownloadServlet extends HttpServlet {
             secondHeaderRow.setHeight((short) (14 * 20));
             Cell secondHeaderCell;
             for (int j = 0; j < applications.size(); j++) {
-                secondHeaderCell = secondHeaderRow.createCell((j * 3) + 1);
+                secondHeaderCell = secondHeaderRow.createCell((j * 5) + 1);
                 secondHeaderCell.setCellValue("Sales #");
                 secondHeaderCell.setCellStyle(styles.get("secondHeader"));
-                secondHeaderCell = secondHeaderRow.createCell((j * 3) + 2);
+                secondHeaderCell = secondHeaderRow.createCell((j * 5) + 2);
                 secondHeaderCell.setCellValue("Total orig. currency");
                 secondHeaderCell.setCellStyle(styles.get("secondHeader"));
-                secondHeaderCell = secondHeaderRow.createCell((j * 3) + 3);
+                secondHeaderCell = secondHeaderRow.createCell((j * 5) + 3);
                 secondHeaderCell.setCellValue("Total ref. currency");
+                secondHeaderCell.setCellStyle(styles.get("secondHeader"));
+                secondHeaderCell = secondHeaderRow.createCell((j * 5) + 4);
+                secondHeaderCell.setCellValue("Proceeds orig. currency");
+                secondHeaderCell.setCellStyle(styles.get("secondHeader"));
+                secondHeaderCell = secondHeaderRow.createCell((j * 5) + 5);
+                secondHeaderCell.setCellValue("Proceeds ref. currency");
                 secondHeaderCell.setCellStyle(styles.get("secondHeader"));
                 sheet.setColumnWidth(0, 30 * 256);
             }
@@ -142,10 +148,10 @@ public class FileDownloadServlet extends HttpServlet {
                             .getApplications()) {
                         if (applicationReportSummary.getApplicationName()
                                 .equals(applications.get(i))) {
-                            dataCell = dataRow.createCell((i * 3) + 1);
+                            dataCell = dataRow.createCell((i * 5) + 1);
                             dataCell.setCellValue(applicationReportSummary
                                     .getSalesNumber());
-                            dataCell = dataRow.createCell((i * 3) + 2);
+                            dataCell = dataRow.createCell((i * 5) + 2);
                             if (applicationReportSummary
                                     .getOriginalCurrencyAmount() != null) {
                                 dataCell.setCellValue(applicationReportSummary
@@ -153,17 +159,29 @@ public class FileDownloadServlet extends HttpServlet {
                                         .doubleValue());
                             }
                             ;
-                            dataCell = dataRow.createCell((i * 3) + 3);
+                            dataCell = dataRow.createCell((i * 5) + 3);
                             dataCell.setCellValue(applicationReportSummary
                                     .getReferenceCurrencyAmount().doubleValue());
-
+                            
+                            
+                            dataCell = dataRow.createCell((i * 5) + 4);
+                            if (applicationReportSummary
+                                    .getOriginalCurrencyProceeds() != null) {
+                                dataCell.setCellValue(applicationReportSummary
+                                        .getOriginalCurrencyProceeds()
+                                        .doubleValue());
+                            }
+                            ;
+                            dataCell = dataRow.createCell((i * 5) + 5);
+                            dataCell.setCellValue(applicationReportSummary
+                                    .getReferenceCurrencyProceeds().doubleValue());
                         }
                     }
 
                 }
                 currentIndex += 1;
             }
-            for (int i = 0; i < ((applications.size() * 3) + 1); i++) {
+            for (int i = 0; i < ((applications.size() * 5) + 1); i++) {
                 sheet.autoSizeColumn(i);
             }
             workbook.write(outPutToFile);

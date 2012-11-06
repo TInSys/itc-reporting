@@ -43,331 +43,394 @@ import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneReportSummary;
 
 public class MonthlySalesReport extends Composite implements
-      WidgetSwitchManagement {
-   private final static String ZONE_TOTAL_COLUMN = "Total by Zone";
-   private static Binder uiBinder = GWT.create(Binder.class);
-   private SalesReportServiceAsync salesReportService = GWT
-         .create(SalesReportService.class);
-   private boolean editionInProgress;
+        WidgetSwitchManagement {
+    private final static String ZONE_TOTAL_COLUMN = "Total by Zone";
+    private final static String PROCEEDS_REPORT = "Proceeds";
+    private final static String SALES_REPORT = "Sales";
+    private String currentReport;
 
-   private static int STARTING_YEAR = 2008;
-   private int currentYear;
-   private int currentMonth;
-   private List<String> headers = new ArrayList<String>();
+    private static Binder uiBinder = GWT.create(Binder.class);
+    private SalesReportServiceAsync salesReportService = GWT
+            .create(SalesReportService.class);
+    private boolean editionInProgress;
 
-   SimplePager.Resources pagerResources = GWT
-         .create(SimplePager.Resources.class);
+    private static int STARTING_YEAR = 2008;
+    private int currentYear;
+    private int currentMonth;
+    private List<String> headers = new ArrayList<String>();
 
-   @UiField
-   SimplePager pager = new SimplePager(SimplePager.TextLocation.CENTER,
-         pagerResources, false, 0, true);
+    SimplePager.Resources pagerResources = GWT
+            .create(SimplePager.Resources.class);
 
-   ListDataProvider<ZoneReportSummary> provider = new ListDataProvider<ZoneReportSummary>();
+    @UiField
+    SimplePager pager = new SimplePager(SimplePager.TextLocation.CENTER,
+            pagerResources, false, 0, true);
 
-   @UiField
-   ListBox monthPeriodListBox = new ListBox();
+    ListDataProvider<ZoneReportSummary> provider = new ListDataProvider<ZoneReportSummary>();
 
-   @UiField
-   ListBox yearPeriodListBox = new ListBox();
+    @UiField
+    ListBox reportTypeListBox = new ListBox();
 
-   @UiField
-   CellTable<ZoneReportSummary> salesDataGrid = new CellTable<ZoneReportSummary>();
-   protected ArrayList<ZoneDTO> zoneList;
+    @UiField
+    ListBox monthPeriodListBox = new ListBox();
 
-   @UiTemplate("MonthlySalesReport.ui.xml")
-   interface Binder extends UiBinder<Widget, MonthlySalesReport> {
-   }
+    @UiField
+    ListBox yearPeriodListBox = new ListBox();
 
-   public MonthlySalesReport() {
-      initWidget(uiBinder.createAndBindUi(this));
-      for (int i = 1; i <= 12; i++) {
-         monthPeriodListBox.addItem(Integer.toString(i));
-      }
-      for (int i = STARTING_YEAR; i <= 2040; i++) {
-         yearPeriodListBox.addItem(Integer.toString(i));
-      }
-      salesDataGrid
-            .setEmptyTableWidget(new HTML("There is no data to display"));
-      Date today = new Date();
-      currentYear = new Integer(DateTimeFormat.getFormat("yyyy").format(today));
-      currentMonth = new Integer(DateTimeFormat.getFormat("MM").format(today));
-      yearPeriodListBox.setSelectedIndex(currentYear - STARTING_YEAR);
-      monthPeriodListBox.setSelectedIndex(currentMonth - 1);
-      monthPeriodListBox.addChangeHandler(new ChangeHandler() {
+    @UiField
+    CellTable<ZoneReportSummary> salesDataGrid = new CellTable<ZoneReportSummary>();
+    protected ArrayList<ZoneDTO> zoneList;
 
-         @Override
-         public void onChange(ChangeEvent event) {
-            currentMonth = monthPeriodListBox.getSelectedIndex() + 1;
-            headers.clear();
-            getReport();
-         }
-      });
+    @UiTemplate("MonthlySalesReport.ui.xml")
+    interface Binder extends UiBinder<Widget, MonthlySalesReport> {
+    }
 
-      yearPeriodListBox.addChangeHandler(new ChangeHandler() {
+    public MonthlySalesReport() {
+        initWidget(uiBinder.createAndBindUi(this));
+        reportTypeListBox.addItem(SALES_REPORT);
+        reportTypeListBox.addItem(PROCEEDS_REPORT);
+        reportTypeListBox.setSelectedIndex(0);
+        currentReport = reportTypeListBox.getItemText(0);
+        reportTypeListBox.addChangeHandler(new ChangeHandler() {
 
-         @Override
-         public void onChange(ChangeEvent event) {
-            currentYear = yearPeriodListBox.getSelectedIndex() + STARTING_YEAR;
-            headers.clear();
-            getReport();
-         }
-      });
-      getReport();
-   }
-
-   private void getReport() {
-      FiscalPeriodDTO monthPeriodDto = new FiscalPeriodDTO();
-      monthPeriodDto.setId(null);
-      monthPeriodDto.setMonth(currentMonth);
-      monthPeriodDto.setYear(currentYear);
-      int colCount = salesDataGrid.getColumnCount();
-      for (int i = colCount - 1; i >= 0; i--) {
-         salesDataGrid.removeColumn(i);
-      }
-      salesReportService.getMonthlyReport(monthPeriodDto,
-            new AsyncCallback<List<ZoneReportSummary>>() {
-
-               @Override
-               public void onFailure(Throwable caught) {
-                  Window.alert("Error fetching monthly FX rates list :  "
-                        + caught.getMessage());
-               }
-
-               @Override
-               public void onSuccess(List<ZoneReportSummary> result) {
-                  showResult(result);
-               }
-            });
-   }
-
-   protected void showResult(List<ZoneReportSummary> result) {
-      final List<String> applications = new ArrayList<String>();
-      if (result.size() > 0) {
-         // find all applications that will be displayed
-         for (ZoneReportSummary zoneReportSummary : result) {
-            for (ApplicationReportSummary applicationReportSummary : zoneReportSummary
-                  .getApplications()) {
-               if (!applications.contains(applicationReportSummary
-                     .getApplicationName())
-                     && !applicationReportSummary.getApplicationName().equals(
-                           ZONE_TOTAL_COLUMN)) {
-                  applications.add(applicationReportSummary
-                        .getApplicationName());
-               }
+            @Override
+            public void onChange(ChangeEvent event) {
+                currentReport = reportTypeListBox.getItemText(reportTypeListBox
+                        .getSelectedIndex());
+                headers.clear();
+                getReport();
             }
-         }
-         applications.add(ZONE_TOTAL_COLUMN);
-         headers.clear();
-         for (int i = 0; i < (applications.size() + 1); i++) {
-            TextColumn<ZoneReportSummary> aColumn;
-            final int index = i;
-            if (i == 0) {
-               aColumn = new TextColumn<ZoneReportSummary>() {
-                  public String getValue(ZoneReportSummary object) {
-                     return object.getZoneName();
-                  }
-               };
-               salesDataGrid.addColumn(aColumn, "Zone ");
-               headers.add("Zone");
-               salesDataGrid.setColumnWidth(aColumn, 250, Unit.EM);
+        });
+
+        for (int i = 1; i <= 12; i++) {
+            monthPeriodListBox.addItem(Integer.toString(i));
+        }
+        for (int i = STARTING_YEAR; i <= 2040; i++) {
+            yearPeriodListBox.addItem(Integer.toString(i));
+        }
+        salesDataGrid.setEmptyTableWidget(new HTML(
+                "There is no data to display"));
+        Date today = new Date();
+        currentYear = new Integer(DateTimeFormat.getFormat("yyyy")
+                .format(today));
+        currentMonth = new Integer(DateTimeFormat.getFormat("MM").format(today));
+        yearPeriodListBox.setSelectedIndex(currentYear - STARTING_YEAR);
+        monthPeriodListBox.setSelectedIndex(currentMonth - 1);
+        monthPeriodListBox.addChangeHandler(new ChangeHandler() {
+
+            @Override
+            public void onChange(ChangeEvent event) {
+                currentMonth = monthPeriodListBox.getSelectedIndex() + 1;
+                headers.clear();
+                getReport();
+            }
+        });
+
+        yearPeriodListBox.addChangeHandler(new ChangeHandler() {
+
+            @Override
+            public void onChange(ChangeEvent event) {
+                currentYear = yearPeriodListBox.getSelectedIndex()
+                        + STARTING_YEAR;
+                headers.clear();
+                getReport();
+            }
+        });
+        getReport();
+    }
+
+    private void getReport() {
+        FiscalPeriodDTO monthPeriodDto = new FiscalPeriodDTO();
+        monthPeriodDto.setId(null);
+        monthPeriodDto.setMonth(currentMonth);
+        monthPeriodDto.setYear(currentYear);
+        if (salesDataGrid.getColumnCount()>0){
+        int colCount = salesDataGrid.getColumnCount();
+        for (int i = colCount - 1; i >= 0; i--) {
+            salesDataGrid.removeColumn(i);
+        }}
+        salesReportService.getMonthlyReport(monthPeriodDto,
+                new AsyncCallback<List<ZoneReportSummary>>() {
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        Window.alert("Error fetching monthly FX rates list :  "
+                                + caught.getMessage());
+                    }
+
+                    @Override
+                    public void onSuccess(List<ZoneReportSummary> result) {
+                        showResult(result);
+                    }
+                });
+    }
+
+    protected void showResult(List<ZoneReportSummary> result) {
+        final List<String> applications = new ArrayList<String>();
+        if (result.size() > 0) {
+            // find all applications that will be displayed
+            for (ZoneReportSummary zoneReportSummary : result) {
+                for (ApplicationReportSummary applicationReportSummary : zoneReportSummary
+                        .getApplications()) {
+                    if (!applications.contains(applicationReportSummary
+                            .getApplicationName())
+                            && !applicationReportSummary.getApplicationName()
+                                    .equals(ZONE_TOTAL_COLUMN)) {
+                        applications.add(applicationReportSummary
+                                .getApplicationName());
+                    }
+                }
+            }
+            applications.add(ZONE_TOTAL_COLUMN);
+            headers.clear();
+            for (int i = 0; i < (applications.size() + 1); i++) {
+                TextColumn<ZoneReportSummary> aColumn;
+                final int index = i;
+                if (i == 0) {
+                    aColumn = new TextColumn<ZoneReportSummary>() {
+                        public String getValue(ZoneReportSummary object) {
+                            return object.getZoneName();
+                        }
+                    };
+                    salesDataGrid.addColumn(aColumn, "Zone ");
+                    headers.add("Zone");
+                    salesDataGrid.setColumnWidth(aColumn, 20, Unit.EM);
+                } else {
+                    generateColumn("SalesNumber", applications, index);
+                    if (currentReport.equals(SALES_REPORT)) {
+                        generateColumn("OriginalCurrencyAmount", applications,
+                                index);
+                        generateColumn("ReferenceCurrencyAmount", applications,
+                                index);
+                    } else {
+                        generateColumn("OriginalCurrencyProceeds",
+                                applications, index);
+                        generateColumn("ReferenceCurrencyProceeds",
+                                applications, index);
+                    }
+                }
+            }
+            headers.addAll(applications);
+        }
+        if (result.size() > 0) {
+            salesDataGrid.setHeaderBuilder(new CustomHeaderBuilder());
+        } else {
+            // salesDataGrid.getHeaderBuilder().buildHeader();
+            // salesDataGrid.setHeaderBuilder(new CustomHeaderBuilder());
+        }
+        salesDataGrid.setRowCount(result.size(), true);
+        // salesDataGrid.setWidth("1000px");
+        salesDataGrid.setPageSize(20);
+        if (pager.getDisplay() == null) {
+            pager.setDisplay(salesDataGrid);
+        }
+        pager.setRangeLimited(true);
+        provider.getList().clear();
+        if (provider.getDataDisplays().contains(salesDataGrid)) {
+            provider.removeDataDisplay(salesDataGrid);
+        }
+        provider.addDataDisplay(salesDataGrid);
+        provider.refresh();
+        provider.getList().addAll(result);
+    }
+
+    private void generateColumn(final String col,
+            final List<String> applications, final int index) {
+        final NumberFormat myFormatter = NumberFormat.getFormat("####.##");
+        TextColumn<ZoneReportSummary> aColumn = new TextColumn<ZoneReportSummary>() {
+            public String getValue(ZoneReportSummary object) {
+                String content = "";
+                for (ApplicationReportSummary applicationReportSummary : object
+                        .getApplications()) {
+                    if (applicationReportSummary.getApplicationName().equals(
+                            applications.get(index - 1))) {
+                        if (col.equals("OriginalCurrencyAmount")) {
+                            if (applicationReportSummary
+                                    .getOriginalCurrencyAmount() != null) {
+                                content = myFormatter
+                                        .format(applicationReportSummary
+                                                .getOriginalCurrencyAmount());
+                            }
+                        } else if (col.equals("ReferenceCurrencyAmount")) {
+                            content = myFormatter
+                                    .format(applicationReportSummary
+                                            .getReferenceCurrencyAmount());
+                        } else if (col.equals("SalesNumber")) {
+                            content = String.valueOf(applicationReportSummary
+                                    .getSalesNumber());
+                        } else if (col.equals("OriginalCurrencyProceeds")) {
+                            if (applicationReportSummary
+                                    .getOriginalCurrencyProceeds() != null) {
+                                content = myFormatter
+                                        .format(applicationReportSummary
+                                                .getOriginalCurrencyProceeds());
+                            }
+                        } else if (col.equals("ReferenceCurrencyProceeds")) {
+                            content = myFormatter
+                                    .format(applicationReportSummary
+                                            .getReferenceCurrencyProceeds());
+                        }
+                    }
+                }
+                return content;
+            }
+        };
+        salesDataGrid.addColumn(aColumn, applications.get(index - 1));
+        salesDataGrid.setColumnWidth(aColumn, 150, Unit.PX);
+    }
+
+    @Override
+    public boolean isEditing() {
+        return this.editionInProgress;
+    }
+
+    @UiHandler("exportToXLS")
+    void onClickExportToXLS(ClickEvent e) {
+        String fileDownloadURL = GWT.getModuleBaseURL() + "download?month="
+                + currentMonth + "&year=" + currentYear;
+        Frame fileDownloadFrame = new Frame(fileDownloadURL);
+        fileDownloadFrame.setSize("0px", "0px");
+        fileDownloadFrame.setVisible(false);
+        RootPanel panel = RootPanel.get("__gwt_downloadFrame");
+        while (panel.getWidgetCount() > 0)
+            panel.remove(0);
+        panel.add(fileDownloadFrame);
+    }
+
+    private class CustomHeaderBuilder extends
+            AbstractHeaderOrFooterBuilder<ZoneReportSummary> {
+
+        public CustomHeaderBuilder() {
+            super(salesDataGrid, false);
+            setSortIconStartOfLine(false);
+        }
+
+        @Override
+        protected boolean buildHeaderOrFooterImpl() {
+            if (headers.size() > 0) {
+                TableRowBuilder tr = startRow();
+                tr.startTH().colSpan(1).rowSpan(1);
+                tr.endTH();
+
+                String styleDescription = "padding: 3px 15px;font-size: 1.1em; text-align:center;color: #4B4A4A;text-shadow: 1px 1px 0 #DDDDFF;background-color:#E8E8E8;";
+                TableCellBuilder th = tr.startTH().colSpan(3)
+                        .attribute("style", styleDescription);
+                for (int i = 1; i < headers.size(); i++) {
+                    th.text(headers.get(i)).endTH();
+                    styleDescription = styleToggle(styleDescription,
+                            "background-color:#E8E8E8;",
+                            "background-color:#A8A8A8;");
+                    th = tr.startTH().colSpan(3)
+                            .attribute("style", styleDescription);
+                }
+
+                tr = startRow();
+                int colGroupIndex = 0;
+                for (int i = 0; i < salesDataGrid.getColumnCount(); i++) {
+                    if (i == 0) {
+                        Header<String> zoneHeader = new TextHeader(
+                                headers.get(i));
+                        buildHeader(tr, zoneHeader, salesDataGrid.getColumn(i),
+                                false, false);
+                        colGroupIndex += 1;
+                    } else {
+                        Header<String> theHeader = new TextHeader("");
+                        switch (colGroupIndex) {
+                        case 1:
+                            theHeader = new TextHeader("Sales #");
+                            buildHeader(tr, theHeader,
+                                    salesDataGrid.getColumn(i), false, false);
+                            break;
+                        case 2:
+                            if (currentReport.equals(SALES_REPORT)) {
+                                theHeader = new TextHeader(
+                                        "Total orig. currency");
+                            } else {
+                                theHeader = new TextHeader(
+                                        "Proceeds orig. currency");
+                            }
+                            buildHeader(tr, theHeader,
+                                    salesDataGrid.getColumn(i), false, false);
+                            break;
+                        case 3:
+                            if (currentReport.equals(SALES_REPORT)) {
+                                theHeader = new TextHeader(
+                                        "Total ref. currency");
+                            } else {
+                                theHeader = new TextHeader(
+                                        "Proceeds ref. currency");
+                            }
+                            buildHeader(tr, theHeader,
+                                    salesDataGrid.getColumn(i), false, false);
+                            colGroupIndex = 0;
+                            break;
+                        default:
+                            break;
+                        }
+                        colGroupIndex += 1;
+                    }
+
+                }
+                tr.endTR();
+
+                return true;
+            }
+            return false;
+        }
+
+        private String styleToggle(String currentStyle, String color1,
+                String color2) {
+            if (currentStyle.indexOf(color1) != -1) {
+                return currentStyle.replace(color1, color2);
             } else {
-               generateColumn("SalesNumber", applications, index);
-               generateColumn("OriginalCurrencyAmount", applications, index);
-               generateColumn("ReferenceCurrencyAmount", applications, index);
+                return currentStyle.replace(color2, color1);
             }
-         }
-         headers.addAll(applications);
-      }
-      if (result.size() > 0) {
-         salesDataGrid.setHeaderBuilder(new CustomHeaderBuilder());
-      } else {
-         // salesDataGrid.getHeaderBuilder().buildHeader();
-         // salesDataGrid.setHeaderBuilder(new CustomHeaderBuilder());
-      }
-      salesDataGrid.setRowCount(result.size(), true);
-      // salesDataGrid.setWidth("1000px");
-      salesDataGrid.setPageSize(20);
-      if (pager.getDisplay() == null) {
-         pager.setDisplay(salesDataGrid);
-      }
-      pager.setRangeLimited(true);
-      provider.getList().clear();
-      if (provider.getDataDisplays().contains(salesDataGrid)) {
-         provider.removeDataDisplay(salesDataGrid);
-      }
-      provider.addDataDisplay(salesDataGrid);
-      provider.refresh();
-      provider.getList().addAll(result);
-   }
+        }
 
-   private void generateColumn(final String col,
-         final List<String> applications, final int index) {
-      final NumberFormat myFormatter = NumberFormat.getFormat("####.##");
-      TextColumn<ZoneReportSummary> aColumn = new TextColumn<ZoneReportSummary>() {
-         public String getValue(ZoneReportSummary object) {
-            String content = "";
-            for (ApplicationReportSummary applicationReportSummary : object
-                  .getApplications()) {
-               if (applicationReportSummary.getApplicationName().equals(
-                     applications.get(index - 1))) {
-                  if (col.equals("OriginalCurrencyAmount")) {
-                     if (applicationReportSummary.getOriginalCurrencyAmount() != null) {
-                        content = myFormatter.format(applicationReportSummary
-                              .getOriginalCurrencyAmount());
-                     }
-                  } else if (col.equals("ReferenceCurrencyAmount")) {
-                     content = myFormatter.format(applicationReportSummary
-                           .getReferenceCurrencyAmount());
-                  } else if (col.equals("SalesNumber")) {
-                     content = String.valueOf(applicationReportSummary
-                           .getSalesNumber());
-                  }
-               }
+        /**
+         * Renders the header of one column, with the given options.
+         * 
+         * @param out
+         *            the table row to build into
+         * @param header
+         *            the {@link Header} to render
+         * @param column
+         *            the column to associate with the header
+         * @param sortedColumn
+         *            the column that is currently sorted
+         * @param isSortAscending
+         *            true if the sorted column is in ascending order
+         * @param isFirst
+         *            true if this the first column
+         * @param isLast
+         *            true if this the last column
+         */
+        private void buildHeader(TableRowBuilder out, Header<?> header,
+                Column<ZoneReportSummary, ?> column, boolean isFirst,
+                boolean isLast) {
+            // Choose the classes to include with the element.
+            Style style = salesDataGrid.getResources().style();
+            StringBuilder classesBuilder = new StringBuilder(style.header());
+            if (isFirst) {
+                classesBuilder.append(" " + style.firstColumnHeader());
             }
-            return content;
-         }
-      };
-      salesDataGrid.addColumn(aColumn, applications.get(index - 1));
-      salesDataGrid.setColumnWidth(aColumn, 150, Unit.PX);
-   }
-
-   @Override
-   public boolean isEditing() {
-      return this.editionInProgress;
-   }
-
-   @UiHandler("exportToXLS")
-   void onClickExportToXLS(ClickEvent e) {
-      String fileDownloadURL = GWT.getModuleBaseURL() + "download?month="
-            + currentMonth + "&year=" + currentYear;
-      Frame fileDownloadFrame = new Frame(fileDownloadURL);
-      fileDownloadFrame.setSize("0px", "0px");
-      fileDownloadFrame.setVisible(false);
-      RootPanel panel = RootPanel.get("__gwt_downloadFrame");
-      while (panel.getWidgetCount() > 0)
-         panel.remove(0);
-      panel.add(fileDownloadFrame);
-   }
-
-   private class CustomHeaderBuilder extends
-         AbstractHeaderOrFooterBuilder<ZoneReportSummary> {
-
-      public CustomHeaderBuilder() {
-         super(salesDataGrid, false);
-         setSortIconStartOfLine(false);
-      }
-
-      @Override
-      protected boolean buildHeaderOrFooterImpl() {
-         if (headers.size() > 0) {
-            TableRowBuilder tr = startRow();
-            tr.startTH().colSpan(1).rowSpan(1);
-            tr.endTH();
-
-            String styleDescription = "padding: 3px 15px;font-size: 1.1em; text-align:center;color: #4B4A4A;text-shadow: 1px 1px 0 #DDDDFF;background-color:#E8E8E8;";
-            TableCellBuilder th = tr.startTH().colSpan(3)
-                  .attribute("style", styleDescription);
-            for (int i = 1; i < headers.size(); i++) {
-               th.text(headers.get(i)).endTH();
-               styleDescription = styleToggle(styleDescription,
-                     "background-color:#E8E8E8;", "background-color:#A8A8A8;");
-               th = tr.startTH().colSpan(3)
-                     .attribute("style", styleDescription);
+            if (isLast) {
+                classesBuilder.append(" " + style.lastColumnHeader());
+            }
+            if (column.isSortable()) {
+                classesBuilder.append(" " + style.sortableHeader());
             }
 
-            tr = startRow();
-            int colGroupIndex = 0;
-            for (int i = 0; i < salesDataGrid.getColumnCount(); i++) {
-               if (i == 0) {
-                  Header<String> zoneHeader = new TextHeader(headers.get(i));
-                  buildHeader(tr, zoneHeader, salesDataGrid.getColumn(i),
-                        false, false);
-                  colGroupIndex += 1;
-               } else {
-                  Header<String> theHeader;
-                  switch (colGroupIndex) {
-                  case 1:
-                     theHeader = new TextHeader("Sales #");
-                     buildHeader(tr, theHeader, salesDataGrid.getColumn(i),
-                           false, false);
-                     break;
-                  case 2:
-                     theHeader = new TextHeader("Total orig. currency");
-                     buildHeader(tr, theHeader, salesDataGrid.getColumn(i),
-                           false, false);
-                     break;
-                  case 3:
-                     theHeader = new TextHeader("Total ref. currency");
-                     buildHeader(tr, theHeader, salesDataGrid.getColumn(i),
-                           false, false);
-                     colGroupIndex = 0;
-                     break;
-                  default:
-                     break;
-                  }
-                  colGroupIndex += 1;
-               }
+            // Create the table cell.
+            TableCellBuilder th = out.startTH().className(
+                    classesBuilder.toString());
 
-            }
-            tr.endTR();
-
-            return true;
-         }
-         return false;
-      }
-
-      private String styleToggle(String currentStyle, String color1,
-            String color2) {
-         if (currentStyle.indexOf(color1) != -1) {
-            return currentStyle.replace(color1, color2);
-         } else {
-            return currentStyle.replace(color2, color1);
-         }
-      }
-
-      /**
-       * Renders the header of one column, with the given options.
-       * 
-       * @param out
-       *           the table row to build into
-       * @param header
-       *           the {@link Header} to render
-       * @param column
-       *           the column to associate with the header
-       * @param sortedColumn
-       *           the column that is currently sorted
-       * @param isSortAscending
-       *           true if the sorted column is in ascending order
-       * @param isFirst
-       *           true if this the first column
-       * @param isLast
-       *           true if this the last column
-       */
-      private void buildHeader(TableRowBuilder out, Header<?> header,
-            Column<ZoneReportSummary, ?> column, boolean isFirst, boolean isLast) {
-         // Choose the classes to include with the element.
-         Style style = salesDataGrid.getResources().style();
-         StringBuilder classesBuilder = new StringBuilder(style.header());
-         if (isFirst) {
-            classesBuilder.append(" " + style.firstColumnHeader());
-         }
-         if (isLast) {
-            classesBuilder.append(" " + style.lastColumnHeader());
-         }
-         if (column.isSortable()) {
-            classesBuilder.append(" " + style.sortableHeader());
-         }
-
-         // Create the table cell.
-         TableCellBuilder th = out.startTH().className(
-               classesBuilder.toString());
-
-         // Render the header.
-         Context context = new Context(0, 2, header.getKey());
-         renderHeader(th, context, header);
-         // End the table cell.
-         th.endTH();
-      }
-   }
+            // Render the header.
+            Context context = new Context(0, 2, header.getKey());
+            renderHeader(th, context, header);
+            // End the table cell.
+            th.endTH();
+        }
+    }
 
 }

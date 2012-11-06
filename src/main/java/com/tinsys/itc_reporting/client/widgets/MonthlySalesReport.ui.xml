@@ -8,6 +8,8 @@
 
 		<g:VerticalPanel width="100%" styleName="{style.marge}">
 			<g:HorizontalPanel>
+			<g:Label text="Type :" styleName="{style.marge}" />
+            <g:ListBox ui:field="reportTypeListBox" styleName="{style.marge}" />
 				<g:Label text="Period :" styleName="{style.marge}" />
 				<g:ListBox ui:field="monthPeriodListBox" styleName="{style.marge}" />
 				<g:Label text="/" styleName="{style.marge}" />

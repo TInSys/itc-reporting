@@ -201,10 +201,14 @@ public class FileUploadServlet extends HttpServlet {
             tmpSale.setCountryCode(lcsvp.getValueByLabel("Country Of Sale"));
             tmpSale.setIndividualPrice(new BigDecimal(lcsvp
                   .getValueByLabel("Customer Price")));
+            tmpSale.setIndividualProceeds(new BigDecimal(lcsvp
+                  .getValueByLabel("Partner Share")));
             tmpSale.setSoldUnits(Integer.parseInt(lcsvp
                   .getValueByLabel("Quantity")));
             tmpSale.setTotalPrice(tmpSale.getIndividualPrice().multiply(
                   new BigDecimal(tmpSale.getSoldUnits())));
+            tmpSale.setTotalProceeds(tmpSale.getIndividualProceeds().multiply(
+                    new BigDecimal(tmpSale.getSoldUnits())));
             if (tmpErrorList.size() == 0) {
                logger.debug(" Adding sale : " + tmpSale.toString());
                saleService.summarizeSale(tmpSale);

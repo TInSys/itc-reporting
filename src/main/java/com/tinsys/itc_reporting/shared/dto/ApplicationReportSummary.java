@@ -11,10 +11,12 @@ public class ApplicationReportSummary implements Serializable {
     private static final long serialVersionUID = 1L;
     private String applicationName;
     private int salesNumber;
-    private BigDecimal originalCurrencyAmount;
     private String originalCurrency;
+    private BigDecimal originalCurrencyAmount;
     private BigDecimal referenceCurrencyAmount;
-    private String referenceCurrency;  
+    private BigDecimal originalCurrencyProceeds;
+    private BigDecimal referenceCurrencyProceeds;
+    private String referenceCurrency;
     
     public String getApplicationName() {
         return applicationName;
@@ -28,17 +30,17 @@ public class ApplicationReportSummary implements Serializable {
     public void setSalesNumber(int salesNumber) {
         this.salesNumber = salesNumber;
     }
-    public BigDecimal getOriginalCurrencyAmount() {
-        return originalCurrencyAmount;
-    }
-    public void setOriginalCurrencyAmount(BigDecimal originalCurrencyAmount) {
-        this.originalCurrencyAmount = originalCurrencyAmount;
-    }
     public String getOriginalCurrency() {
         return originalCurrency;
     }
     public void setOriginalCurrency(String originalCurrency) {
         this.originalCurrency = originalCurrency;
+    }
+    public BigDecimal getOriginalCurrencyAmount() {
+        return originalCurrencyAmount;
+    }
+    public void setOriginalCurrencyAmount(BigDecimal originalCurrencyAmount) {
+        this.originalCurrencyAmount = originalCurrencyAmount;
     }
     public BigDecimal getReferenceCurrencyAmount() {
         return referenceCurrencyAmount;
@@ -46,10 +48,24 @@ public class ApplicationReportSummary implements Serializable {
     public void setReferenceCurrencyAmount(BigDecimal referenceCurrencyAmount) {
         this.referenceCurrencyAmount = referenceCurrencyAmount;
     }
+    public BigDecimal getOriginalCurrencyProceeds() {
+        return originalCurrencyProceeds;
+    }
+    public void setOriginalCurrencyProceeds(BigDecimal originalCurrencyProceeds) {
+        this.originalCurrencyProceeds = originalCurrencyProceeds;
+    }
+    public BigDecimal getReferenceCurrencyProceeds() {
+        return referenceCurrencyProceeds;
+    }
+    public void setReferenceCurrencyProceeds(BigDecimal referenceCurrencyProceeds) {
+        this.referenceCurrencyProceeds = referenceCurrencyProceeds;
+    }
     public String getReferenceCurrency() {
         return referenceCurrency;
     }
     public void setReferenceCurrency(String referenceCurrency) {
         this.referenceCurrency = referenceCurrency;
     }  
+    
+   
 }

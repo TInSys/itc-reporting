@@ -13,6 +13,8 @@ public class SalesDTO implements Serializable {
     private Integer soldUnits;
     private BigDecimal individualPrice;
     private BigDecimal totalPrice;
+    private BigDecimal individualProceeds;
+    private BigDecimal totalProceeds;
     private String countryCode;
     private FiscalPeriodDTO periodDTO;
     private ZoneDTO zoneDTO;
@@ -49,7 +51,22 @@ public class SalesDTO implements Serializable {
     public void setTotalPrice(BigDecimal totalPrice) {
         this.totalPrice = totalPrice;
     }
-
+    public BigDecimal getIndividualProceeds() {
+        return individualProceeds;
+    }
+    
+    public void setIndividualProceeds(BigDecimal individualProceeds) {
+        this.individualProceeds = individualProceeds;
+    }
+    
+    public BigDecimal getTotalProceeds() {
+        return totalProceeds;
+    }
+    
+    public void setTotalProceeds(BigDecimal totalProceeds) {
+        this.totalProceeds = totalProceeds;
+    }
+    
     public String getCountryCode() {
         return countryCode;
     }

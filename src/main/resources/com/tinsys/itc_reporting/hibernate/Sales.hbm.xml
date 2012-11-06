@@ -17,6 +17,12 @@
 		<property name="individualPrice" type="big_decimal">
 			<column name="individual_price" sql-type="NUMERIC(19,6)" />
 		</property>
+      <property name="totalProceeds" type="big_decimal">
+         <column name="total_proceeds" sql-type="NUMERIC(19,6)" />
+      </property>
+      <property name="individualProceeds" type="big_decimal">
+         <column name="individual_proceeds" sql-type="NUMERIC(19,6)" />
+      </property>
 		<property generated="never" lazy="false" name="countryCode"
 			type="string">
 			<column name="country_code" not-null="true" />
