@@ -2,27 +2,27 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:c="urn:import:com.google.gwt.user.cellview.client"
 	xmlns:dp="urn:import:com.google.gwt.user.datepicker.client">
-	<ui:style src="../mainStyles.css"/>
-
-	<g:HorizontalPanel width="100%" borderWidth="1">
+	<ui:style src="../mainStyles.css" />
+		
+	<g:HorizontalPanel width="99%" borderWidth="1">
 
 		<g:VerticalPanel width="100%" styleName="{style.marge}">
 			<g:HorizontalPanel>
-			<g:Label text="Type :" styleName="{style.marge}" />
-            <g:ListBox ui:field="reportTypeListBox" styleName="{style.marge}" />
+				<g:Label text="Type :" styleName="{style.marge}" />
+				<g:ListBox ui:field="reportTypeListBox" styleName="{style.marge}" />
 				<g:Label text="Period :" styleName="{style.marge}" />
 				<g:ListBox ui:field="monthPeriodListBox" styleName="{style.marge}" />
 				<g:Label text="/" styleName="{style.marge}" />
 				<g:ListBox ui:field="yearPeriodListBox" styleName="{style.marge}" />
 			</g:HorizontalPanel>
 
-			<g:VerticalPanel>
-				<c:CellTable ui:field="salesDataGrid" />
+			<g:VerticalPanel width="100%">
+				<c:CellTable ui:field="salesDataGrid" width="99%" />
 				<c:SimplePager ui:field='pager' location='CENTER' />
-				
+
 			</g:VerticalPanel>
 
-         <g:HTMLPanel>
+			<g:HTMLPanel>
 				<table>
 					<tr>
 						<td>

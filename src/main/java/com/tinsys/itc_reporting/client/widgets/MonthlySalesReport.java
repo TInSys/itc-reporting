@@ -144,11 +144,12 @@ public class MonthlySalesReport extends Composite implements
         monthPeriodDto.setId(null);
         monthPeriodDto.setMonth(currentMonth);
         monthPeriodDto.setYear(currentYear);
-        if (salesDataGrid.getColumnCount()>0){
-        int colCount = salesDataGrid.getColumnCount();
-        for (int i = colCount - 1; i >= 0; i--) {
-            salesDataGrid.removeColumn(i);
-        }}
+        if (salesDataGrid.getColumnCount() > 0) {
+            int colCount = salesDataGrid.getColumnCount();
+            for (int i = colCount - 1; i >= 0; i--) {
+                salesDataGrid.removeColumn(i);
+            }
+        }
         salesReportService.getMonthlyReport(monthPeriodDto,
                 new AsyncCallback<List<ZoneReportSummary>>() {
 
@@ -320,9 +321,14 @@ public class MonthlySalesReport extends Composite implements
                     styleDescription = styleToggle(styleDescription,
                             "background-color:#E8E8E8;",
                             "background-color:#A8A8A8;");
-                    th = tr.startTH().colSpan(3)
-                            .attribute("style", styleDescription);
+                    if (i != headers.size() - 1) {
+                        th = tr.startTH().colSpan(3)
+                                .attribute("style", styleDescription);
+                    } else {
+                        th = tr.startTH();
+                    }
                 }
+                tr.endTH();
 
                 tr = startRow();
                 int colGroupIndex = 0;
