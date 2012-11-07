@@ -237,12 +237,13 @@ public class SalesReportServiceImpl implements SalesReportService {
             total.setReferenceCurrencyProceedsAfterTax(total.getReferenceCurrencyProceedsAfterTax().add(reportSummary.getReferenceCurrencyProceedsAfterTax()));
 
             total.setReferenceCurrency(reportSummary.getReferenceCurrency());
+            total.setOriginalCurrency(reportSummary.getOriginalCurrency());
             total.setSalesNumber(total.getSalesNumber()+reportSummary.getSalesNumber());
             boolean appFound = false;
             if (monthReportLineTotal == monthReportLine){
                 total.setOriginalCurrencyAmount(null);
                 total.setOriginalCurrencyProceeds(null); 
-                total.setOriginalCurrencyProceedsAfterTax(null); 
+                total.setOriginalCurrencyProceedsAfterTax(null);
             }
             if (monthReportLineTotal != monthReportLine){
             for (ApplicationReportSummary reportSummaryTotal : monthReportLineTotal.getApplications()){
@@ -252,6 +253,7 @@ public class SalesReportServiceImpl implements SalesReportService {
                     reportSummaryTotal.setReferenceCurrencyAmount(reportSummaryTotal.getReferenceCurrencyAmount().add(reportSummary.getReferenceCurrencyAmount()));
                     reportSummaryTotal.setReferenceCurrencyProceeds(reportSummaryTotal.getReferenceCurrencyProceeds().add(reportSummary.getReferenceCurrencyProceeds()));
                     reportSummaryTotal.setReferenceCurrencyProceedsAfterTax(reportSummaryTotal.getReferenceCurrencyProceedsAfterTax().add(reportSummary.getReferenceCurrencyProceedsAfterTax()));
+                    reportSummaryTotal.setReferenceCurrency(reportSummary.getReferenceCurrency());
                 }
             }
             if (!appFound){
@@ -261,6 +263,7 @@ public class SalesReportServiceImpl implements SalesReportService {
                 reportSummaryTotal.setReferenceCurrencyAmount(reportSummary.getReferenceCurrencyAmount());
                 reportSummaryTotal.setReferenceCurrencyProceeds(reportSummary.getReferenceCurrencyProceeds());
                 reportSummaryTotal.setReferenceCurrencyProceedsAfterTax(reportSummary.getReferenceCurrencyProceedsAfterTax());
+                reportSummaryTotal.setReferenceCurrency(reportSummary.getReferenceCurrency());
                 monthReportLineTotal.getApplications().add(reportSummaryTotal);
             }}
         }

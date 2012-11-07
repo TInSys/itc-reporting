@@ -31,6 +31,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -224,7 +225,6 @@ public class MonthlySalesReport extends Composite implements
             salesDataGrid.setHeaderBuilder(new CustomHeaderBuilder());
         } 
         salesDataGrid.setRowCount(result.size(), true);
-        // salesDataGrid.setWidth("1000px");
         salesDataGrid.setPageSize(20);
         if (pager.getDisplay() == null) {
             pager.setDisplay(salesDataGrid);
@@ -254,12 +254,12 @@ public class MonthlySalesReport extends Composite implements
                                     .getOriginalCurrencyAmount() != null) {
                                 content = myFormatter
                                         .format(applicationReportSummary
-                                                .getOriginalCurrencyAmount());
+                                                .getOriginalCurrencyAmount())+" "+applicationReportSummary.getOriginalCurrency();
                             }
                         } else if (col.equals("ReferenceCurrencyAmount")) {
                             content = myFormatter
                                     .format(applicationReportSummary
-                                            .getReferenceCurrencyAmount());
+                                            .getReferenceCurrencyAmount())+" "+applicationReportSummary.getReferenceCurrency();
                         } else if (col.equals("SalesNumber")) {
                             content = String.valueOf(applicationReportSummary
                                     .getSalesNumber());
@@ -268,29 +268,32 @@ public class MonthlySalesReport extends Composite implements
                                     .getOriginalCurrencyProceeds() != null) {
                                 content = myFormatter
                                         .format(applicationReportSummary
-                                                .getOriginalCurrencyProceeds());
+                                                .getOriginalCurrencyProceeds())+" "+applicationReportSummary.getOriginalCurrency();
                             }
                         } else if (col.equals("ReferenceCurrencyProceeds")) {
                             content = myFormatter
                                     .format(applicationReportSummary
-                                            .getReferenceCurrencyProceeds());
+                                            .getReferenceCurrencyProceeds())+" "+applicationReportSummary.getReferenceCurrency();
                         } else if (col.equals("OriginalCurrencyProceedsAfterTax")) {
                             if (applicationReportSummary
                                     .getOriginalCurrencyProceeds() != null) {
                                 content = myFormatter
                                         .format(applicationReportSummary
-                                                .getOriginalCurrencyProceedsAfterTax());
+                                                .getOriginalCurrencyProceedsAfterTax())+" "+applicationReportSummary.getOriginalCurrency();
                             }
                         } else if (col.equals("ReferenceCurrencyProceedsAfterTax")) {
                             content = myFormatter
                                     .format(applicationReportSummary
-                                            .getReferenceCurrencyProceedsAfterTax());
+                                            .getReferenceCurrencyProceedsAfterTax())+" "+applicationReportSummary.getReferenceCurrency();
                         } 
                     }
                 }
                 return content;
             }
         };
+        if (!col.equals("SalesNumber")){
+            aColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+        }
         salesDataGrid.addColumn(aColumn, applications.get(index - 1));
         salesDataGrid.setColumnWidth(aColumn, 150, Unit.PX);
     }

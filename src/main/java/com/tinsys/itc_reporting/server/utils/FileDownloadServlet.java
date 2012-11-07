@@ -170,6 +170,9 @@ public class FileDownloadServlet extends HttpServlet {
                             dataCell = dataRow.createCell((i * 7) + 2);
                             if (applicationReportSummary
                                     .getOriginalCurrencyAmount() != null) {
+                                cs = workbook.createCellStyle();
+                                cs.setDataFormat(df.getFormat("#,##0.00 \""+applicationReportSummary
+                                        .getOriginalCurrency()+"\"_"));
                                 dataCell.setCellStyle(cs);
                                 dataCell.setCellValue(applicationReportSummary
                                         .getOriginalCurrencyAmount()
@@ -177,6 +180,9 @@ public class FileDownloadServlet extends HttpServlet {
                             }
                             ;
                             dataCell = dataRow.createCell((i * 7) + 3);
+                            cs = workbook.createCellStyle();
+                            cs.setDataFormat(df.getFormat("#,##0.00 \""+applicationReportSummary
+                                    .getReferenceCurrency()+"\"_"));
                             dataCell.setCellStyle(cs);
                             dataCell.setCellValue(applicationReportSummary
                                     .getReferenceCurrencyAmount().doubleValue());
@@ -185,6 +191,9 @@ public class FileDownloadServlet extends HttpServlet {
                             dataCell = dataRow.createCell((i * 7) + 4);
                             if (applicationReportSummary
                                     .getOriginalCurrencyProceeds() != null) {
+                                cs = workbook.createCellStyle();
+                                cs.setDataFormat(df.getFormat("#,##0.00 \""+applicationReportSummary
+                                        .getOriginalCurrency()+"\"_"));
                                 dataCell.setCellStyle(cs);
                                 dataCell.setCellValue(applicationReportSummary
                                         .getOriginalCurrencyProceeds()
@@ -192,6 +201,9 @@ public class FileDownloadServlet extends HttpServlet {
                             }
                             ;
                             dataCell = dataRow.createCell((i * 7) + 5);
+                            cs = workbook.createCellStyle();
+                            cs.setDataFormat(df.getFormat("#,##0.00 \""+applicationReportSummary
+                                    .getReferenceCurrency()+"\"_"));
                             dataCell.setCellStyle(cs);
                             dataCell.setCellValue(applicationReportSummary
                                     .getReferenceCurrencyProceeds().doubleValue());
@@ -199,6 +211,9 @@ public class FileDownloadServlet extends HttpServlet {
                             dataCell = dataRow.createCell((i * 7) + 6);
                             if (applicationReportSummary
                                     .getOriginalCurrencyProceedsAfterTax() != null) {
+                                cs = workbook.createCellStyle();
+                                cs.setDataFormat(df.getFormat("#,##0.00 \""+applicationReportSummary
+                                        .getOriginalCurrency()+"\"_"));
                                 dataCell.setCellStyle(cs);
                                 dataCell.setCellValue(applicationReportSummary
                                         .getOriginalCurrencyProceedsAfterTax()
@@ -206,6 +221,9 @@ public class FileDownloadServlet extends HttpServlet {
                             }
                             ;
                             dataCell = dataRow.createCell((i * 7) + 7);
+                            cs = workbook.createCellStyle();
+                            cs.setDataFormat(df.getFormat("#,##0.00 \""+applicationReportSummary
+                                    .getReferenceCurrency()+"\"_"));
                             dataCell.setCellStyle(cs);
                             dataCell.setCellValue(applicationReportSummary
                                     .getReferenceCurrencyProceedsAfterTax().doubleValue());
@@ -216,7 +234,6 @@ public class FileDownloadServlet extends HttpServlet {
                 currentIndex += 1;
             }
             for (int i = 0; i < ((applications.size() * 7) + 1); i++) {
-                System.out.println(" -----> index "+i);
                 sheet.autoSizeColumn(i);
             }
             workbook.write(outPutToFile);
