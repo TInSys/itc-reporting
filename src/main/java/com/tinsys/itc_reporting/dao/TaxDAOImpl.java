@@ -1,16 +1,23 @@
 package com.tinsys.itc_reporting.dao;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import com.google.gwt.user.datepicker.client.CalendarUtil;
 import com.tinsys.itc_reporting.model.Tax;
 import com.tinsys.itc_reporting.model.TaxPeriod;
 import com.tinsys.itc_reporting.model.Zone;
+import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.TaxDTO;
 import com.tinsys.itc_reporting.shared.dto.TaxPeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
@@ -136,6 +143,35 @@ public class TaxDAOImpl implements TaxDAO {
         period.setId(aTax.getPeriod().getId());
         tax.setPeriod(period);
         factory.getCurrentSession().delete(tax);
+
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Tax> getTaxesForPeriod(FiscalPeriodDTO period) {
+        Date startDate;
+        Date endDate;
+        Calendar cal1 = new GregorianCalendar();
+        cal1.set(Calendar.YEAR , period.getYear());
+        cal1.set(Calendar.MONTH, period.getMonth()-1);
+        cal1.set(Calendar.DAY_OF_MONTH, 1);
+        cal1.set(Calendar.HOUR_OF_DAY, 0);
+        cal1.set(Calendar.MINUTE, 0);
+        cal1.set(Calendar.SECOND, 0);
+        cal1.set(Calendar.MILLISECOND, 0);
+        startDate = cal1.getTime();
+        Date endOfMonthDate = cal1.getTime();
+        CalendarUtil.addMonthsToDate(endOfMonthDate,1);
+        CalendarUtil.addDaysToDate(endOfMonthDate,-1);
+        endDate = endOfMonthDate;
+        
+        Query query = factory
+                .getCurrentSession()
+                .createQuery(
+                        "select tax from Tax tax where tax.period.startDate <= :sStartDate and (tax.period.stopDate >= :sStopDate or tax.period.stopDate = null) ");
+        query.setParameter("sStartDate", startDate);
+        query.setParameter("sStopDate", endDate);
+        return (ArrayList<Tax>) query.list();
 
     }
 

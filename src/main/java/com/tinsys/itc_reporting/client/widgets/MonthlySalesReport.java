@@ -47,6 +47,7 @@ public class MonthlySalesReport extends Composite implements
     private final static String ZONE_TOTAL_COLUMN = "Total by Zone";
     private final static String PROCEEDS_REPORT = "Proceeds";
     private final static String SALES_REPORT = "Sales";
+    private final static String PROCEEDS_AFTER_TAX_REPORT = "Proceeds after taxes";
     private String currentReport;
 
     private static Binder uiBinder = GWT.create(Binder.class);
@@ -89,6 +90,7 @@ public class MonthlySalesReport extends Composite implements
         initWidget(uiBinder.createAndBindUi(this));
         reportTypeListBox.addItem(SALES_REPORT);
         reportTypeListBox.addItem(PROCEEDS_REPORT);
+        reportTypeListBox.addItem(PROCEEDS_AFTER_TAX_REPORT);
         reportTypeListBox.setSelectedIndex(0);
         currentReport = reportTypeListBox.getItemText(0);
         reportTypeListBox.addChangeHandler(new ChangeHandler() {
@@ -203,10 +205,15 @@ public class MonthlySalesReport extends Composite implements
                                 index);
                         generateColumn("ReferenceCurrencyAmount", applications,
                                 index);
-                    } else {
+                    } else if (currentReport.equals(PROCEEDS_REPORT)){
                         generateColumn("OriginalCurrencyProceeds",
                                 applications, index);
                         generateColumn("ReferenceCurrencyProceeds",
+                                applications, index);
+                    } else if (currentReport.equals(PROCEEDS_AFTER_TAX_REPORT)){
+                        generateColumn("OriginalCurrencyProceedsAfterTax",
+                                applications, index);
+                        generateColumn("ReferenceCurrencyProceedsAfterTax",
                                 applications, index);
                     }
                 }
@@ -215,10 +222,7 @@ public class MonthlySalesReport extends Composite implements
         }
         if (result.size() > 0) {
             salesDataGrid.setHeaderBuilder(new CustomHeaderBuilder());
-        } else {
-            // salesDataGrid.getHeaderBuilder().buildHeader();
-            // salesDataGrid.setHeaderBuilder(new CustomHeaderBuilder());
-        }
+        } 
         salesDataGrid.setRowCount(result.size(), true);
         // salesDataGrid.setWidth("1000px");
         salesDataGrid.setPageSize(20);
@@ -270,7 +274,18 @@ public class MonthlySalesReport extends Composite implements
                             content = myFormatter
                                     .format(applicationReportSummary
                                             .getReferenceCurrencyProceeds());
-                        }
+                        } else if (col.equals("OriginalCurrencyProceedsAfterTax")) {
+                            if (applicationReportSummary
+                                    .getOriginalCurrencyProceeds() != null) {
+                                content = myFormatter
+                                        .format(applicationReportSummary
+                                                .getOriginalCurrencyProceedsAfterTax());
+                            }
+                        } else if (col.equals("ReferenceCurrencyProceedsAfterTax")) {
+                            content = myFormatter
+                                    .format(applicationReportSummary
+                                            .getReferenceCurrencyProceedsAfterTax());
+                        } 
                     }
                 }
                 return content;
@@ -351,9 +366,12 @@ public class MonthlySalesReport extends Composite implements
                             if (currentReport.equals(SALES_REPORT)) {
                                 theHeader = new TextHeader(
                                         "Total orig. currency");
-                            } else {
+                            } else if (currentReport.equals(PROCEEDS_REPORT)) {
                                 theHeader = new TextHeader(
                                         "Proceeds orig. currency");
+                            } else if (currentReport.equals(PROCEEDS_AFTER_TAX_REPORT)) {
+                                theHeader = new TextHeader(
+                                        "Proceeds orig. curr. after Tax");
                             }
                             buildHeader(tr, theHeader,
                                     salesDataGrid.getColumn(i), false, false);
@@ -362,9 +380,12 @@ public class MonthlySalesReport extends Composite implements
                             if (currentReport.equals(SALES_REPORT)) {
                                 theHeader = new TextHeader(
                                         "Total ref. currency");
-                            } else {
+                            } else if (currentReport.equals(PROCEEDS_REPORT)) {
                                 theHeader = new TextHeader(
                                         "Proceeds ref. currency");
+                            } else if (currentReport.equals(PROCEEDS_AFTER_TAX_REPORT)) {
+                                theHeader = new TextHeader(
+                                        "Proceeds ref. curr. after Tax");
                             }
                             buildHeader(tr, theHeader,
                                     salesDataGrid.getColumn(i), false, false);

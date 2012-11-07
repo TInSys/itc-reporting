@@ -16,6 +16,9 @@ public class ApplicationReportSummary implements Serializable {
     private BigDecimal referenceCurrencyAmount;
     private BigDecimal originalCurrencyProceeds;
     private BigDecimal referenceCurrencyProceeds;
+    private BigDecimal originalCurrencyProceedsAfterTax;
+    private BigDecimal referenceCurrencyProceedsAfterTax;
+    
     private String referenceCurrency;
     
     public String getApplicationName() {
@@ -65,7 +68,20 @@ public class ApplicationReportSummary implements Serializable {
     }
     public void setReferenceCurrency(String referenceCurrency) {
         this.referenceCurrency = referenceCurrency;
-    }  
-    
+    }
+    public BigDecimal getOriginalCurrencyProceedsAfterTax() {
+        return originalCurrencyProceedsAfterTax;
+    }
+    public void setOriginalCurrencyProceedsAfterTax(
+            BigDecimal originalCurrencyProceedsAfterTax) {
+        this.originalCurrencyProceedsAfterTax = originalCurrencyProceedsAfterTax;
+    }
+    public BigDecimal getReferenceCurrencyProceedsAfterTax() {
+        return referenceCurrencyProceedsAfterTax;
+    }
+    public void setReferenceCurrencyProceedsAfterTax(
+            BigDecimal referenceCurrencyProceedsAfterTax) {
+        this.referenceCurrencyProceedsAfterTax = referenceCurrencyProceedsAfterTax;
+    }
    
 }

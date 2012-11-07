@@ -13,8 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.tinsys.itc_reporting.client.service.SalesReportService;
 import com.tinsys.itc_reporting.dao.FXRateDAO;
 import com.tinsys.itc_reporting.dao.SalesDAO;
+import com.tinsys.itc_reporting.dao.TaxDAO;
 import com.tinsys.itc_reporting.model.Application;
 import com.tinsys.itc_reporting.model.Sales;
+import com.tinsys.itc_reporting.model.Tax;
 import com.tinsys.itc_reporting.model.Zone;
 import com.tinsys.itc_reporting.shared.dto.ApplicationReportSummary;
 import com.tinsys.itc_reporting.shared.dto.FXRateDTO;
@@ -35,10 +37,16 @@ public class SalesReportServiceImpl implements SalesReportService {
     @Qualifier("fxRateDAO")
     private FXRateDAO fxRateDAO;
 
+    @Autowired
+    @Qualifier("taxDAO")
+    private TaxDAO taxDAO;
+    
     @Override
     public List<ZoneReportSummary> getMonthlyReport(FiscalPeriodDTO period) {
        logger.debug("Preparing report");
         List<Sales> sales = salesDAO.getAllSales(period);
+        //get tax rates for period
+        List<Tax> taxes = taxDAO.getTaxesForPeriod(period);
         ArrayList<FXRateDTO> fxRates = fxRateDAO.getAllFXRatesForPeriod(period);
         BigDecimal changeRate = new BigDecimal(0);
         String currency = new String();
@@ -53,8 +61,12 @@ public class SalesReportServiceImpl implements SalesReportService {
         monthReportLineTotal.setApplications(new ArrayList<ApplicationReportSummary>());
         if (sales != null && sales.size() > 0) {
            logger.debug("Processing  "+sales.size()+" lines");
+           BigDecimal taxRate = new BigDecimal(0);
             for (Sales sale : sales) {
                 Zone zone = sale.getZone();
+
+                
+                // get tax rate for zone
                 if (zone != currentZone && monthReportList != null) {
                     if (applicationSumary != null) {
                         monthReportLine.getApplications()
@@ -76,6 +88,13 @@ public class SalesReportServiceImpl implements SalesReportService {
                             break;
                         }
                     }
+                    taxRate = new BigDecimal(0);
+                    for (Tax tax : taxes) {
+                        if (tax.getZone().equals(zone)){
+                           taxRate = tax.getRate();
+                           break;
+                        }
+                    }
                 } else {
                     if (currentZone == null) {
                         changeRate = new BigDecimal(0);
@@ -85,6 +104,13 @@ public class SalesReportServiceImpl implements SalesReportService {
                                 changeRate = fxRate.getRate();
                                 currency = fxRate.getCurrencyIso();
                                 break;
+                            }
+                        }
+                        taxRate = new BigDecimal(0);
+                        for (Tax tax : taxes) {
+                            if (tax.getZone().equals(zone)){
+                               taxRate = tax.getRate();
+                               break;
                             }
                         }
                     }
@@ -100,7 +126,9 @@ public class SalesReportServiceImpl implements SalesReportService {
                             0));
                     applicationSumary
                             .setReferenceCurrencyAmount(new BigDecimal(0));
-                } else {
+                    applicationSumary.setOriginalCurrencyProceedsAfterTax(new BigDecimal(
+                            0));
+                    } else {
                     if (applicationSumary == null) {
                         applicationSumary = new ApplicationReportSummary();
                         applicationSumary
@@ -109,7 +137,8 @@ public class SalesReportServiceImpl implements SalesReportService {
                         .setOriginalCurrencyProceeds(new BigDecimal(0));
                         applicationSumary
                                 .setReferenceCurrencyAmount(new BigDecimal(0));
-                    }
+                        applicationSumary
+                        .setOriginalCurrencyProceedsAfterTax(new BigDecimal(0));                    }
                 }
                 applicationSumary.setApplicationName(application.getName());
                 applicationSumary.setSalesNumber(applicationSumary
@@ -119,6 +148,8 @@ public class SalesReportServiceImpl implements SalesReportService {
                 if (applicationSumary.getOriginalCurrencyAmount()==null){
                    applicationSumary.setOriginalCurrencyAmount(new BigDecimal(0));
                 }
+
+                
                 applicationSumary.setOriginalCurrencyAmount(applicationSumary
                         .getOriginalCurrencyAmount().add(sale.getTotalPrice()));
                 if (applicationSumary.getOriginalCurrencyProceeds()==null){
@@ -126,6 +157,11 @@ public class SalesReportServiceImpl implements SalesReportService {
                  }
                  applicationSumary.setOriginalCurrencyProceeds(applicationSumary
                          .getOriginalCurrencyProceeds().add((sale.getTotalProceeds()!=null)?sale.getTotalProceeds():new BigDecimal(0)));
+                 if (applicationSumary.getOriginalCurrencyProceedsAfterTax()==null){
+                     applicationSumary.setOriginalCurrencyProceedsAfterTax(new BigDecimal(0));
+                  }
+                  applicationSumary.setOriginalCurrencyProceedsAfterTax(applicationSumary
+                          .getOriginalCurrencyProceedsAfterTax().add((sale.getTotalProceeds()!=null)?(sale.getTotalProceeds().multiply((new BigDecimal(1).subtract(taxRate)))):new BigDecimal(0)));
                 applicationSumary.setReferenceCurrency(currency);
                 if (applicationSumary.getReferenceCurrencyAmount()==null){
                    applicationSumary.setReferenceCurrencyAmount(new BigDecimal(0));
@@ -141,6 +177,12 @@ public class SalesReportServiceImpl implements SalesReportService {
                          .getReferenceCurrencyProceeds().add(
                                  ((sale.getTotalProceeds()!=null)?sale.getTotalProceeds():new BigDecimal(0)).multiply(changeRate)));
                  
+                 if (applicationSumary.getReferenceCurrencyProceedsAfterTax()==null){
+                     applicationSumary.setReferenceCurrencyProceedsAfterTax(new BigDecimal(0));
+                  }
+                  applicationSumary.setReferenceCurrencyProceedsAfterTax(applicationSumary
+                          .getReferenceCurrencyProceedsAfterTax().add(
+                                  ((sale.getTotalProceeds()!=null)?(sale.getTotalProceeds().multiply((new BigDecimal(1).subtract(taxRate)))):new BigDecimal(0)).multiply(changeRate))); 
                 monthReportLine.setZoneName(zone.getName());
                 currentApplication = application;
                 currentZone = zone;
@@ -175,8 +217,10 @@ public class SalesReportServiceImpl implements SalesReportService {
         ApplicationReportSummary total = new  ApplicationReportSummary();
         total.setReferenceCurrencyAmount(new BigDecimal(0));
         total.setReferenceCurrencyProceeds(new BigDecimal(0));
+        total.setReferenceCurrencyProceedsAfterTax(new BigDecimal(0));
         total.setOriginalCurrencyAmount(new BigDecimal(0));
         total.setOriginalCurrencyProceeds(new BigDecimal(0));
+        total.setOriginalCurrencyProceedsAfterTax(new BigDecimal(0));
         for ( ApplicationReportSummary reportSummary: monthReportLine.getApplications()) {
             total.setApplicationName(ZONE_TOTAL_COLUMN);
             if (reportSummary.getOriginalCurrencyAmount()!=null){
@@ -185,14 +229,20 @@ public class SalesReportServiceImpl implements SalesReportService {
             if (reportSummary.getOriginalCurrencyProceeds()!=null){
             total.setOriginalCurrencyProceeds(total.getOriginalCurrencyProceeds().add(reportSummary.getOriginalCurrencyProceeds()));
             }
+            if (reportSummary.getOriginalCurrencyProceedsAfterTax()!=null){
+            total.setOriginalCurrencyProceedsAfterTax(total.getOriginalCurrencyProceedsAfterTax().add(reportSummary.getOriginalCurrencyProceedsAfterTax()));
+            }
             total.setReferenceCurrencyAmount(total.getReferenceCurrencyAmount().add(reportSummary.getReferenceCurrencyAmount()));
             total.setReferenceCurrencyProceeds(total.getReferenceCurrencyProceeds().add(reportSummary.getReferenceCurrencyProceeds()));
+            total.setReferenceCurrencyProceedsAfterTax(total.getReferenceCurrencyProceedsAfterTax().add(reportSummary.getReferenceCurrencyProceedsAfterTax()));
+
             total.setReferenceCurrency(reportSummary.getReferenceCurrency());
             total.setSalesNumber(total.getSalesNumber()+reportSummary.getSalesNumber());
             boolean appFound = false;
             if (monthReportLineTotal == monthReportLine){
                 total.setOriginalCurrencyAmount(null);
                 total.setOriginalCurrencyProceeds(null); 
+                total.setOriginalCurrencyProceedsAfterTax(null); 
             }
             if (monthReportLineTotal != monthReportLine){
             for (ApplicationReportSummary reportSummaryTotal : monthReportLineTotal.getApplications()){
@@ -201,6 +251,7 @@ public class SalesReportServiceImpl implements SalesReportService {
                     reportSummaryTotal.setSalesNumber(reportSummaryTotal.getSalesNumber()+reportSummary.getSalesNumber());
                     reportSummaryTotal.setReferenceCurrencyAmount(reportSummaryTotal.getReferenceCurrencyAmount().add(reportSummary.getReferenceCurrencyAmount()));
                     reportSummaryTotal.setReferenceCurrencyProceeds(reportSummaryTotal.getReferenceCurrencyProceeds().add(reportSummary.getReferenceCurrencyProceeds()));
+                    reportSummaryTotal.setReferenceCurrencyProceedsAfterTax(reportSummaryTotal.getReferenceCurrencyProceedsAfterTax().add(reportSummary.getReferenceCurrencyProceedsAfterTax()));
                 }
             }
             if (!appFound){
@@ -209,6 +260,7 @@ public class SalesReportServiceImpl implements SalesReportService {
                 reportSummaryTotal.setSalesNumber(reportSummary.getSalesNumber());
                 reportSummaryTotal.setReferenceCurrencyAmount(reportSummary.getReferenceCurrencyAmount());
                 reportSummaryTotal.setReferenceCurrencyProceeds(reportSummary.getReferenceCurrencyProceeds());
+                reportSummaryTotal.setReferenceCurrencyProceedsAfterTax(reportSummary.getReferenceCurrencyProceedsAfterTax());
                 monthReportLineTotal.getApplications().add(reportSummaryTotal);
             }}
         }

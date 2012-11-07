@@ -41,7 +41,6 @@ public class CompanyManagement extends Composite implements WidgetSwitchManageme
    private CompanyDTO selectedCompany;
    private int currentPage = 0;
    private boolean editionInProgress;
-   private String oldCompanyCodeTextBoxContent;
    private String oldCompanyNameTextBoxContent;
    private String oldCompanyCurrencyISOTextBoxContent;
    private boolean reverseSelection = false;

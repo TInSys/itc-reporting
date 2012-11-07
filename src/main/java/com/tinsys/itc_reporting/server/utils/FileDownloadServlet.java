@@ -23,14 +23,12 @@ import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -108,10 +106,10 @@ public class FileDownloadServlet extends HttpServlet {
             firstHeaderRow.setHeight((short) (16 * 20));
             Cell firstHeaderCell;
             for (int j = 0; j < applications.size(); j++) {
-                firstHeaderCell = firstHeaderRow.createCell((j * 5) + 1);
+                firstHeaderCell = firstHeaderRow.createCell((j * 7) + 1);
                 firstHeaderCell.setCellValue(applications.get(j));
                 CellRangeAddress region = new CellRangeAddress(0, 0,
-                        (j * 5) + 1, (j * 5) + 5);
+                        (j * 7) + 1, (j * 7) + 7);
                 sheet.addMergedRegion(region);
                 if ((j % 2)==0){
                     firstHeaderCell.setCellStyle(styles.get("appFirstHeader1"));
@@ -125,20 +123,26 @@ public class FileDownloadServlet extends HttpServlet {
             secondHeaderRow.setHeight((short) (14 * 20));
             Cell secondHeaderCell;
             for (int j = 0; j < applications.size(); j++) {
-                secondHeaderCell = secondHeaderRow.createCell((j * 5) + 1);
+                secondHeaderCell = secondHeaderRow.createCell((j * 7) + 1);
                 secondHeaderCell.setCellValue("Sales #");
                 secondHeaderCell.setCellStyle(styles.get("secondHeader"));
-                secondHeaderCell = secondHeaderRow.createCell((j * 5) + 2);
+                secondHeaderCell = secondHeaderRow.createCell((j * 7) + 2);
                 secondHeaderCell.setCellValue("Total orig. currency");
                 secondHeaderCell.setCellStyle(styles.get("secondHeader"));
-                secondHeaderCell = secondHeaderRow.createCell((j * 5) + 3);
+                secondHeaderCell = secondHeaderRow.createCell((j * 7) + 3);
                 secondHeaderCell.setCellValue("Total ref. currency");
                 secondHeaderCell.setCellStyle(styles.get("secondHeader"));
-                secondHeaderCell = secondHeaderRow.createCell((j * 5) + 4);
+                secondHeaderCell = secondHeaderRow.createCell((j * 7) + 4);
                 secondHeaderCell.setCellValue("Proceeds orig. currency");
                 secondHeaderCell.setCellStyle(styles.get("secondHeader"));
-                secondHeaderCell = secondHeaderRow.createCell((j * 5) + 5);
+                secondHeaderCell = secondHeaderRow.createCell((j * 7) + 5);
                 secondHeaderCell.setCellValue("Proceeds ref. currency");
+                secondHeaderCell.setCellStyle(styles.get("secondHeader"));
+                secondHeaderCell = secondHeaderRow.createCell((j * 7) + 6);
+                secondHeaderCell.setCellValue("Proceeds orig. curr. after Taxes");
+                secondHeaderCell.setCellStyle(styles.get("secondHeader"));
+                secondHeaderCell = secondHeaderRow.createCell((j * 7) + 7);
+                secondHeaderCell.setCellValue("Proceeds ref. curr. after Taxes");
                 secondHeaderCell.setCellStyle(styles.get("secondHeader"));
                 sheet.setColumnWidth(0, 30 * 256);
             }
@@ -160,10 +164,10 @@ public class FileDownloadServlet extends HttpServlet {
                             .getApplications()) {
                         if (applicationReportSummary.getApplicationName()
                                 .equals(applications.get(i))) {
-                            dataCell = dataRow.createCell((i * 5) + 1);
+                            dataCell = dataRow.createCell((i * 7) + 1);
                             dataCell.setCellValue(applicationReportSummary
                                     .getSalesNumber());
-                            dataCell = dataRow.createCell((i * 5) + 2);
+                            dataCell = dataRow.createCell((i * 7) + 2);
                             if (applicationReportSummary
                                     .getOriginalCurrencyAmount() != null) {
                                 dataCell.setCellStyle(cs);
@@ -172,13 +176,13 @@ public class FileDownloadServlet extends HttpServlet {
                                         .doubleValue());
                             }
                             ;
-                            dataCell = dataRow.createCell((i * 5) + 3);
+                            dataCell = dataRow.createCell((i * 7) + 3);
                             dataCell.setCellStyle(cs);
                             dataCell.setCellValue(applicationReportSummary
                                     .getReferenceCurrencyAmount().doubleValue());
                             
                             
-                            dataCell = dataRow.createCell((i * 5) + 4);
+                            dataCell = dataRow.createCell((i * 7) + 4);
                             if (applicationReportSummary
                                     .getOriginalCurrencyProceeds() != null) {
                                 dataCell.setCellStyle(cs);
@@ -187,17 +191,32 @@ public class FileDownloadServlet extends HttpServlet {
                                         .doubleValue());
                             }
                             ;
-                            dataCell = dataRow.createCell((i * 5) + 5);
+                            dataCell = dataRow.createCell((i * 7) + 5);
                             dataCell.setCellStyle(cs);
                             dataCell.setCellValue(applicationReportSummary
                                     .getReferenceCurrencyProceeds().doubleValue());
+                            
+                            dataCell = dataRow.createCell((i * 7) + 6);
+                            if (applicationReportSummary
+                                    .getOriginalCurrencyProceedsAfterTax() != null) {
+                                dataCell.setCellStyle(cs);
+                                dataCell.setCellValue(applicationReportSummary
+                                        .getOriginalCurrencyProceedsAfterTax()
+                                        .doubleValue());
+                            }
+                            ;
+                            dataCell = dataRow.createCell((i * 7) + 7);
+                            dataCell.setCellStyle(cs);
+                            dataCell.setCellValue(applicationReportSummary
+                                    .getReferenceCurrencyProceedsAfterTax().doubleValue());
                         }
                     }
 
                 }
                 currentIndex += 1;
             }
-            for (int i = 0; i < ((applications.size() * 5) + 1); i++) {
+            for (int i = 0; i < ((applications.size() * 7) + 1); i++) {
+                System.out.println(" -----> index "+i);
                 sheet.autoSizeColumn(i);
             }
             workbook.write(outPutToFile);
