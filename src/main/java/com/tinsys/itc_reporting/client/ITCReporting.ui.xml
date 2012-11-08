@@ -55,8 +55,8 @@
 				</g:StackLayoutPanel>
 			</g:west>
 			<g:center>
-				<g:ScrollPanel ui:field="mainPanel">
-				</g:ScrollPanel>
+				<g:SimplePanel ui:field="mainPanel" >
+				</g:SimplePanel>
 			</g:center>
 			<g:north size="0">
 				<g:HorizontalPanel />

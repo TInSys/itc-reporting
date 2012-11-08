@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.builder.shared.TableCellBuilder;
 import com.google.gwt.dom.builder.shared.TableRowBuilder;
 import com.google.gwt.dom.client.Style.Unit;
@@ -14,6 +16,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -32,7 +35,9 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.ResizeLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
@@ -52,6 +57,7 @@ public class MonthlySalesReport extends Composite implements
     private String currentReport;
 
     private static Binder uiBinder = GWT.create(Binder.class);
+    private CellTable.Resources tableRes = GWT.create(CellTableRes.class);
     private SalesReportServiceAsync salesReportService = GWT
             .create(SalesReportService.class);
     private boolean editionInProgress;
@@ -80,7 +86,19 @@ public class MonthlySalesReport extends Composite implements
     ListBox yearPeriodListBox = new ListBox();
 
     @UiField
-    CellTable<ZoneReportSummary> salesDataGrid = new CellTable<ZoneReportSummary>();
+    HorizontalPanel widgetRootPanel = new HorizontalPanel();
+
+    @UiField
+    ResizeLayoutPanel resizablePanel = new ResizeLayoutPanel();
+
+    @UiField(provided = true)
+    CellTable<ZoneReportSummary> salesDataGrid = new CellTable<ZoneReportSummary>(
+            20, tableRes);
+
+    @UiField(provided = true)
+    CellTable<ZoneReportSummary> salesFixedColumn = new CellTable<ZoneReportSummary>(
+            20, tableRes);
+
     protected ArrayList<ZoneDTO> zoneList;
 
     @UiTemplate("MonthlySalesReport.ui.xml")
@@ -152,6 +170,7 @@ public class MonthlySalesReport extends Composite implements
             for (int i = colCount - 1; i >= 0; i--) {
                 salesDataGrid.removeColumn(i);
             }
+            salesFixedColumn.removeColumn(0);
         }
         salesReportService.getMonthlyReport(monthPeriodDto,
                 new AsyncCallback<List<ZoneReportSummary>>() {
@@ -193,12 +212,11 @@ public class MonthlySalesReport extends Composite implements
                 if (i == 0) {
                     aColumn = new TextColumn<ZoneReportSummary>() {
                         public String getValue(ZoneReportSummary object) {
-                            return object.getZoneName();
+                            return object.getZoneName().replace(" ", " ");
                         }
                     };
-                    salesDataGrid.addColumn(aColumn, "Zone ");
-                    headers.add("Zone");
-                    salesDataGrid.setColumnWidth(aColumn, 20, Unit.EM);
+                    salesFixedColumn.addColumn(aColumn, "Zone ");
+                    salesFixedColumn.setColumnWidth(aColumn, 10, Unit.EM);
                 } else {
                     generateColumn("SalesNumber", applications, index);
                     if (currentReport.equals(SALES_REPORT)) {
@@ -206,12 +224,12 @@ public class MonthlySalesReport extends Composite implements
                                 index);
                         generateColumn("ReferenceCurrencyAmount", applications,
                                 index);
-                    } else if (currentReport.equals(PROCEEDS_REPORT)){
+                    } else if (currentReport.equals(PROCEEDS_REPORT)) {
                         generateColumn("OriginalCurrencyProceeds",
                                 applications, index);
                         generateColumn("ReferenceCurrencyProceeds",
                                 applications, index);
-                    } else if (currentReport.equals(PROCEEDS_AFTER_TAX_REPORT)){
+                    } else if (currentReport.equals(PROCEEDS_AFTER_TAX_REPORT)) {
                         generateColumn("OriginalCurrencyProceedsAfterTax",
                                 applications, index);
                         generateColumn("ReferenceCurrencyProceedsAfterTax",
@@ -223,7 +241,19 @@ public class MonthlySalesReport extends Composite implements
         }
         if (result.size() > 0) {
             salesDataGrid.setHeaderBuilder(new CustomHeaderBuilder());
-        } 
+            salesFixedColumn.setHeaderBuilder(new CustomHeaderBuilderBis());
+        }
+        salesFixedColumn.setRowCount(result.size(), true);
+        salesFixedColumn.setPageSize(20);
+        if (pager.getDisplay() == null) {
+            pager.setDisplay(salesFixedColumn);
+        }
+        pager.setRangeLimited(true);
+        provider.getList().clear();
+        if (provider.getDataDisplays().contains(salesFixedColumn)) {
+            provider.removeDataDisplay(salesFixedColumn);
+        }
+        provider.addDataDisplay(salesFixedColumn);
         salesDataGrid.setRowCount(result.size(), true);
         salesDataGrid.setPageSize(20);
         if (pager.getDisplay() == null) {
@@ -235,8 +265,19 @@ public class MonthlySalesReport extends Composite implements
             provider.removeDataDisplay(salesDataGrid);
         }
         provider.addDataDisplay(salesDataGrid);
+
         provider.refresh();
         provider.getList().addAll(result);
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            @Override
+            public void execute() {
+                resizablePanel.setHeight(""
+                        + (salesFixedColumn.getOffsetHeight()) + "px");
+                resizablePanel.setWidth(""
+                        + (widgetRootPanel.getOffsetWidth() - 180) + "px");
+            }
+        });
+
     }
 
     private void generateColumn(final String col,
@@ -254,12 +295,18 @@ public class MonthlySalesReport extends Composite implements
                                     .getOriginalCurrencyAmount() != null) {
                                 content = myFormatter
                                         .format(applicationReportSummary
-                                                .getOriginalCurrencyAmount())+" "+applicationReportSummary.getOriginalCurrency();
+                                                .getOriginalCurrencyAmount())
+                                        + " "
+                                        + applicationReportSummary
+                                                .getOriginalCurrency();
                             }
                         } else if (col.equals("ReferenceCurrencyAmount")) {
                             content = myFormatter
                                     .format(applicationReportSummary
-                                            .getReferenceCurrencyAmount())+" "+applicationReportSummary.getReferenceCurrency();
+                                            .getReferenceCurrencyAmount())
+                                    + " "
+                                    + applicationReportSummary
+                                            .getReferenceCurrency();
                         } else if (col.equals("SalesNumber")) {
                             content = String.valueOf(applicationReportSummary
                                     .getSalesNumber());
@@ -268,34 +315,47 @@ public class MonthlySalesReport extends Composite implements
                                     .getOriginalCurrencyProceeds() != null) {
                                 content = myFormatter
                                         .format(applicationReportSummary
-                                                .getOriginalCurrencyProceeds())+" "+applicationReportSummary.getOriginalCurrency();
+                                                .getOriginalCurrencyProceeds())
+                                        + " "
+                                        + applicationReportSummary
+                                                .getOriginalCurrency();
                             }
                         } else if (col.equals("ReferenceCurrencyProceeds")) {
                             content = myFormatter
                                     .format(applicationReportSummary
-                                            .getReferenceCurrencyProceeds())+" "+applicationReportSummary.getReferenceCurrency();
-                        } else if (col.equals("OriginalCurrencyProceedsAfterTax")) {
+                                            .getReferenceCurrencyProceeds())
+                                    + " "
+                                    + applicationReportSummary
+                                            .getReferenceCurrency();
+                        } else if (col
+                                .equals("OriginalCurrencyProceedsAfterTax")) {
                             if (applicationReportSummary
                                     .getOriginalCurrencyProceeds() != null) {
                                 content = myFormatter
                                         .format(applicationReportSummary
-                                                .getOriginalCurrencyProceedsAfterTax())+" "+applicationReportSummary.getOriginalCurrency();
+                                                .getOriginalCurrencyProceedsAfterTax())
+                                        + " "
+                                        + applicationReportSummary
+                                                .getOriginalCurrency();
                             }
-                        } else if (col.equals("ReferenceCurrencyProceedsAfterTax")) {
+                        } else if (col
+                                .equals("ReferenceCurrencyProceedsAfterTax")) {
                             content = myFormatter
                                     .format(applicationReportSummary
-                                            .getReferenceCurrencyProceedsAfterTax())+" "+applicationReportSummary.getReferenceCurrency();
-                        } 
+                                            .getReferenceCurrencyProceedsAfterTax())
+                                    + " "
+                                    + applicationReportSummary
+                                            .getReferenceCurrency();
+                        }
                     }
                 }
                 return content;
             }
         };
-        if (!col.equals("SalesNumber")){
+        if (!col.equals("SalesNumber")) {
             aColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
         }
         salesDataGrid.addColumn(aColumn, applications.get(index - 1));
-        salesDataGrid.setColumnWidth(aColumn, 150, Unit.PX);
     }
 
     @Override
@@ -328,13 +388,14 @@ public class MonthlySalesReport extends Composite implements
         protected boolean buildHeaderOrFooterImpl() {
             if (headers.size() > 0) {
                 TableRowBuilder tr = startRow();
-                tr.startTH().colSpan(1).rowSpan(1);
-                tr.endTH();
+                /*
+                 * tr.startTH().colSpan(1).rowSpan(1); tr.endTH();
+                 */
 
-                String styleDescription = "padding: 3px 15px;font-size: 1.1em; text-align:center;color: #4B4A4A;text-shadow: 1px 1px 0 #DDDDFF;background-color:#E8E8E8;";
+                String styleDescription = "border-bottom: 2px solid #6f7277;padding: 3px 15px;text-align: left;color: #4b4a4a;text-shadow: #ddf 15px 15px 0;overflow: hidden;";
                 TableCellBuilder th = tr.startTH().colSpan(3)
                         .attribute("style", styleDescription);
-                for (int i = 1; i < headers.size(); i++) {
+                for (int i = 0; i < headers.size(); i++) {
                     th.text(headers.get(i)).endTH();
                     styleDescription = styleToggle(styleDescription,
                             "background-color:#E8E8E8;",
@@ -351,54 +412,49 @@ public class MonthlySalesReport extends Composite implements
                 tr = startRow();
                 int colGroupIndex = 0;
                 for (int i = 0; i < salesDataGrid.getColumnCount(); i++) {
-                    if (i == 0) {
-                        Header<String> zoneHeader = new TextHeader(
-                                headers.get(i));
-                        buildHeader(tr, zoneHeader, salesDataGrid.getColumn(i),
+
+                    Header<String> theHeader = new TextHeader("");
+                    switch (colGroupIndex) {
+                    case 0:
+                        theHeader = new TextHeader("Sales #            ");
+                        buildHeader(tr, theHeader, salesDataGrid.getColumn(i),
                                 false, false);
-                        colGroupIndex += 1;
-                    } else {
-                        Header<String> theHeader = new TextHeader("");
-                        switch (colGroupIndex) {
-                        case 1:
-                            theHeader = new TextHeader("Sales #");
-                            buildHeader(tr, theHeader,
-                                    salesDataGrid.getColumn(i), false, false);
-                            break;
-                        case 2:
-                            if (currentReport.equals(SALES_REPORT)) {
-                                theHeader = new TextHeader(
-                                        "Total orig. currency");
-                            } else if (currentReport.equals(PROCEEDS_REPORT)) {
-                                theHeader = new TextHeader(
-                                        "Proceeds orig. currency");
-                            } else if (currentReport.equals(PROCEEDS_AFTER_TAX_REPORT)) {
-                                theHeader = new TextHeader(
-                                        "Proceeds orig. curr. after Tax");
-                            }
-                            buildHeader(tr, theHeader,
-                                    salesDataGrid.getColumn(i), false, false);
-                            break;
-                        case 3:
-                            if (currentReport.equals(SALES_REPORT)) {
-                                theHeader = new TextHeader(
-                                        "Total ref. currency");
-                            } else if (currentReport.equals(PROCEEDS_REPORT)) {
-                                theHeader = new TextHeader(
-                                        "Proceeds ref. currency");
-                            } else if (currentReport.equals(PROCEEDS_AFTER_TAX_REPORT)) {
-                                theHeader = new TextHeader(
-                                        "Proceeds ref. curr. after Tax");
-                            }
-                            buildHeader(tr, theHeader,
-                                    salesDataGrid.getColumn(i), false, false);
-                            colGroupIndex = 0;
-                            break;
-                        default:
-                            break;
+                        break;
+                    case 1:
+                        if (currentReport.equals(SALES_REPORT)) {
+                            theHeader = new TextHeader(
+                                    "Total orig. currency             ");
+                        } else if (currentReport.equals(PROCEEDS_REPORT)) {
+                            theHeader = new TextHeader(
+                                    "Proceeds orig. currency          ");
+                        } else if (currentReport
+                                .equals(PROCEEDS_AFTER_TAX_REPORT)) {
+                            theHeader = new TextHeader(
+                                    "Proceeds orig. curr. after Tax   ");
                         }
-                        colGroupIndex += 1;
+                        buildHeader(tr, theHeader, salesDataGrid.getColumn(i),
+                                false, false);
+                        break;
+                    case 2:
+                        if (currentReport.equals(SALES_REPORT)) {
+                            theHeader = new TextHeader(
+                                    "Total ref. currency              ");
+                        } else if (currentReport.equals(PROCEEDS_REPORT)) {
+                            theHeader = new TextHeader(
+                                    "Proceeds ref. currency           ");
+                        } else if (currentReport
+                                .equals(PROCEEDS_AFTER_TAX_REPORT)) {
+                            theHeader = new TextHeader(
+                                    "Proceeds ref. curr. after Tax    ");
+                        }
+                        buildHeader(tr, theHeader, salesDataGrid.getColumn(i),
+                                false, false);
+                        colGroupIndex = -1;
+                        break;
+                    default:
+                        break;
                     }
+                    colGroupIndex += 1;
 
                 }
                 tr.endTR();
@@ -460,6 +516,78 @@ public class MonthlySalesReport extends Composite implements
             renderHeader(th, context, header);
             // End the table cell.
             th.endTH();
+
+        }
+    }
+
+    private class CustomHeaderBuilderBis extends
+            AbstractHeaderOrFooterBuilder<ZoneReportSummary> {
+
+        public CustomHeaderBuilderBis() {
+            super(salesFixedColumn, false);
+            setSortIconStartOfLine(false);
+        }
+
+        @Override
+        protected boolean buildHeaderOrFooterImpl() {
+            if (salesFixedColumn.getColumnCount() > 0) {
+                TableRowBuilder tr = startRow();
+                String styleDescription = "border-bottom: 2px solid #6f7277;padding: 3px 15px;text-align: left;color: #4b4a4a;text-shadow: #ddf 15px 15px 0;overflow: hidden;";
+                TableCellBuilder th = tr.startTH().attribute("style",
+                        styleDescription);
+
+                th.text(" ").endTH();
+                tr = startRow();
+                Header<String> zoneHeader = new TextHeader("");
+                buildHeader(tr, zoneHeader, salesFixedColumn.getColumn(0),
+                        false, false);
+                tr.endTR();
+
+                return true;
+            }
+            return false;
+
+        }
+
+        /**
+         * Renders the header of one column, with the given options.
+         * 
+         * @param out
+         *            the table row to build into
+         * @param header
+         *            the {@link Header} to render
+         * @param column
+         *            the column to associate with the header
+         * @param sortedColumn
+         *            the column that is currently sorted
+         * @param isSortAscending
+         *            true if the sorted column is in ascending order
+         * @param isFirst
+         *            true if this the first column
+         * @param isLast
+         *            true if this the last column
+         */
+        private void buildHeader(TableRowBuilder out, Header<?> header,
+                Column<ZoneReportSummary, ?> column, boolean isFirst,
+                boolean isLast) {
+            // Choose the classes to include with the element.
+            Style style = salesFixedColumn.getResources().style();
+            StringBuilder classesBuilder = new StringBuilder(style.header());
+            if (isFirst) {
+                classesBuilder.append(" " + style.firstColumnHeader());
+            }
+            if (isLast) {
+                classesBuilder.append(" " + style.lastColumnHeader());
+            }
+            if (column.isSortable()) {
+                classesBuilder.append(" " + style.sortableHeader());
+            }
+
+            // Create the table cell.
+            TableCellBuilder th = out.startTH().className(
+                    classesBuilder.toString());
+            th.html(new SafeHtmlBuilder().appendEscapedLines("Zone")
+                    .toSafeHtml()).endTH();
         }
     }
 

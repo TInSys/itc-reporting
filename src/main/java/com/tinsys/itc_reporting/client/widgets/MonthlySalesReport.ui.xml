@@ -4,7 +4,7 @@
 	xmlns:dp="urn:import:com.google.gwt.user.datepicker.client">
 	<ui:style src="../mainStyles.css" />
 		
-	<g:HorizontalPanel width="99%" borderWidth="1">
+	<g:HorizontalPanel width="99%" ui:field="widgetRootPanel">
 
 		<g:VerticalPanel width="100%" styleName="{style.marge}">
 			<g:HorizontalPanel>
@@ -16,11 +16,30 @@
 				<g:ListBox ui:field="yearPeriodListBox" styleName="{style.marge}" />
 			</g:HorizontalPanel>
 
-			<g:VerticalPanel width="100%">
-				<c:CellTable ui:field="salesDataGrid" width="99%" />
-				<c:SimplePager ui:field='pager' location='CENTER' />
+			<g:HTMLPanel width="100%">
+				<table width="100%">
+					<tr>
+						<td width="150px">
+							<g:ScrollPanel>
+								<c:CellTable ui:field="salesFixedColumn"
+									tableLayoutFixed="false" height="90%" />
+							</g:ScrollPanel>
+						</td>
+						<td>
+							<g:ResizeLayoutPanel ui:field="resizablePanel"
+								height="450px" width="1000px">
+								<g:CustomScrollPanel>
+									<c:CellTable ui:field="salesDataGrid"
+										tableLayoutFixed="false" width="100%" height="100%" />
+								</g:CustomScrollPanel>
+							</g:ResizeLayoutPanel>
+						</td>
+					</tr>
+				</table>
+			</g:HTMLPanel>
 
-			</g:VerticalPanel>
+			<c:SimplePager ui:field='pager' location='CENTER' />
+
 
 			<g:HTMLPanel>
 				<table>

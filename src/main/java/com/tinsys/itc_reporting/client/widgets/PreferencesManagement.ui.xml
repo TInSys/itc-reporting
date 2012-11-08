@@ -2,7 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:c="urn:import:com.google.gwt.user.cellview.client">
 	<ui:style src="../mainStyles.css" />	
-	<g:HorizontalPanel width="100%" borderWidth="1">
+	<g:HorizontalPanel width="98%" borderWidth="1">
 		<g:VerticalPanel width="100%" styleName="{style.principal}">
 			<g:HTMLPanel>
 				<table>
