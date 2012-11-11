@@ -1,4 +1,4 @@
-package com.tinsys.itc_reporting.client.widgets;
+package com.tinsys.itc_reporting.client.widgets.utils;
 
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.CellTable.Resources;

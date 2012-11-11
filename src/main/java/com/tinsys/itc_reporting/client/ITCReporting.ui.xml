@@ -32,7 +32,9 @@
                         text="Manage Applications" styleName="{style.stackButton}" />
                      <g:PushButton ui:field="CompanyManagementPushButton"
                         text="Manage Companies" styleName="{style.stackButton}" />
-						</g:FlowPanel>
+                     <g:PushButton ui:field="RoyaltyManagementPushButton"
+                        text="Manage Royalties" styleName="{style.stackButton}" />
+  						</g:FlowPanel>
 					</g:stack>
 					<g:stack>
 						<g:header size='3'>

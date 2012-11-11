@@ -37,11 +37,7 @@ public class FXRateDAOImpl implements FXRateDAO {
     @Override
     public ArrayList<FXRateDTO> getAllFXRates(ZoneDTO zoneDTO) {
         ArrayList<FXRateDTO> result = new ArrayList<FXRateDTO>();
-        Zone zone = new Zone();
-        zone.setId(zoneDTO.getId());
-        zone.setCode(zoneDTO.getCode());
-        zone.setName(zoneDTO.getName());
-        zone.setCurrencyISO(zoneDTO.getCurrencyISO());
+        Zone zone = DTOUtils.zoneDTOToZone(zoneDTO);
 
         ArrayList<FXRate> fxRateList;
         try {

@@ -27,6 +27,7 @@ import com.tinsys.itc_reporting.client.widgets.FXRateManagementByZone;
 import com.tinsys.itc_reporting.client.widgets.FinancialReportFilesImporter;
 import com.tinsys.itc_reporting.client.widgets.MonthlySalesReport;
 import com.tinsys.itc_reporting.client.widgets.PreferencesManagement;
+import com.tinsys.itc_reporting.client.widgets.RoyaltyManagement;
 import com.tinsys.itc_reporting.client.widgets.TaxManagement;
 import com.tinsys.itc_reporting.client.widgets.WidgetSwitchManagement;
 import com.tinsys.itc_reporting.client.widgets.ZoneManagement;
@@ -191,6 +192,23 @@ public class ITCReporting implements EntryPoint {
       }
   }
   
+  @UiHandler("RoyaltyManagementPushButton")
+  void handleClickRoyaltyManagementPushButton(ClickEvent e) {
+      if (mainPanel.getWidget() != null) {
+          WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel
+                  .getWidget();
+          if (!widgetStatus.isEditing()) {
+              mainPanel.remove(mainPanel.getWidget());
+              mainPanel.add(new RoyaltyManagement());
+          } else {
+              showSaveAlert();
+          }
+      } else {
+          mainPanel.add(new RoyaltyManagement());
+      }
+  }
+  
+  
   @UiHandler("importFinancialFilesPushButton")
   void handleClickImportFinancialFilesPushButton(ClickEvent e) {
       if (mainPanel.getWidget() != null) {
@@ -222,6 +240,7 @@ public class ITCReporting implements EntryPoint {
           mainPanel.add(new MonthlySalesReport());
       }
   }
+  
   private void showSaveAlert() {
       final DialogBox simplePopup = new DialogBox(true);
       simplePopup.setWidth("500px");

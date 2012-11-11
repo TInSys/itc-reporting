@@ -1,11 +1,18 @@
 package com.tinsys.itc_reporting.server.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.tinsys.itc_reporting.model.Application;
+import com.tinsys.itc_reporting.model.Company;
 import com.tinsys.itc_reporting.model.FiscalPeriod;
+import com.tinsys.itc_reporting.model.Royalty;
 import com.tinsys.itc_reporting.model.TaxPeriod;
 import com.tinsys.itc_reporting.model.Zone;
 import com.tinsys.itc_reporting.shared.dto.ApplicationDTO;
+import com.tinsys.itc_reporting.shared.dto.CompanyDTO;
 import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
+import com.tinsys.itc_reporting.shared.dto.RoyaltyDTO;
 import com.tinsys.itc_reporting.shared.dto.TaxPeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
@@ -26,7 +33,24 @@ public class DTOUtils {
       period.setYear(aPeriodDTO.getYear());
       return period;
    }
+
+   public static CompanyDTO companyToCompanyDTO(Company aCompany){
+       CompanyDTO companyDTO = new CompanyDTO();
+       companyDTO.setId(aCompany.getId());
+       companyDTO.setName(aCompany.getName());
+       companyDTO.setCurrencyISO(aCompany.getCurrencyISO());
+       return companyDTO;
+    }
+
    
+   public static Company companyDTOToCompany(CompanyDTO aCompanyDTO){
+       Company company = new Company();
+       company.setId(aCompanyDTO.getId());
+       company.setName(aCompanyDTO.getName());
+       company.setCurrencyISO(aCompanyDTO.getCurrencyISO());
+       return company;
+    }
+       
    public static ZoneDTO zoneToZoneDTO(Zone aZone){
       ZoneDTO zoneDTO = new ZoneDTO();
       zoneDTO.setId(aZone.getId());
@@ -76,5 +100,35 @@ public static TaxPeriodDTO taxPeriodtoTaxPeriodDTO(TaxPeriod aPeriod) {
     taxPeriodDTO.setStopDate(aPeriod.getStopDate());
     return taxPeriodDTO;
 }
+
+public static Royalty royaltyDTOToRoyalty(RoyaltyDTO aRoyaltyDTO){
+    Royalty royalty = new Royalty();
+    royalty.setId(aRoyaltyDTO.getId());
+    royalty.setShareRate(aRoyaltyDTO.getShareRate());
+    royalty.setApplication(DTOUtils.applicationDTOToApplication(aRoyaltyDTO.getApplication()));
+    royalty.setCompany(DTOUtils.companyDTOToCompany(aRoyaltyDTO.getCompany()));
+    List<Zone> zones = new ArrayList<Zone>();
+    for (ZoneDTO zoneDTO : aRoyaltyDTO.getZones()) {
+        Zone zone = DTOUtils.zoneDTOToZone(zoneDTO);
+        zones.add(zone);  
+    }
+    royalty.setZones(zones);
+    return royalty;
+ }
+
+public static RoyaltyDTO royaltyToRoyaltyDTO(Royalty aRoyalty){
+    RoyaltyDTO royaltyDTO = new RoyaltyDTO();
+    royaltyDTO.setId(aRoyalty.getId());
+    royaltyDTO.setShareRate(aRoyalty.getShareRate());
+    royaltyDTO.setApplication(DTOUtils.applicationToApplicationDTO(aRoyalty.getApplication()));
+    royaltyDTO.setCompany(DTOUtils.companyToCompanyDTO(aRoyalty.getCompany()));
+    List<ZoneDTO> zonesDTO = new ArrayList<ZoneDTO>();
+    for (Zone zone : aRoyalty.getZones()) {
+        ZoneDTO zoneDTO = DTOUtils.zoneToZoneDTO(zone);
+        zonesDTO.add(zoneDTO);  
+    }
+    royaltyDTO.setZones(zonesDTO);
+    return royaltyDTO;
+ }
 
 }

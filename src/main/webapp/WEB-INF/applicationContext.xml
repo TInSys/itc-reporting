@@ -83,4 +83,8 @@
    <bean id="companyDAO" class="com.tinsys.itc_reporting.dao.CompanyDAOImpl">
       <property name="factory" ref="sessionFactory" />
    </bean>
+
+   <bean id="royaltyDAO" class="com.tinsys.itc_reporting.dao.RoyaltyDAOImpl">
+      <property name="factory" ref="sessionFactory" />
+   </bean>
 </beans>

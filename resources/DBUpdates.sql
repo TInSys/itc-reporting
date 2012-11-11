@@ -57,6 +57,44 @@ else
                   RAISE NOTICE '';
                end;
             end if;
+-- update version 3
+            if (current_DBversion < 3) then
+               RAISE NOTICE 'Updating to version 3...';
+               begin
+               
+               CREATE TABLE royalty
+               (id serial NOT NULL,
+                share_rate numeric(10,3),
+                company bigint,
+                application bigint,
+                CONSTRAINT royalty_pkey PRIMARY KEY (id ));
+                ALTER TABLE royalty OWNER TO "ITCReporting";
+              
+               CREATE TABLE royalty_zone
+               (id serial NOT NULL,
+                royalty_id bigint,
+                zone_id bigint,
+                CONSTRAINT royalty_zone_pkey PRIMARY KEY (id ),
+                CONSTRAINT royalty_fkey FOREIGN KEY (royalty_id)
+                REFERENCES royalty (id) MATCH SIMPLE
+                ON UPDATE NO ACTION ON DELETE NO ACTION,
+                CONSTRAINT zone_fkey FOREIGN KEY (zone_id)
+                REFERENCES zone (id) MATCH SIMPLE
+                ON UPDATE NO ACTION ON DELETE NO ACTION);
+                
+               ALTER TABLE royalty_zone OWNER TO "ITCReporting";
+
+                  current_DBversion = current_DBversion + 1;
+                  update version set number = current_DBversion;
+                  RAISE NOTICE 'Done. Current version is now %',current_DBversion;
+                  RAISE NOTICE '';
+               end;
+            end if;            
+            
+            
+      
+            
+            
 
          end;
    end;

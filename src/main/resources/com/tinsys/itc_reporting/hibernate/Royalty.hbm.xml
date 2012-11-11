@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+                                   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.tinsys.itc_reporting.model.Royalty" table="royalty">
+		<id name="id" type="long">
+			<column name="id" />
+			<generator class="identity" />
+		</id>
+		<property name="shareRate" type="big_decimal">
+			<column name="share_rate" sql-type="NUMERIC(10,3)" />
+		</property>
+		<many-to-one column="company" name="company" lazy="false"
+			unique="true" />
+
+		<many-to-one column="application" name="application" lazy="false"
+			unique="true" />
+
+	   <bag name="zones" table="royalty_zone">
+         <key column="royalty_id"/>
+         <many-to-many column="zone_id" class="com.tinsys.itc_reporting.model.Zone"/>  
+      </bag>
+	</class>
+</hibernate-mapping>

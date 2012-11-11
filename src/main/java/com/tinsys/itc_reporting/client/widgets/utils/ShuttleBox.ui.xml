@@ -1,0 +1,20 @@
+<!-- <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent"> -->
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" 
+	xmlns:c="urn:import:com.google.gwt.user.cellview.client"
+	xmlns:my="urn:import:com.tinsys.itc_reporting.client.widgets.utils"
+   >
+	<ui:style>
+		
+	</ui:style>
+	<g:HTMLPanel>
+		<g:HorizontalPanel>
+			<my:SortableListBox ui:field="availableItemsListbox" />
+			<g:VerticalPanel>
+				<g:Button ui:field="addButton" text="&gt;" />
+				<g:Button ui:field="removeButton" text="&lt;" />
+			</g:VerticalPanel>
+			<my:SortableListBox ui:field="selectedItemsListbox" />
+		</g:HorizontalPanel>
+	</g:HTMLPanel>
+</ui:UiBinder> 

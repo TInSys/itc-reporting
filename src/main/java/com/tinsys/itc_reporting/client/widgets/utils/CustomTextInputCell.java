@@ -1,4 +1,4 @@
-package com.tinsys.itc_reporting.client.widgets;
+package com.tinsys.itc_reporting.client.widgets.utils;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.AbstractInputCell;

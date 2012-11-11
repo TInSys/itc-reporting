@@ -43,6 +43,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.tinsys.itc_reporting.client.service.SalesReportService;
 import com.tinsys.itc_reporting.client.service.SalesReportServiceAsync;
+import com.tinsys.itc_reporting.client.widgets.utils.CellTableRes;
 import com.tinsys.itc_reporting.shared.dto.ApplicationReportSummary;
 import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;

@@ -36,6 +36,7 @@ import com.tinsys.itc_reporting.client.service.FXRateService;
 import com.tinsys.itc_reporting.client.service.FXRateServiceAsync;
 import com.tinsys.itc_reporting.client.service.ZoneService;
 import com.tinsys.itc_reporting.client.service.ZoneServiceAsync;
+import com.tinsys.itc_reporting.client.widgets.utils.CustomTextInputCell;
 import com.tinsys.itc_reporting.shared.dto.FXRateDTO;
 import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.PreferencesDTO;
