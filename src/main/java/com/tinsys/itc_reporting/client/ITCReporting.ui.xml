@@ -10,8 +10,8 @@
             </td>
          </tr>
       </table>
-		<g:DockLayoutPanel unit="EM" height="90%">
-			<g:west size="20">
+		<g:DockLayoutPanel unit="PX" height="90%">
+			<g:west size="250">
 				<g:StackLayoutPanel unit='EM'>
 					<g:stack>
 						<g:header size='3'>

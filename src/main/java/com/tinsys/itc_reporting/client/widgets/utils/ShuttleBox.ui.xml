@@ -5,14 +5,18 @@
 	xmlns:my="urn:import:com.tinsys.itc_reporting.client.widgets.utils"
    >
 	<ui:style>
-		
+		 .marge {
+         margin: 5px;
+      }
 	</ui:style>
 	<g:HTMLPanel>
-		<g:HorizontalPanel>
+		<g:HorizontalPanel styleName="{style.marge}">
 			<my:SortableListBox ui:field="availableItemsListbox" />
-			<g:VerticalPanel>
-				<g:Button ui:field="addButton" text="&gt;" />
-				<g:Button ui:field="removeButton" text="&lt;" />
+			<g:VerticalPanel horizontalAlignment="ALIGN_CENTER" styleName="{style.marge}">
+            <g:Button ui:field="addAllButton" text="&gt;&gt;" styleName="{style.marge}"/>
+				<g:Button ui:field="addButton" text="&gt;" styleName="{style.marge}"/>
+				<g:Button ui:field="removeButton" text="&lt;" styleName="{style.marge}"/>
+            <g:Button ui:field="removeAllButton" text="&lt;&lt;" styleName="{style.marge}"/>				
 			</g:VerticalPanel>
 			<my:SortableListBox ui:field="selectedItemsListbox" />
 		</g:HorizontalPanel>

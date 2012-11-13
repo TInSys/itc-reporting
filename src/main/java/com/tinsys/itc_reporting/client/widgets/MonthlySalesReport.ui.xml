@@ -26,8 +26,7 @@
 							</g:ScrollPanel>
 						</td>
 						<td>
-							<g:ResizeLayoutPanel ui:field="resizablePanel"
-								height="450px" width="1000px">
+							<g:ResizeLayoutPanel ui:field="resizablePanel">
 								<g:CustomScrollPanel>
 									<c:CellTable ui:field="salesDataGrid"
 										tableLayoutFixed="false" width="100%" height="100%" />

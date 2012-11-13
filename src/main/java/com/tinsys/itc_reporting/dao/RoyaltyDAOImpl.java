@@ -42,8 +42,8 @@ public class RoyaltyDAOImpl implements RoyaltyDAO {
         try {
             Criteria criteria = factory.getCurrentSession().createCriteria(
                     Royalty.class);
- /*           Criteria subCriteria = criteria.createCriteria("application");
-            subCriteria.addOrder(Order.asc("name"));*/
+            Criteria subCriteria = criteria.createCriteria("application");
+            subCriteria.addOrder(Order.asc("name"));
             royaltyList = (ArrayList<Royalty>) criteria.add(
                     Restrictions.eq("company", company)).list();
         } catch (Exception e) {
@@ -65,21 +65,24 @@ public class RoyaltyDAOImpl implements RoyaltyDAO {
     }
 
     @Override
-    public RoyaltyDTO createRoyalty(RoyaltyDTO aRoyalty) {
-        // TODO Auto-generated method stub
-        return null;
+    public RoyaltyDTO createRoyalty(RoyaltyDTO aRoyaltyDTO) {
+        Royalty royalty = DTOUtils.royaltyDTOToRoyalty(aRoyaltyDTO);
+        factory.getCurrentSession().persist(royalty);
+        Long id = (Long) factory.getCurrentSession().getIdentifier(royalty);
+        aRoyaltyDTO.setId(id);
+        return aRoyaltyDTO;
     }
 
     @Override
     public RoyaltyDTO updateRoyalty(RoyaltyDTO aRoyalty) {
-        // TODO Auto-generated method stub
-        return null;
+        factory.getCurrentSession().saveOrUpdate(DTOUtils.royaltyDTOToRoyalty(aRoyalty));
+        return aRoyalty;
     }
 
     @Override
-    public void deleteRoyalty(RoyaltyDTO aRoyalty) {
-        // TODO Auto-generated method stub
-
+    public void deleteRoyalty(RoyaltyDTO aRoyaltyDTO) {
+        Royalty royalty = DTOUtils.royaltyDTOToRoyalty(aRoyaltyDTO);
+        factory.getCurrentSession().delete(royalty);
     }
 
 }

@@ -14,6 +14,8 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -108,6 +110,13 @@ public class MonthlySalesReport extends Composite implements
 
     public MonthlySalesReport() {
         initWidget(uiBinder.createAndBindUi(this));
+        Window.addResizeHandler(new ResizeHandler() {
+
+            public void onResize(ResizeEvent event) {
+              int width = event.getWidth()-400;
+              resizablePanel.setWidth(width + "px");
+            }
+          });
         reportTypeListBox.addItem(SALES_REPORT);
         reportTypeListBox.addItem(PROCEEDS_REPORT);
         reportTypeListBox.addItem(PROCEEDS_AFTER_TAX_REPORT);

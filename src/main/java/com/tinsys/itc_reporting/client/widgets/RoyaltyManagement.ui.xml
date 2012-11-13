@@ -6,25 +6,39 @@
 		
 	<g:HorizontalPanel width="100%" borderWidth="1">
 
-				<g:VerticalPanel width="100px" styleName="{style.marge}">
-					<g:HorizontalPanel width="10%">
+				<g:VerticalPanel styleName="{style.marge}">
+					<g:HorizontalPanel width="100%">
 						<g:Label text="Company :" styleName="{style.marge}" />
 						<g:ValueListBox ui:field="companyListBox"
 							styleName="{style.marge}" />
 					</g:HorizontalPanel>
 
-					<g:VerticalPanel  width="10%">
+					<g:VerticalPanel  width="100%">
 						<c:CellTable ui:field="royaltyCellTable" />
 						<c:SimplePager ui:field='pager' location='CENTER' />
 					</g:VerticalPanel>
 
-					<g:VerticalPanel  width="10%">
-						<g:Button ui:field="add" text="Add" styleName="{style.marge}" />
+					<g:VerticalPanel  width="100%">
+						<g:Button ui:field="addRoyaltyButton" text="Add" styleName="{style.marge}" />
 					</g:VerticalPanel>
 				</g:VerticalPanel>
 
-				<g:VerticalPanel width="80%" styleName="{style.marge}">
-					<my:ShuttleBox ui:field="shuttleBox" />
+				<g:VerticalPanel ui:field="royaltyDetailsPanel" width="80%" styleName="{style.marge}" visible="false">
+					<g:HorizontalPanel ui:field="applicationListBoxPanel" styleName="{style.marge}" visible="false">
+                 <g:Label text="Application" styleName="{style.marge}"/>
+                 <g:ListBox ui:field="applicationListBox" styleName="{style.marge}" />
+               </g:HorizontalPanel>
+				   <g:HorizontalPanel  styleName="{style.marge}">
+				     <g:Label text="Share Rate" styleName="{style.marge}"/>
+				     <g:TextBox ui:field="shareRateTextBox" styleName="{style.marge}" maxLength="10" visibleLength="10"/>
+				   </g:HorizontalPanel>
+					<my:ShuttleBox ui:field="shuttleBox" styleName="{style.marge}"/>
+					<g:HorizontalPanel>
+					  <g:Button ui:field="removeRoyalty" text="Delete" styleName="{style.marge}"/>
+				     <g:Button ui:field="saveRoyalty" text="Save" styleName="{style.marge}" />
+					  <g:Button ui:field="cancelUpdateRoyalty" text="Cancel unsaved changes"
+                        styleName="{style.marge}" visible="false" />
+               </g:HorizontalPanel>
 				</g:VerticalPanel>
 
 	</g:HorizontalPanel>

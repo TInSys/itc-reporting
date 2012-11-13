@@ -31,4 +31,18 @@ public class ApplicationDTO implements Serializable {
         this.name = name;
     }
     
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && (obj.getClass().equals(this.getClass()))) {
+            ApplicationDTO appDTO = (ApplicationDTO) obj;
+            return this.id == appDTO.getId();
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Long.valueOf(this.id).hashCode();
+    }
 }
