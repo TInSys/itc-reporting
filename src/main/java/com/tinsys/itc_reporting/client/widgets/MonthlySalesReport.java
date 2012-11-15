@@ -254,7 +254,6 @@ public class MonthlySalesReport extends Composite implements
             salesFixedColumn.setHeaderBuilder(new CustomHeaderBuilderBis());
         }
         salesFixedColumn.setRowCount(result.size(), true);
-        salesFixedColumn.setPageSize(20);
         if (pager.getDisplay() == null) {
             pager.setDisplay(salesFixedColumn);
         }
@@ -265,7 +264,6 @@ public class MonthlySalesReport extends Composite implements
         }
         provider.addDataDisplay(salesFixedColumn);
         salesDataGrid.setRowCount(result.size(), true);
-        salesDataGrid.setPageSize(20);
         if (pager.getDisplay() == null) {
             pager.setDisplay(salesDataGrid);
         }
@@ -402,7 +400,7 @@ public class MonthlySalesReport extends Composite implements
                  * tr.startTH().colSpan(1).rowSpan(1); tr.endTH();
                  */
 
-                String styleDescription = "border-bottom: 2px solid #6f7277;padding: 3px 15px;text-align: left;color: #4b4a4a;text-shadow: #ddf 15px 15px 0;overflow: hidden;";
+                String styleDescription = "border-bottom: 2px solid #6f7277;padding: 3px 15px;text-align: left;color: #4b4a4a;text-shadow: #ddf 1px 1px 0;overflow: hidden;";
                 TableCellBuilder th = tr.startTH().colSpan(3)
                         .attribute("style", styleDescription);
                 for (int i = 0; i < headers.size(); i++) {
@@ -542,7 +540,7 @@ public class MonthlySalesReport extends Composite implements
         protected boolean buildHeaderOrFooterImpl() {
             if (salesFixedColumn.getColumnCount() > 0) {
                 TableRowBuilder tr = startRow();
-                String styleDescription = "border-bottom: 2px solid #6f7277;padding: 3px 15px;text-align: left;color: #4b4a4a;text-shadow: #ddf 15px 15px 0;overflow: hidden;";
+                String styleDescription = "border-bottom: 2px solid #6f7277;padding: 3px 15px;text-align: left;color: #4b4a4a;text-shadow: #ddf 1px 1px 0;overflow: hidden;";
                 TableCellBuilder th = tr.startTH().attribute("style",
                         styleDescription);
 

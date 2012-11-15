@@ -4,7 +4,7 @@
 	xmlns:dp="urn:import:com.google.gwt.user.datepicker.client">
 	<ui:style src="../mainStyles.css" />
 		
-	<g:HorizontalPanel width="99%" ui:field="widgetRootPanel">
+	<g:HorizontalPanel width="99%" ui:field="widgetRootPanel" styleName="{style.noVerticalScroll}">
 
 		<g:VerticalPanel width="100%" styleName="{style.marge}">
 			<g:HorizontalPanel>
@@ -16,26 +16,27 @@
 				<g:ListBox ui:field="yearPeriodListBox" styleName="{style.marge}" />
 			</g:HorizontalPanel>
 
-			<g:HTMLPanel width="100%">
-				<table width="100%">
-					<tr>
-						<td width="150px">
+			<g:HorizontalPanel width="100%"  styleName="{style.noVerticalScroll}">
+
+						  <g:HorizontalPanel width = "150px" height = "100px">
 							<g:ScrollPanel>
 								<c:CellTable ui:field="salesFixedColumn"
 									tableLayoutFixed="false" height="90%" />
 							</g:ScrollPanel>
-						</td>
-						<td>
-							<g:ResizeLayoutPanel ui:field="resizablePanel">
-								<g:CustomScrollPanel>
+							</g:HorizontalPanel>
+
+						 <g:HorizontalPanel  styleName="{style.noVerticalScroll}">
+						
+							<g:ResizeLayoutPanel ui:field="resizablePanel" height = "100%" styleName="{style.noVerticalScroll}">
+								<g:CustomScrollPanel styleName="{style.noVerticalScroll}">
 									<c:CellTable ui:field="salesDataGrid"
-										tableLayoutFixed="false" width="100%" height="100%" />
+										tableLayoutFixed="false" width="100%" height="100%" styleName="{style.noVerticalScroll}"/>
 								</g:CustomScrollPanel>
 							</g:ResizeLayoutPanel>
-						</td>
-					</tr>
-				</table>
-			</g:HTMLPanel>
+							                    </g:HorizontalPanel>
+							
+
+			</g:HorizontalPanel>
 
 			<c:SimplePager ui:field='pager' location='CENTER' />
 

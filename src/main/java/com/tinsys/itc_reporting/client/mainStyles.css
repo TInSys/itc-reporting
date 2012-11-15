@@ -22,3 +22,6 @@
          text-align: center;
          font-size: x-large;
       }
+      .noVerticalScroll {
+        overflow-y: visible;
+      }
