@@ -43,6 +43,7 @@ import com.google.gwt.user.client.ui.ResizeLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.RangeChangeEvent;
 import com.tinsys.itc_reporting.client.service.SalesReportService;
 import com.tinsys.itc_reporting.client.service.SalesReportServiceAsync;
 import com.tinsys.itc_reporting.client.widgets.utils.CellTableRes;
@@ -76,7 +77,11 @@ public class MonthlySalesReport extends Composite implements
     @UiField
     SimplePager pager = new SimplePager(SimplePager.TextLocation.CENTER,
             pagerResources, false, 0, true);
-
+    
+    @UiField
+    SimplePager hiddenPager = new SimplePager(SimplePager.TextLocation.CENTER,
+            pagerResources, false, 0, true);
+    
     ListDataProvider<ZoneReportSummary> provider = new ListDataProvider<ZoneReportSummary>();
 
     @UiField
@@ -254,20 +259,21 @@ public class MonthlySalesReport extends Composite implements
             salesFixedColumn.setHeaderBuilder(new CustomHeaderBuilderBis());
         }
         salesFixedColumn.setRowCount(result.size(), true);
-        if (pager.getDisplay() == null) {
-            pager.setDisplay(salesFixedColumn);
+        if (hiddenPager.getDisplay() == null) {
+           hiddenPager.setDisplay(salesDataGrid);
         }
+        if (pager.getDisplay() == null) {
+           pager.setDisplay(salesFixedColumn);
+       }
         pager.setRangeLimited(true);
+        hiddenPager.setRangeLimited(true);
         provider.getList().clear();
         if (provider.getDataDisplays().contains(salesFixedColumn)) {
             provider.removeDataDisplay(salesFixedColumn);
         }
         provider.addDataDisplay(salesFixedColumn);
         salesDataGrid.setRowCount(result.size(), true);
-        if (pager.getDisplay() == null) {
-            pager.setDisplay(salesDataGrid);
-        }
-        pager.setRangeLimited(true);
+
         provider.getList().clear();
         if (provider.getDataDisplays().contains(salesDataGrid)) {
             provider.removeDataDisplay(salesDataGrid);
@@ -276,6 +282,20 @@ public class MonthlySalesReport extends Composite implements
 
         provider.refresh();
         provider.getList().addAll(result);
+        RangeChangeEvent.Handler handler = new RangeChangeEvent.Handler() {
+         
+         @Override
+         public void onRangeChange(RangeChangeEvent event) {
+            if (event.getSource()==salesFixedColumn){
+               Window.alert(" range change "+event.getNewRange());
+               hiddenPager.setPage(pager.getPage());
+               hiddenPager.setPageSize(pager.getPageSize());
+               hiddenPager.setPageStart(pager.getPageStart());
+            }
+         }
+      };
+      salesFixedColumn.addRangeChangeHandler(handler);
+      
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {
@@ -285,7 +305,6 @@ public class MonthlySalesReport extends Composite implements
                         + (widgetRootPanel.getOffsetWidth() - 180) + "px");
             }
         });
-
     }
 
     private void generateColumn(final String col,
@@ -400,7 +419,7 @@ public class MonthlySalesReport extends Composite implements
                  * tr.startTH().colSpan(1).rowSpan(1); tr.endTH();
                  */
 
-                String styleDescription = "border-bottom: 2px solid #6f7277;padding: 3px 15px;text-align: left;color: #4b4a4a;text-shadow: #ddf 1px 1px 0;overflow: hidden;";
+                String styleDescription = "border-bottom: 2px solid #6f7277;padding: 3px 15px;text-align: left;color: #4b4a4a;text-shadow: #ddf 1px 1px 0;overflow: hidden;height: 60px;";
                 TableCellBuilder th = tr.startTH().colSpan(3)
                         .attribute("style", styleDescription);
                 for (int i = 0; i < headers.size(); i++) {
@@ -540,7 +559,7 @@ public class MonthlySalesReport extends Composite implements
         protected boolean buildHeaderOrFooterImpl() {
             if (salesFixedColumn.getColumnCount() > 0) {
                 TableRowBuilder tr = startRow();
-                String styleDescription = "border-bottom: 2px solid #6f7277;padding: 3px 15px;text-align: left;color: #4b4a4a;text-shadow: #ddf 1px 1px 0;overflow: hidden;";
+                String styleDescription = "border-bottom: 2px solid #6f7277;padding: 3px 15px;text-align: left;color: #4b4a4a;text-shadow: #ddf 1px 1px 0;overflow: hidden;height: 60px;";
                 TableCellBuilder th = tr.startTH().attribute("style",
                         styleDescription);
 

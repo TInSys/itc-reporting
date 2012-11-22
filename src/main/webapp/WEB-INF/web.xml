@@ -23,6 +23,11 @@
 		<param-value>/WEB-INF/applicationContext.xml</param-value>
 	</context-param>
 
+   <context-param>
+      <param-name>webAppRootKey</param-name>
+      <param-value>itcReporting</param-value>
+   </context-param>
+   
 	<!-- GWT Spring -->
 	<servlet>
 		<servlet-name>springGwtRemoteServiceServlet</servlet-name>
