@@ -47,15 +47,31 @@ public class SalesDAOImpl implements SalesDAO {
 
     @Override
     public Sales findSale(Sales aSale) {
-        Sales sales = (Sales) factory
-                .getCurrentSession()
-                .createCriteria(Sales.class)
-                .add(Restrictions.eq("application", aSale.getApplication()))
-                .add(Restrictions.eq("zone", aSale.getZone()))
-                .add(Restrictions.eq("period", aSale.getPeriod()))
-                .add(Restrictions.eq("countryCode", aSale.getCountryCode()))
-                .add(Restrictions.eq("individualPrice",
-                        aSale.getIndividualPrice())).uniqueResult();
+        Sales sales;
+        if (aSale.getPromoCode()==null){
+           sales = (Sales) factory
+           .getCurrentSession()
+           .createCriteria(Sales.class)
+           .add(Restrictions.eq("application", aSale.getApplication()))
+           .add(Restrictions.eq("zone", aSale.getZone()))
+           .add(Restrictions.eq("period", aSale.getPeriod()))
+           .add(Restrictions.eq("countryCode", aSale.getCountryCode()))
+           .add(Restrictions.isNull("promoCode"))
+           .add(Restrictions.eq("individualPrice",
+                 aSale.getIndividualPrice())).uniqueResult();           
+        } else {
+          sales = (Sales) factory
+           .getCurrentSession()
+           .createCriteria(Sales.class)
+           .add(Restrictions.eq("application", aSale.getApplication()))
+           .add(Restrictions.eq("zone", aSale.getZone()))
+           .add(Restrictions.eq("period", aSale.getPeriod()))
+           .add(Restrictions.eq("countryCode", aSale.getCountryCode()))
+           .add(Restrictions.eq("promoCode", aSale.getPromoCode()))
+           .add(Restrictions.eq("individualPrice",
+                 aSale.getIndividualPrice())).uniqueResult();
+        }
+        
         return sales;
     }
 

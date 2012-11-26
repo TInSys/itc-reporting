@@ -72,6 +72,8 @@ public class SaleService {
                         && sale.getZone().equals(tmpSale.getZone())
                         && sale.getCountryCode().equals(
                                 tmpSale.getCountryCode())
+                        && sale.getPromoCode().equals(
+                                tmpSale.getPromoCode())
                         && sale.getIndividualPrice().equals(
                                 tmpSale.getIndividualPrice())) {
                     summarized = true;

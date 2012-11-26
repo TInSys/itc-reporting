@@ -90,12 +90,22 @@ else
                   RAISE NOTICE '';
                end;
             end if;            
-            
-            
-      
-            
-            
 
+ -- update version 4
+            if (current_DBversion < 4) then
+               RAISE NOTICE 'Updating to version 4...';
+               begin
+                              
+               ALTER TABLE sales ADD COLUMN promo_code character varying(10);
+
+                  current_DBversion = current_DBversion + 1;
+                  update version set number = current_DBversion;
+                  RAISE NOTICE 'Done. Current version is now %',current_DBversion;
+                  RAISE NOTICE '';
+               end;
+            end if;            
+
+            
          end;
    end;
 end if;

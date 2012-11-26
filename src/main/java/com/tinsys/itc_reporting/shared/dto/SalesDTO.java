@@ -5,98 +5,108 @@ import java.math.BigDecimal;
 
 public class SalesDTO implements Serializable {
 
-    /**
+   /**
      * 
      */
-    private static final long serialVersionUID = 1L;
-    private Long id;
-    private Integer soldUnits;
-    private BigDecimal individualPrice;
-    private BigDecimal totalPrice;
-    private BigDecimal individualProceeds;
-    private BigDecimal totalProceeds;
-    private String countryCode;
-    private FiscalPeriodDTO periodDTO;
-    private ZoneDTO zoneDTO;
-    private ApplicationDTO applicationDTO;
+   private static final long serialVersionUID = 1L;
+   private Long id;
+   private Integer soldUnits;
+   private BigDecimal individualPrice;
+   private BigDecimal totalPrice;
+   private BigDecimal individualProceeds;
+   private BigDecimal totalProceeds;
+   private String countryCode;
+   private String promocode;
+   private FiscalPeriodDTO periodDTO;
+   private ZoneDTO zoneDTO;
+   private ApplicationDTO applicationDTO;
 
-    public Long getId() {
-        return id;
-    }
+   public Long getId() {
+      return id;
+   }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+   public void setId(Long id) {
+      this.id = id;
+   }
 
-    public Integer getSoldUnits() {
-        return soldUnits;
-    }
+   public Integer getSoldUnits() {
+      return soldUnits;
+   }
 
-    public void setSoldUnits(Integer soldUnits) {
-        this.soldUnits = soldUnits;
-    }
+   public void setSoldUnits(Integer soldUnits) {
+      this.soldUnits = soldUnits;
+   }
 
-    public BigDecimal getIndividualPrice() {
-        return individualPrice;
-    }
+   public BigDecimal getIndividualPrice() {
+      return individualPrice;
+   }
 
-    public void setIndividualPrice(BigDecimal individualPrice) {
-        this.individualPrice = individualPrice;
-    }
+   public void setIndividualPrice(BigDecimal individualPrice) {
+      this.individualPrice = individualPrice;
+   }
 
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
-    }
+   public BigDecimal getTotalPrice() {
+      return totalPrice;
+   }
 
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-    public BigDecimal getIndividualProceeds() {
-        return individualProceeds;
-    }
-    
-    public void setIndividualProceeds(BigDecimal individualProceeds) {
-        this.individualProceeds = individualProceeds;
-    }
-    
-    public BigDecimal getTotalProceeds() {
-        return totalProceeds;
-    }
-    
-    public void setTotalProceeds(BigDecimal totalProceeds) {
-        this.totalProceeds = totalProceeds;
-    }
-    
-    public String getCountryCode() {
-        return countryCode;
-    }
+   public void setTotalPrice(BigDecimal totalPrice) {
+      this.totalPrice = totalPrice;
+   }
 
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
-    }
+   public BigDecimal getIndividualProceeds() {
+      return individualProceeds;
+   }
 
-    public FiscalPeriodDTO getPeriod() {
-        return periodDTO;
-    }
+   public void setIndividualProceeds(BigDecimal individualProceeds) {
+      this.individualProceeds = individualProceeds;
+   }
 
-    public void setPeriod(FiscalPeriodDTO periodDTO) {
-        this.periodDTO = periodDTO;
-    }
+   public BigDecimal getTotalProceeds() {
+      return totalProceeds;
+   }
 
-    public ZoneDTO getZone() {
-        return zoneDTO;
-    }
+   public void setTotalProceeds(BigDecimal totalProceeds) {
+      this.totalProceeds = totalProceeds;
+   }
 
-    public void setZone(ZoneDTO zoneDTO) {
-        this.zoneDTO = zoneDTO;
-    }
+   public String getCountryCode() {
+      return countryCode;
+   }
 
-    public ApplicationDTO getApplication() {
-        return applicationDTO;
-    }
+   public void setCountryCode(String countryCode) {
+      this.countryCode = countryCode;
+   }
 
-    public void setApplication(ApplicationDTO applicationDTO) {
-        this.applicationDTO = applicationDTO;
-    }
+   public void setPromocode(String promocode) {
+      this.promocode = promocode;
+   }
+
+   public String getPromocode() {
+      return promocode;
+   }
+
+   public FiscalPeriodDTO getPeriod() {
+      return periodDTO;
+   }
+
+   public void setPeriod(FiscalPeriodDTO periodDTO) {
+      this.periodDTO = periodDTO;
+   }
+
+   public ZoneDTO getZone() {
+      return zoneDTO;
+   }
+
+   public void setZone(ZoneDTO zoneDTO) {
+      this.zoneDTO = zoneDTO;
+   }
+
+   public ApplicationDTO getApplication() {
+      return applicationDTO;
+   }
+
+   public void setApplication(ApplicationDTO applicationDTO) {
+      this.applicationDTO = applicationDTO;
+   }
 
 }

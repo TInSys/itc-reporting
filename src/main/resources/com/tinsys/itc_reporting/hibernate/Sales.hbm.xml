@@ -27,7 +27,11 @@
 			type="string">
 			<column name="country_code" not-null="true" />
 		</property>
-		<many-to-one column="zone" name="zone" lazy="false"
+      <property generated="never" lazy="false" name="promoCode"
+         type="string" not-null="false">
+         <column name="promo_code" not-null="false" />
+      </property>
+      <many-to-one column="zone" name="zone" lazy="false"
 			unique="true" />
 		<many-to-one column="period" name="period" lazy="false"
 			unique="true" />

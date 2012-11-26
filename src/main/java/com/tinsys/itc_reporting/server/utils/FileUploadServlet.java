@@ -199,6 +199,10 @@ public class FileUploadServlet extends HttpServlet {
             tmpSale.setZone(zone);
             tmpSale.setApplication(application);
             tmpSale.setCountryCode(lcsvp.getValueByLabel("Country Of Sale"));
+            tmpSale.setPromoCode(lcsvp.getValueByLabel("Promo Code"));
+            if (tmpSale.getPromoCode().length()==0) {
+               tmpSale.setPromoCode(null);
+            }
             tmpSale.setIndividualPrice(new BigDecimal(lcsvp
                   .getValueByLabel("Customer Price")));
             tmpSale.setIndividualProceeds(new BigDecimal(lcsvp
