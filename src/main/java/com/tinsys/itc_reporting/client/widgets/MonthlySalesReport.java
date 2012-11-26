@@ -101,11 +101,11 @@ public class MonthlySalesReport extends Composite implements
 
     @UiField(provided = true)
     CellTable<ZoneReportSummary> salesDataGrid = new CellTable<ZoneReportSummary>(
-            20, tableRes);
+            25, tableRes);
 
     @UiField(provided = true)
     CellTable<ZoneReportSummary> salesFixedColumn = new CellTable<ZoneReportSummary>(
-            20, tableRes);
+            25, tableRes);
 
     protected ArrayList<ZoneDTO> zoneList;
 
