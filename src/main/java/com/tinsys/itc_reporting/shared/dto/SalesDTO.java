@@ -16,7 +16,7 @@ public class SalesDTO implements Serializable {
    private BigDecimal individualProceeds;
    private BigDecimal totalProceeds;
    private String countryCode;
-   private String promocode;
+   private String promoCode;
    private FiscalPeriodDTO periodDTO;
    private ZoneDTO zoneDTO;
    private ApplicationDTO applicationDTO;
@@ -77,12 +77,12 @@ public class SalesDTO implements Serializable {
       this.countryCode = countryCode;
    }
 
-   public void setPromocode(String promocode) {
-      this.promocode = promocode;
+   public void setPromoCode(String promoCode) {
+      this.promoCode = promoCode;
    }
 
-   public String getPromocode() {
-      return promocode;
+   public String getPromoCode() {
+      return promoCode;
    }
 
    public FiscalPeriodDTO getPeriod() {
@@ -109,4 +109,12 @@ public class SalesDTO implements Serializable {
       this.applicationDTO = applicationDTO;
    }
 
+   @Override
+   public String toString() {
+      return "Id:" + this.getId() + "  SoldUnits:" + this.getSoldUnits()
+            + " IndividualPrice:" + this.getIndividualPrice() + " TotaPrice:"
+            + this.getTotalPrice() + " Country code:" + this.getCountryCode() + " Promo code:" + this.getPromoCode()
+            + " Period:" + this.getPeriod() + " Zone:" + this.getZone()
+            + " App:" + this.getApplication();
+   }
 }

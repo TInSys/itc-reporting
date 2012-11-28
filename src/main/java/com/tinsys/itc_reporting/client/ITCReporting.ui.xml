@@ -1,7 +1,25 @@
 <!-- <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent"> -->
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:c="urn:import:com.google.gwt.user.cellview.client">
-	<ui:style src="mainStyles.css"/>
+	<ui:style type="com.tinsys.itc_reporting.client.ITCReporting.MainPageStyle">
+	 .stackButtonNotSelected {
+         margin: 1px;
+         padding: 2px;
+         text-align: center;
+         border: 1px solid;
+         height: 40px;
+         vertical-align: middle;
+         background-image: linear-gradient(#FFFFFF, #EFEFEF);
+      }
+      .pageHeader {
+         text-align: center;
+         font-size: x-large;
+      }
+            
+      .stackButtonSelected {
+         box-shadow: -1px 1px 30px 5px rgba(0, 0, 0, 0.5) inset;
+      }
+	</ui:style>
 	<g:HTMLPanel>
 	     <table width="100%">
          <tr>
@@ -19,21 +37,21 @@
 						</g:header>
 						<g:FlowPanel>
 						   <g:PushButton ui:field="preferencesPushButton"
-                        text="Preferences" styleName="{style.stackButton}" />
+                        text="Preferences" styleName="{style.stackButtonNotSelected}" />
                      <g:PushButton ui:field="zoneManagementPushButton"
-                        text="Manage Zones" styleName="{style.stackButton}" />
+                        text="Manage Zones" styleName="{style.stackButtonNotSelected}" />
 							<g:PushButton ui:field="taxManagementPushButton"
-                        text="Manage Tax Rates" styleName="{style.stackButton}" />
+                        text="Manage Tax Rates" styleName="{style.stackButtonNotSelected}" />
                      <g:PushButton ui:field="FXRateManagementByZonePushButton"
-                        text="Manage FX Rates by Zone" styleName="{style.stackButton}" />
+                        text="Manage FX Rates by Zone" styleName="{style.stackButtonNotSelected}" />
                      <g:PushButton ui:field="FXRateManagementByMonthPushButton"
-                        text="Manage FX Rates by Month" styleName="{style.stackButton}" />
+                        text="Manage FX Rates by Month" styleName="{style.stackButtonNotSelected}" />
                      <g:PushButton ui:field="ApplicationManagementPushButton"
-                        text="Manage Applications" styleName="{style.stackButton}" />
+                        text="Manage Applications" styleName="{style.stackButtonNotSelected}" />
                      <g:PushButton ui:field="CompanyManagementPushButton"
-                        text="Manage Companies" styleName="{style.stackButton}" />
+                        text="Manage Companies" styleName="{style.stackButtonNotSelected}" />
                      <g:PushButton ui:field="RoyaltyManagementPushButton"
-                        text="Manage Royalties" styleName="{style.stackButton}" />
+                        text="Manage Royalties" styleName="{style.stackButtonNotSelected}" />
   						</g:FlowPanel>
 					</g:stack>
 					<g:stack>
@@ -42,7 +60,7 @@
 						</g:header>
 						<g:FlowPanel>
 						<g:PushButton ui:field="importFinancialFilesPushButton"
-                        text="Import Financial Files" styleName="{style.stackButton}" />
+                        text="Import Financial Files" styleName="{style.stackButtonNotSelected}" />
                    </g:FlowPanel>
 					</g:stack>
 					<g:stack>
@@ -50,8 +68,10 @@
                      Reports
                   </g:header>
                   <g:FlowPanel>
-                  <g:PushButton ui:field="byPeriodReport"
-                        text="By Period Report" styleName="{style.stackButton}" />
+                     <g:PushButton ui:field="byPeriodReport"
+                           text="Sales By Period Report" styleName="{style.stackButtonNotSelected}" />
+                     <g:PushButton ui:field="royaltiesReport" 
+                        text="Royalties Report" styleName="{style.stackButtonNotSelected}" />
                    </g:FlowPanel>
                </g:stack>
 				</g:StackLayoutPanel>

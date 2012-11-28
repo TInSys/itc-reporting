@@ -7,12 +7,14 @@ import com.tinsys.itc_reporting.model.Application;
 import com.tinsys.itc_reporting.model.Company;
 import com.tinsys.itc_reporting.model.FiscalPeriod;
 import com.tinsys.itc_reporting.model.Royalty;
+import com.tinsys.itc_reporting.model.Sales;
 import com.tinsys.itc_reporting.model.TaxPeriod;
 import com.tinsys.itc_reporting.model.Zone;
 import com.tinsys.itc_reporting.shared.dto.ApplicationDTO;
 import com.tinsys.itc_reporting.shared.dto.CompanyDTO;
 import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.RoyaltyDTO;
+import com.tinsys.itc_reporting.shared.dto.SalesDTO;
 import com.tinsys.itc_reporting.shared.dto.TaxPeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
@@ -132,5 +134,21 @@ public static RoyaltyDTO royaltyToRoyaltyDTO(Royalty aRoyalty){
     royaltyDTO.setZones(zonesDTO);
     return royaltyDTO;
  }
+
+public static SalesDTO salesToSalesDTO(Sales aSales){
+   SalesDTO salesDTO = new SalesDTO();
+   salesDTO.setId(aSales.getId());
+   salesDTO.setApplication(DTOUtils.applicationToApplicationDTO(aSales.getApplication()));
+   salesDTO.setCountryCode(aSales.getCountryCode());
+   salesDTO.setPeriod(DTOUtils.periodToPeriodDTO(aSales.getPeriod()));
+   salesDTO.setZone(DTOUtils.zoneToZoneDTO(aSales.getZone()));
+   salesDTO.setPromoCode(aSales.getPromoCode());
+   salesDTO.setSoldUnits(aSales.getSoldUnits());
+   salesDTO.setIndividualPrice(aSales.getIndividualPrice());
+   salesDTO.setTotalPrice(aSales.getTotalPrice());
+   salesDTO.setIndividualProceeds(aSales.getIndividualProceeds());
+   salesDTO.setTotalProceeds(aSales.getTotalProceeds());
+   return salesDTO;
+}
 
 }

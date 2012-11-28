@@ -10,14 +10,7 @@
       .center {
          text-align: center;
       }
-      .stackButton {
-         margin: 1px;
-         padding: 2px;
-         text-align: center;
-         border: 1px solid;
-         height: 40px;
-         vertical-align: middle;
-      }
+
       .pageHeader {
          text-align: center;
          font-size: x-large;
@@ -25,3 +18,4 @@
       .noVerticalScroll {
         overflow-y: visible;
       }
+
