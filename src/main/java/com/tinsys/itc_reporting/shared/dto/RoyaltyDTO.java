@@ -12,6 +12,7 @@ public class RoyaltyDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     private Long id;
     private BigDecimal shareRate;
+    private String shareRateCalculationField;
     private CompanyDTO company;
     private ApplicationDTO application;
     private List<ZoneDTO> zones;
@@ -27,7 +28,13 @@ public class RoyaltyDTO implements Serializable {
     public void setShareRate(BigDecimal shareRate) {
         this.shareRate = shareRate;
     }
-    public CompanyDTO getCompany() {
+    public void setShareRateCalculationField(String shareRateCalculationField) {
+      this.shareRateCalculationField = shareRateCalculationField;
+   }
+   public String getShareRateCalculationField() {
+      return shareRateCalculationField;
+   }
+   public CompanyDTO getCompany() {
         return company;
     }
     public void setCompany(CompanyDTO company) {

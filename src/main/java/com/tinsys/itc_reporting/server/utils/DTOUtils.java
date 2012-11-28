@@ -105,6 +105,7 @@ public static Royalty royaltyDTOToRoyalty(RoyaltyDTO aRoyaltyDTO){
     Royalty royalty = new Royalty();
     royalty.setId(aRoyaltyDTO.getId());
     royalty.setShareRate(aRoyaltyDTO.getShareRate());
+    royalty.setShareRateCalculationField(aRoyaltyDTO.getShareRateCalculationField());
     royalty.setApplication(DTOUtils.applicationDTOToApplication(aRoyaltyDTO.getApplication()));
     royalty.setCompany(DTOUtils.companyDTOToCompany(aRoyaltyDTO.getCompany()));
     List<Zone> zones = new ArrayList<Zone>();
@@ -120,6 +121,7 @@ public static RoyaltyDTO royaltyToRoyaltyDTO(Royalty aRoyalty){
     RoyaltyDTO royaltyDTO = new RoyaltyDTO();
     royaltyDTO.setId(aRoyalty.getId());
     royaltyDTO.setShareRate(aRoyalty.getShareRate());
+    royaltyDTO.setShareRateCalculationField(aRoyalty.getShareRateCalculationField());
     royaltyDTO.setApplication(DTOUtils.applicationToApplicationDTO(aRoyalty.getApplication()));
     royaltyDTO.setCompany(DTOUtils.companyToCompanyDTO(aRoyalty.getCompany()));
     List<ZoneDTO> zonesDTO = new ArrayList<ZoneDTO>();

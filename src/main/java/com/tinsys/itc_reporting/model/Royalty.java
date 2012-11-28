@@ -12,6 +12,7 @@ public class Royalty implements Serializable {
     private static final long serialVersionUID = 1L;
     private Long id;
     private BigDecimal shareRate;
+    private String shareRateCalculationField;
     private Company company;
     private Application application;
     private List<Zone> zones;
@@ -27,7 +28,13 @@ public class Royalty implements Serializable {
     public void setShareRate(BigDecimal shareRate) {
         this.shareRate = shareRate;
     }
-    public Company getCompany() {
+    public void setShareRateCalculationField(String shareRateCalculationField) {
+      this.shareRateCalculationField = shareRateCalculationField;
+   }
+   public String getShareRateCalculationField() {
+      return shareRateCalculationField;
+   }
+   public Company getCompany() {
         return company;
     }
     public void setCompany(Company company) {

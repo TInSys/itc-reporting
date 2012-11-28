@@ -105,6 +105,20 @@ else
                end;
             end if;            
 
+-- update version 5
+            if (current_DBversion < 5) then
+               RAISE NOTICE 'Updating to version 5...';
+               begin
+                              
+               ALTER TABLE royalty ADD COLUMN calculation_field character varying(1);
+               UPDATE royalty set calculation_field = 'S';
+
+                  current_DBversion = current_DBversion + 1;
+                  update version set number = current_DBversion;
+                  RAISE NOTICE 'Done. Current version is now %',current_DBversion;
+                  RAISE NOTICE '';
+               end;
+            end if;      
             
          end;
    end;

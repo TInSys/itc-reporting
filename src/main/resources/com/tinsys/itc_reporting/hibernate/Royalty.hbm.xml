@@ -10,7 +10,10 @@
 		<property name="shareRate" type="big_decimal">
 			<column name="share_rate" sql-type="NUMERIC(10,3)" />
 		</property>
-		<many-to-one column="company" name="company" lazy="false"
+      <property name="shareRateCalculationField" type="string">
+         <column name="calculation_field" />
+      </property>
+      <many-to-one column="company" name="company" lazy="false"
 			unique="true" />
 
 		<many-to-one column="application" name="application" lazy="false"
