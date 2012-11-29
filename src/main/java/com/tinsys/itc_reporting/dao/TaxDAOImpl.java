@@ -175,4 +175,10 @@ public class TaxDAOImpl implements TaxDAO {
 
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Tax> getAllTaxs() {
+        return factory.getCurrentSession().createCriteria(Tax.class).list();
+    }
+
 }

@@ -21,4 +21,6 @@ public interface TaxDAO {
     public void deleteTax(TaxDTO aTax);
 
     public List<Tax> getTaxesForPeriod(FiscalPeriodDTO period);
+
+    public List<Tax> getAllTaxs();
 }

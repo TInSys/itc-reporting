@@ -19,16 +19,20 @@ import com.tinsys.itc_reporting.dao.RoyaltyDAO;
 import com.tinsys.itc_reporting.dao.SalesDAO;
 import com.tinsys.itc_reporting.dao.TaxDAO;
 import com.tinsys.itc_reporting.model.Application;
+import com.tinsys.itc_reporting.model.Royalty;
 import com.tinsys.itc_reporting.model.Sales;
 import com.tinsys.itc_reporting.model.Tax;
 import com.tinsys.itc_reporting.model.Zone;
 import com.tinsys.itc_reporting.server.utils.DTOUtils;
+import com.tinsys.itc_reporting.shared.dto.ApplicationDTO;
 import com.tinsys.itc_reporting.shared.dto.ApplicationReportSummary;
 import com.tinsys.itc_reporting.shared.dto.CompanyDTO;
 import com.tinsys.itc_reporting.shared.dto.FXRateDTO;
 import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.RoyaltyDTO;
+import com.tinsys.itc_reporting.shared.dto.RoyaltyReportLine;
 import com.tinsys.itc_reporting.shared.dto.SalesDTO;
+import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneReportSummary;
 
 @Service("royaltyReportService")
@@ -304,17 +308,120 @@ public class RoyaltyReportServiceImpl implements RoyaltyReportService {
     }
 
    @Override
-   public List<SalesDTO> getCompanyReport(CompanyDTO company,
+   public List<RoyaltyReportLine> getCompanyReport(CompanyDTO company,
          FiscalPeriodDTO startPeriod, FiscalPeriodDTO endPeriod) {
       logger.debug("Preparing report");
       List<RoyaltyDTO> royalties = royaltyDAO.getAllRoyalty(company);
       List<Sales> sales = salesDAO.getAllSales(startPeriod,endPeriod,royalties);
+      List<Tax> taxes = null;
+      ArrayList<FXRateDTO> fxRates = null;
+      String currency = new String();
+      BigDecimal changeRate = new BigDecimal(0);
+      BigDecimal taxRate = new BigDecimal(0);
+      BigDecimal shareRate = new BigDecimal(0);
+      boolean royaltyOnSales = false;
       Collections.sort(sales,compareSales);
       List<SalesDTO> salesDTOList = new ArrayList<SalesDTO>();
+      FiscalPeriodDTO currentPeriod = null;
+      ApplicationDTO currentApplication = null;
+      ZoneDTO currentZone = null;
+      BigDecimal currentPrice = new BigDecimal(0);
       for (Sales sale : sales) {
          salesDTOList.add(DTOUtils.salesToSalesDTO(sale));
       }
-      return salesDTOList;
+      List<RoyaltyReportLine> report = new ArrayList<RoyaltyReportLine>();
+      RoyaltyReportLine reportLine = new RoyaltyReportLine();
+      BigDecimal vatFactor;
+      
+      for (SalesDTO salesDTO : salesDTOList) {
+
+          if (currentPeriod == null || currentPeriod.getId() != salesDTO.getPeriod().getId() || currentApplication.getId()!= salesDTO.getApplication().getId() || currentZone.getId() != salesDTO.getZone().getId() || !currentPrice.equals(salesDTO.getIndividualPrice()) ){
+              if (currentPeriod != null){
+              logger.debug("period "+currentPeriod.getId() +" "+salesDTO.getPeriod().getId() +" " + (currentPeriod.getId() != salesDTO.getPeriod().getId()));
+              logger.debug("app "+ currentApplication +" "+salesDTO.getApplication() +" "  + (currentApplication!= salesDTO.getApplication()));
+              logger.debug("zone "+ currentZone +" "+ salesDTO.getZone() +" "  + (currentZone != salesDTO.getZone()));
+              logger.debug("price "+ currentPrice +" "+salesDTO.getIndividualPrice() +" "  + (!currentPrice.equals(salesDTO.getIndividualPrice())));
+              }
+              // add royalty line to table
+              if (currentPeriod!=null){
+                  report.add(reportLine);
+              }
+              //reset royalty line
+              
+              reportLine = new  RoyaltyReportLine();
+              reportLine.setOriginalCurrencyAmount(new BigDecimal(0));
+              reportLine.setOriginalCurrencyTotalAmount(new BigDecimal(0));
+              reportLine.setReferenceCurrencyCompanyRoyaltiesTotalAmount(new BigDecimal(0));
+              reportLine.setReferenceCurrencyProceedsAfterTaxTotalAmount(new BigDecimal(0));
+              reportLine.setReferenceCurrencyTotalAmount(new BigDecimal(0));
+              if (currentPeriod == null || !currentPeriod.equals(salesDTO.getPeriod())){
+                  currentPeriod = salesDTO.getPeriod();
+                  taxes = taxDAO.getTaxesForPeriod(currentPeriod);
+                  fxRates = fxRateDAO.getAllFXRatesForPeriod(currentPeriod);
+              }
+              currentApplication = salesDTO.getApplication();
+              if (currentZone != salesDTO.getZone() || currentZone == null){
+                  currentZone = salesDTO.getZone();
+                  for (Tax tax : taxes) {
+                      if (tax.getZone().equals(currentZone)){
+                          taxRate = tax.getRate();
+                          break;
+                      }
+                  }
+              }
+              currentPrice = salesDTO.getIndividualPrice();
+
+              reportLine.setPeriod(currentPeriod);
+              reportLine.setApplication(currentApplication);
+              reportLine.setZone(currentZone);
+              reportLine.setOriginalCurrencyAmount(currentPrice.setScale(2, RoundingMode.HALF_EVEN));
+              currency = new String();
+              for (FXRateDTO fxRate : fxRates) {
+                  if (fxRate.getId() != null
+                          && fxRate.getZone().getId() == currentZone.getId()) {
+                      changeRate = fxRate.getRate();
+                      currency = fxRate.getCurrencyIso();
+                      break;
+                  }
+              }
+              taxRate = new BigDecimal(0);
+              for (Tax tax : taxes) {
+                  if (tax.getId() != null
+                          && tax.getZone().getId().equals(currentZone.getId())){
+                     taxRate = tax.getRate();
+                     break;
+                  }
+              }
+              
+              for (RoyaltyDTO royalty : royalties) {
+                if (royalty.getApplication().getId().equals(currentApplication.getId()) && royalty.getZones().contains(currentZone)){
+                    shareRate = royalty.getShareRate();
+                    royaltyOnSales = royalty.getShareRateCalculationField().equals("S");
+                }
+            }
+          }
+          reportLine.setOriginalCurrency(currentZone.getCurrencyISO());
+          reportLine.setReferenceCurrency(currency);
+          reportLine.setSalesNumber(reportLine.getSalesNumber()+salesDTO.getSoldUnits());
+          reportLine.setOriginalCurrencyTotalAmount(reportLine.getOriginalCurrencyTotalAmount().setScale(2, RoundingMode.HALF_EVEN).add(salesDTO.getTotalPrice()).setScale(2, RoundingMode.HALF_EVEN));
+          BigDecimal proceedsAfterTax = ((salesDTO.getTotalProceeds()!=null)?(salesDTO.getTotalProceeds().multiply((new BigDecimal(1).subtract(taxRate)))):new BigDecimal(0)).multiply(changeRate).setScale(2, RoundingMode.HALF_EVEN);
+          BigDecimal totalAmount =  ((salesDTO.getTotalPrice()!=null)?salesDTO.getTotalPrice():new BigDecimal(0)).multiply(changeRate).setScale(2, RoundingMode.HALF_EVEN);
+          reportLine.setReferenceCurrencyProceedsAfterTaxTotalAmount(reportLine.getReferenceCurrencyProceedsAfterTaxTotalAmount().add(proceedsAfterTax).setScale(2, RoundingMode.HALF_EVEN));
+          reportLine.setReferenceCurrencyTotalAmount(reportLine.getReferenceCurrencyTotalAmount().add(totalAmount).setScale(2, RoundingMode.HALF_EVEN));
+          if (shareRate != new BigDecimal(0)){
+          vatFactor = new BigDecimal(0);
+          if (royaltyOnSales){
+              vatFactor = (totalAmount.multiply(new BigDecimal(0.7))).divide((proceedsAfterTax.multiply(changeRate)),2, RoundingMode.HALF_EVEN).setScale(2, RoundingMode.HALF_EVEN);
+              reportLine.setReferenceCurrencyCompanyRoyaltiesTotalAmount(reportLine.getReferenceCurrencyCompanyRoyaltiesTotalAmount().setScale(2, RoundingMode.HALF_EVEN).add((salesDTO.getTotalPrice().divide(vatFactor,2, RoundingMode.HALF_EVEN)).multiply(shareRate.divide(new BigDecimal(100),2, RoundingMode.HALF_EVEN))).setScale(2, RoundingMode.HALF_EVEN));
+          } else {
+              reportLine.setReferenceCurrencyCompanyRoyaltiesTotalAmount(reportLine.getReferenceCurrencyCompanyRoyaltiesTotalAmount().setScale(2, RoundingMode.HALF_EVEN).add(proceedsAfterTax.multiply(shareRate).divide(new BigDecimal(100),2, RoundingMode.HALF_EVEN)).setScale(2, RoundingMode.HALF_EVEN));
+          }
+          }
+    }
+      if (reportLine !=null){
+          report.add(reportLine);
+      }
+      return report;
    }
 
 }

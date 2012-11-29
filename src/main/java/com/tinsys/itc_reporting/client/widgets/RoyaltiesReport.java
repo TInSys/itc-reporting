@@ -1,6 +1,7 @@
 package com.tinsys.itc_reporting.client.widgets;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,17 +20,20 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.tinsys.itc_reporting.client.service.CompanyService;
 import com.tinsys.itc_reporting.client.service.CompanyServiceAsync;
 import com.tinsys.itc_reporting.client.service.RoyaltyReportService;
 import com.tinsys.itc_reporting.client.service.RoyaltyReportServiceAsync;
+import com.tinsys.itc_reporting.shared.dto.ApplicationDTO;
 import com.tinsys.itc_reporting.shared.dto.CompanyDTO;
 import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
+import com.tinsys.itc_reporting.shared.dto.RoyaltyReportLine;
 import com.tinsys.itc_reporting.shared.dto.SalesDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
@@ -164,24 +168,73 @@ public class RoyaltiesReport extends Composite implements
         endMonthPeriodDto.setMonth(endMonthPeriodListBox.getSelectedIndex() + 1);
         endMonthPeriodDto.setYear(endYearPeriodListBox.getSelectedIndex() + STARTING_YEAR);
 
-        royaltyReportService.getCompanyReport(currentCompany, startMonthPeriodDto, endMonthPeriodDto, new AsyncCallback<List<SalesDTO>>() {
+        royaltyReportService.getCompanyReport(currentCompany, startMonthPeriodDto, endMonthPeriodDto, new AsyncCallback<List<RoyaltyReportLine>>() {
          
          @Override
-         public void onSuccess(List<SalesDTO> result) {
+         public void onSuccess(List<RoyaltyReportLine> result) {
             int lineIdx = 0;
-            for (SalesDTO sales : result) {
-               royaltyReport.setText(lineIdx,0,sales.getPeriod().toString() );
-               royaltyReport.setText(lineIdx,1,sales.getApplication().getVendorID() );
-               royaltyReport.setText(lineIdx,2,sales.getZone().getCode() );
+            FiscalPeriodDTO currentPeriod = null;
+            ApplicationDTO currentApplication = null;
+            ZoneDTO currentZone = null;
+            BigDecimal currentPrice = null;
+            BigDecimal periodRoyalty = new BigDecimal(0);
+            BigDecimal totalRoyalty = new BigDecimal(0);
+            
+            
+            for (RoyaltyReportLine sales : result) {
+                if (lineIdx == 0){
+                    currentPeriod = sales.getPeriod();
+                    currentApplication = sales.getApplication();
+                    currentZone = sales.getZone();
+                    currentPrice = sales.getOriginalCurrencyAmount();
+                    royaltyReport.setText(lineIdx,0,sales.getPeriod().toString());
+                    lineIdx +=1;
+                }
+               // period total 
+               if (currentPeriod.getId() != sales.getPeriod().getId() ) {
+                   // print period total and show new total header
+                       lineIdx +=1;
+                       royaltyReport.setText(lineIdx,0,"Total Royalties for period "+currentPeriod+" = "+periodRoyalty+" "+sales.getReferenceCurrency());
+                       currentPeriod = sales.getPeriod();
+                       lineIdx +=2;
+                       totalRoyalty = totalRoyalty.add(periodRoyalty);
+                       periodRoyalty = new BigDecimal(0);
+                       royaltyReport.setText(lineIdx,0," ");
+                       royaltyReport.setText(lineIdx,0,sales.getPeriod().toString());
+               
+                       lineIdx +=2;
+                   } 
+                       
+                       royaltyReport.setText(lineIdx,1,sales.getApplication().getVendorID());
+                       royaltyReport.setText(lineIdx,2,sales.getZone().getName());
+                       royaltyReport.setText(lineIdx,3,String.valueOf(sales.getSalesNumber()));
+                       royaltyReport.getCellFormatter().setAlignment(lineIdx, 3, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE);
+                       royaltyReport.setText(lineIdx,4,(sales.getOriginalCurrencyAmount().toString()+" "+sales.getOriginalCurrency()));
+                       royaltyReport.getCellFormatter().setAlignment(lineIdx, 4, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE);
+                       royaltyReport.setText(lineIdx,5,(sales.getOriginalCurrencyTotalAmount().toString()+" "+sales.getOriginalCurrency()));
+                       royaltyReport.getCellFormatter().setAlignment(lineIdx, 5, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE);
+                       royaltyReport.setText(lineIdx,6,(sales.getReferenceCurrencyProceedsAfterTaxTotalAmount().toString()+" "+sales.getReferenceCurrency()));
+                       royaltyReport.getCellFormatter().setAlignment(lineIdx, 6, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE);
+                       royaltyReport.setText(lineIdx,7,(sales.getReferenceCurrencyCompanyRoyaltiesTotalAmount().toString()+" "+sales.getReferenceCurrency()));
+                       royaltyReport.getCellFormatter().setAlignment(lineIdx, 7, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE);
+                       periodRoyalty = periodRoyalty.add(sales.getReferenceCurrencyCompanyRoyaltiesTotalAmount());
+                       
                lineIdx += 1;
             }
-            
+            totalRoyalty = totalRoyalty.add(periodRoyalty);
+            royaltyReport.setText(lineIdx,0," ");
+            lineIdx += 1;
+            royaltyReport.setText(lineIdx,0,"Total Royalties for period "+currentPeriod+" = "+periodRoyalty);
+            lineIdx +=3;
+            royaltyReport.setText(lineIdx,0,"Grand Total Royalties  = "+totalRoyalty);
+            lineIdx +=2;
+            royaltyReport.setText(lineIdx,0,"End of Report ");
          }
          
          @Override
          public void onFailure(Throwable caught) {
-            // TODO Auto-generated method stub
-            
+             Window.alert("Error fetching Roaylties report lines :  "
+                     + caught.getMessage()); 
          }
       });
         
@@ -192,19 +245,6 @@ public class RoyaltiesReport extends Composite implements
     @Override
     public boolean isEditing() {
         return this.editionInProgress;
-    }
-
-    @UiHandler("exportToXLS")
-    void onClickExportToXLS(ClickEvent e) {
-/*        String fileDownloadURL = GWT.getModuleBaseURL() + "download?month="
-                + currentMonth + "&year=" + currentYear;
-        Frame fileDownloadFrame = new Frame(fileDownloadURL);
-        fileDownloadFrame.setSize("0px", "0px");
-        fileDownloadFrame.setVisible(false);
-        RootPanel panel = RootPanel.get("__gwt_downloadFrame");
-        while (panel.getWidgetCount() > 0)
-            panel.remove(0);
-        panel.add(fileDownloadFrame);*/
     }
 
     @UiHandler("showReportButton")
