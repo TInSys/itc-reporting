@@ -18,4 +18,8 @@
       .noVerticalScroll {
         overflow-y: visible;
       }
+     
+      .reportBackground {
+        background-color: #EEEEEE;
+      }
 

@@ -136,11 +136,21 @@ public class SalesDAOImpl implements SalesDAO {
       LogicalExpression firstYear = Restrictions.and(Restrictions.eq("year",fromFiscalPeriodDTO.getYear()), Restrictions.ge("month", fromFiscalPeriodDTO.getMonth()));
       LogicalExpression lastYear = Restrictions.and(Restrictions.eq("year",toFiscalPeriodDTO.getYear()), Restrictions.le("month", toFiscalPeriodDTO.getMonth()));
       LogicalExpression betweenYears = Restrictions.and(Restrictions.gt("year", fromFiscalPeriodDTO.getYear()),Restrictions.lt("year", toFiscalPeriodDTO.getYear()));
-      List<FiscalPeriod> periods = (List<FiscalPeriod>) factory.getCurrentSession()
-            .createCriteria(FiscalPeriod.class)
-            .add(Restrictions.or(Restrictions.and(firstYear,lastYear), betweenYears))
-            .addOrder(Order.asc("year")).addOrder(Order.asc("month"))
-            .list();
+      List<FiscalPeriod> periods = null;
+      if (fromFiscalPeriodDTO.getYear()== toFiscalPeriodDTO.getYear()){
+         periods = (List<FiscalPeriod>) factory.getCurrentSession()
+         .createCriteria(FiscalPeriod.class)
+         .add(Restrictions.or(Restrictions.and(firstYear,lastYear), betweenYears))
+         .addOrder(Order.asc("year")).addOrder(Order.asc("month"))
+         .list();        
+      } else {
+         periods = (List<FiscalPeriod>) factory.getCurrentSession()
+         .createCriteria(FiscalPeriod.class)
+         .add(Restrictions.or(Restrictions.or(firstYear,lastYear), betweenYears))
+         .addOrder(Order.asc("year")).addOrder(Order.asc("month"))
+         .list();         
+      }
+
       if (periods !=null && periods.size()>0) {
          logger.debug(" periods found :"+periods.size());
 
@@ -165,11 +175,12 @@ public class SalesDAOImpl implements SalesDAO {
             royaltyFilter = Restrictions.or(royaltyFilter,Restrictions.and(Restrictions.eq("application", application),Restrictions.in("zone",zoneList)));
             }
             }
+         if (royaltyFilter !=null){
          sales = (List<Sales>)criteria.add(Restrictions.in("period", periods))
             .add(royaltyFilter)
                .list();
-         
          logger.debug("   sales lines  "+sales.size());
+         }
          return sales;
       }
       return null;

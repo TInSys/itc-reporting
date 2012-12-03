@@ -18,14 +18,10 @@ import com.tinsys.itc_reporting.dao.FXRateDAO;
 import com.tinsys.itc_reporting.dao.RoyaltyDAO;
 import com.tinsys.itc_reporting.dao.SalesDAO;
 import com.tinsys.itc_reporting.dao.TaxDAO;
-import com.tinsys.itc_reporting.model.Application;
-import com.tinsys.itc_reporting.model.Royalty;
 import com.tinsys.itc_reporting.model.Sales;
 import com.tinsys.itc_reporting.model.Tax;
-import com.tinsys.itc_reporting.model.Zone;
 import com.tinsys.itc_reporting.server.utils.DTOUtils;
 import com.tinsys.itc_reporting.shared.dto.ApplicationDTO;
-import com.tinsys.itc_reporting.shared.dto.ApplicationReportSummary;
 import com.tinsys.itc_reporting.shared.dto.CompanyDTO;
 import com.tinsys.itc_reporting.shared.dto.FXRateDTO;
 import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
@@ -33,14 +29,12 @@ import com.tinsys.itc_reporting.shared.dto.RoyaltyDTO;
 import com.tinsys.itc_reporting.shared.dto.RoyaltyReportLine;
 import com.tinsys.itc_reporting.shared.dto.SalesDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
-import com.tinsys.itc_reporting.shared.dto.ZoneReportSummary;
 
 @Service("royaltyReportService")
 @Transactional
 public class RoyaltyReportServiceImpl implements RoyaltyReportService {
 
    private static final Logger logger = Logger.getLogger(RoyaltyReportServiceImpl.class);
-    private final static String ZONE_TOTAL_COLUMN = "Total by Zone"; 
    
     @Autowired
     @Qualifier("salesDAO")
@@ -77,235 +71,6 @@ public class RoyaltyReportServiceImpl implements RoyaltyReportService {
          return c;
        }
      };
-    
-    public List<ZoneReportSummary> getMonthlyReport(FiscalPeriodDTO period) {
-       logger.debug("Preparing report");
-        List<Sales> sales = salesDAO.getAllSales(period);
-        //get tax rates for period
-        List<Tax> taxes = taxDAO.getTaxesForPeriod(period);
-        ArrayList<FXRateDTO> fxRates = fxRateDAO.getAllFXRatesForPeriod(period);
-        BigDecimal changeRate = new BigDecimal(0);
-        String currency = new String();
-        Zone currentZone = null;
-        Application currentApplication = null;
-        List<ZoneReportSummary> monthReportList = null;
-        ApplicationReportSummary applicationSumary = null;
-        ZoneReportSummary monthReportLine = new ZoneReportSummary();
-        monthReportLine
-                .setApplications(new ArrayList<ApplicationReportSummary>());
-        ZoneReportSummary monthReportLineTotal = new ZoneReportSummary();
-        monthReportLineTotal.setApplications(new ArrayList<ApplicationReportSummary>());
-        if (sales != null && sales.size() > 0) {
-           logger.debug("Processing  "+sales.size()+" lines");
-           BigDecimal taxRate = new BigDecimal(0);
-            for (Sales sale : sales) {
-                Zone zone = sale.getZone();
-
-                
-                // get tax rate for zone
-                if (zone != currentZone && monthReportList != null) {
-                    if (applicationSumary != null) {
-                        monthReportLine.getApplications()
-                                .add(applicationSumary);
-                        applicationSumary = null;
-                    }
-                    monthReportList.add(monthReportLine);
-                    monthReportLineTotal = appsTotal(monthReportLineTotal, monthReportLine);
-                    monthReportLine = new ZoneReportSummary();
-                    monthReportLine
-                            .setApplications(new ArrayList<ApplicationReportSummary>());
-                    changeRate = new BigDecimal(0);
-                    currency = new String();
-                    for (FXRateDTO fxRate : fxRates) {
-                        if (fxRate.getId() != null
-                                && fxRate.getZone().getId() == zone.getId()) {
-                            changeRate = fxRate.getRate();
-                            currency = fxRate.getCurrencyIso();
-                            break;
-                        }
-                    }
-                    taxRate = new BigDecimal(0);
-                    for (Tax tax : taxes) {
-                        if (tax.getZone().equals(zone)){
-                           taxRate = tax.getRate();
-                           break;
-                        }
-                    }
-                } else {
-                    if (currentZone == null) {
-                        changeRate = new BigDecimal(0);
-                        for (FXRateDTO fxRate : fxRates) {
-                            if (fxRate.getId() != null
-                                    && fxRate.getZone().getId() == zone.getId()) {
-                                changeRate = fxRate.getRate();
-                                currency = fxRate.getCurrencyIso();
-                                break;
-                            }
-                        }
-                        taxRate = new BigDecimal(0);
-                        for (Tax tax : taxes) {
-                            if (tax.getZone().equals(zone)){
-                               taxRate = tax.getRate();
-                               break;
-                            }
-                        }
-                    }
-                }
-                Application application = sale.getApplication();
-                if (application != currentApplication
-                        && applicationSumary != null) {
-                    monthReportLine.getApplications().add(applicationSumary);
-                    applicationSumary = new ApplicationReportSummary();
-                    applicationSumary.setOriginalCurrencyAmount(new BigDecimal(
-                            0));
-                    applicationSumary.setOriginalCurrencyProceeds(new BigDecimal(
-                            0));
-                    applicationSumary
-                            .setReferenceCurrencyAmount(new BigDecimal(0));
-                    applicationSumary.setOriginalCurrencyProceedsAfterTax(new BigDecimal(
-                            0));
-                    } else {
-                    if (applicationSumary == null) {
-                        applicationSumary = new ApplicationReportSummary();
-                        applicationSumary
-                                .setOriginalCurrencyAmount(new BigDecimal(0));
-                        applicationSumary
-                        .setOriginalCurrencyProceeds(new BigDecimal(0));
-                        applicationSumary
-                                .setReferenceCurrencyAmount(new BigDecimal(0));
-                        applicationSumary
-                        .setOriginalCurrencyProceedsAfterTax(new BigDecimal(0));                    }
-                }
-                applicationSumary.setApplicationName(application.getName());
-                applicationSumary.setSalesNumber(applicationSumary
-                        .getSalesNumber() + sale.getSoldUnits());
-                applicationSumary.setOriginalCurrency(sale.getZone()
-                        .getCurrencyISO());
-                if (applicationSumary.getOriginalCurrencyAmount()==null){
-                   applicationSumary.setOriginalCurrencyAmount(new BigDecimal(0));
-                }
-
-                
-                applicationSumary.setOriginalCurrencyAmount(applicationSumary
-                        .getOriginalCurrencyAmount().add(sale.getTotalPrice()));
-                if (applicationSumary.getOriginalCurrencyProceeds()==null){
-                    applicationSumary.setOriginalCurrencyProceeds(new BigDecimal(0));
-                 }
-                 applicationSumary.setOriginalCurrencyProceeds(applicationSumary
-                         .getOriginalCurrencyProceeds().add((sale.getTotalProceeds()!=null)?sale.getTotalProceeds():new BigDecimal(0)));
-                 if (applicationSumary.getOriginalCurrencyProceedsAfterTax()==null){
-                     applicationSumary.setOriginalCurrencyProceedsAfterTax(new BigDecimal(0));
-                  }
-                  applicationSumary.setOriginalCurrencyProceedsAfterTax(applicationSumary
-                          .getOriginalCurrencyProceedsAfterTax().add((sale.getTotalProceeds()!=null)?(sale.getTotalProceeds().multiply((new BigDecimal(1).subtract(taxRate)))):new BigDecimal(0)));
-                applicationSumary.setReferenceCurrency(currency);
-                if (applicationSumary.getReferenceCurrencyAmount()==null){
-                   applicationSumary.setReferenceCurrencyAmount(new BigDecimal(0));
-                }
-                applicationSumary.setReferenceCurrencyAmount(applicationSumary
-                        .getReferenceCurrencyAmount().add(
-                                ((sale.getTotalPrice()!=null)?sale.getTotalPrice():new BigDecimal(0)).multiply(changeRate)));
-
-                if (applicationSumary.getReferenceCurrencyProceeds()==null){
-                    applicationSumary.setReferenceCurrencyProceeds(new BigDecimal(0));
-                 }
-                 applicationSumary.setReferenceCurrencyProceeds(applicationSumary
-                         .getReferenceCurrencyProceeds().add(
-                                 ((sale.getTotalProceeds()!=null)?sale.getTotalProceeds():new BigDecimal(0)).multiply(changeRate)));
-                 
-                 if (applicationSumary.getReferenceCurrencyProceedsAfterTax()==null){
-                     applicationSumary.setReferenceCurrencyProceedsAfterTax(new BigDecimal(0));
-                  }
-                  applicationSumary.setReferenceCurrencyProceedsAfterTax(applicationSumary
-                          .getReferenceCurrencyProceedsAfterTax().add(
-                                  ((sale.getTotalProceeds()!=null)?(sale.getTotalProceeds().multiply((new BigDecimal(1).subtract(taxRate)))):new BigDecimal(0)).multiply(changeRate))); 
-                monthReportLine.setZoneName(zone.getName());
-                currentApplication = application;
-                currentZone = zone;
-
-                if (monthReportList == null) {
-                    monthReportList = new ArrayList<ZoneReportSummary>();
-                }
-
-            }
-            if (applicationSumary != null && monthReportLine != null) {
-                monthReportLine.getApplications().add(applicationSumary);
-            }
-            if (monthReportLine != null && monthReportList != null) {
-                monthReportList.add(monthReportLine);
-                monthReportLineTotal = appsTotal(monthReportLineTotal, monthReportLine);
-            }
-            monthReportLineTotal = appsTotal(monthReportLineTotal, monthReportLineTotal);
-            monthReportList.add(monthReportLineTotal);
-            return monthReportList;
-        } else {
-           logger.debug("No sales found for period  "+period.getMonth()+"/"+period.getYear());
-
-        }
-        monthReportList = new ArrayList<ZoneReportSummary>();
-        return monthReportList;
-    }
-
-    private ZoneReportSummary appsTotal(
-            ZoneReportSummary monthReportLineTotal,
-            ZoneReportSummary monthReportLine) {
-        monthReportLineTotal.setZoneName("Total by App :");
-        ApplicationReportSummary total = new  ApplicationReportSummary();
-        total.setReferenceCurrencyAmount(new BigDecimal(0));
-        total.setReferenceCurrencyProceeds(new BigDecimal(0));
-        total.setReferenceCurrencyProceedsAfterTax(new BigDecimal(0));
-        total.setOriginalCurrencyAmount(new BigDecimal(0));
-        total.setOriginalCurrencyProceeds(new BigDecimal(0));
-        total.setOriginalCurrencyProceedsAfterTax(new BigDecimal(0));
-        for ( ApplicationReportSummary reportSummary: monthReportLine.getApplications()) {
-            total.setApplicationName(ZONE_TOTAL_COLUMN);
-            if (reportSummary.getOriginalCurrencyAmount()!=null){
-            total.setOriginalCurrencyAmount(total.getOriginalCurrencyAmount().setScale(2, RoundingMode.HALF_EVEN).add(reportSummary.getOriginalCurrencyAmount().setScale(2, RoundingMode.HALF_EVEN)));
-            }
-            if (reportSummary.getOriginalCurrencyProceeds()!=null){
-            total.setOriginalCurrencyProceeds(total.getOriginalCurrencyProceeds().setScale(2, RoundingMode.HALF_EVEN).add(reportSummary.getOriginalCurrencyProceeds().setScale(2, RoundingMode.HALF_EVEN)));
-            }
-            if (reportSummary.getOriginalCurrencyProceedsAfterTax()!=null){
-            total.setOriginalCurrencyProceedsAfterTax(total.getOriginalCurrencyProceedsAfterTax().setScale(2, RoundingMode.HALF_EVEN).add(reportSummary.getOriginalCurrencyProceedsAfterTax().setScale(2, RoundingMode.HALF_EVEN)));
-            }
-            total.setReferenceCurrencyAmount(total.getReferenceCurrencyAmount().setScale(2, RoundingMode.HALF_EVEN).add(reportSummary.getReferenceCurrencyAmount().setScale(2, RoundingMode.HALF_EVEN)));
-            total.setReferenceCurrencyProceeds(total.getReferenceCurrencyProceeds().setScale(2, RoundingMode.HALF_EVEN).add(reportSummary.getReferenceCurrencyProceeds().setScale(2, RoundingMode.HALF_EVEN)));
-            total.setReferenceCurrencyProceedsAfterTax(total.getReferenceCurrencyProceedsAfterTax().setScale(2, RoundingMode.HALF_EVEN).add(reportSummary.getReferenceCurrencyProceedsAfterTax().setScale(2, RoundingMode.HALF_EVEN)));
-            
-            total.setReferenceCurrency(reportSummary.getReferenceCurrency());
-            total.setOriginalCurrency(reportSummary.getOriginalCurrency());
-            total.setSalesNumber(total.getSalesNumber()+reportSummary.getSalesNumber());
-            boolean appFound = false;
-            if (monthReportLineTotal == monthReportLine){
-                total.setOriginalCurrencyAmount(null);
-                total.setOriginalCurrencyProceeds(null); 
-                total.setOriginalCurrencyProceedsAfterTax(null);
-            }
-            if (monthReportLineTotal != monthReportLine){
-            for (ApplicationReportSummary reportSummaryTotal : monthReportLineTotal.getApplications()){
-                if (reportSummaryTotal.getApplicationName().equals(reportSummary.getApplicationName())){
-                    appFound = true;
-                    reportSummaryTotal.setSalesNumber(reportSummaryTotal.getSalesNumber()+reportSummary.getSalesNumber());
-                    reportSummaryTotal.setReferenceCurrencyAmount(reportSummaryTotal.getReferenceCurrencyAmount().setScale(2, RoundingMode.HALF_EVEN).add(reportSummary.getReferenceCurrencyAmount().setScale(2, RoundingMode.HALF_EVEN)));
-                    reportSummaryTotal.setReferenceCurrencyProceeds(reportSummaryTotal.getReferenceCurrencyProceeds().setScale(2, RoundingMode.HALF_EVEN).add(reportSummary.getReferenceCurrencyProceeds().setScale(2, RoundingMode.HALF_EVEN)));
-                    reportSummaryTotal.setReferenceCurrencyProceedsAfterTax(reportSummaryTotal.getReferenceCurrencyProceedsAfterTax().setScale(2, RoundingMode.HALF_EVEN).add(reportSummary.getReferenceCurrencyProceedsAfterTax().setScale(2, RoundingMode.HALF_EVEN)));
-                    reportSummaryTotal.setReferenceCurrency(reportSummary.getReferenceCurrency());
-                }
-            }
-            if (!appFound){
-                ApplicationReportSummary reportSummaryTotal = new ApplicationReportSummary();
-                reportSummaryTotal.setApplicationName(reportSummary.getApplicationName());
-                reportSummaryTotal.setSalesNumber(reportSummary.getSalesNumber());
-                reportSummaryTotal.setReferenceCurrencyAmount(reportSummary.getReferenceCurrencyAmount().setScale(2, RoundingMode.HALF_EVEN));
-                reportSummaryTotal.setReferenceCurrencyProceeds(reportSummary.getReferenceCurrencyProceeds().setScale(2, RoundingMode.HALF_EVEN));
-                reportSummaryTotal.setReferenceCurrencyProceedsAfterTax(reportSummary.getReferenceCurrencyProceedsAfterTax().setScale(2, RoundingMode.HALF_EVEN));
-                reportSummaryTotal.setReferenceCurrency(reportSummary.getReferenceCurrency());
-                monthReportLineTotal.getApplications().add(reportSummaryTotal);
-            }}
-        }
-        monthReportLine.getApplications().add(total);
-        return monthReportLineTotal;
-    }
 
    @Override
    public List<RoyaltyReportLine> getCompanyReport(CompanyDTO company,
@@ -334,7 +99,6 @@ public class RoyaltyReportServiceImpl implements RoyaltyReportService {
       BigDecimal vatFactor;
       
       for (SalesDTO salesDTO : salesDTOList) {
-
           if (currentPeriod == null || currentPeriod.getId() != salesDTO.getPeriod().getId() || currentApplication.getId()!= salesDTO.getApplication().getId() || currentZone.getId() != salesDTO.getZone().getId() || !currentPrice.equals(salesDTO.getIndividualPrice()) ){
               if (currentPeriod != null){
               logger.debug("period "+currentPeriod.getId() +" "+salesDTO.getPeriod().getId() +" " + (currentPeriod.getId() != salesDTO.getPeriod().getId()));
@@ -374,8 +138,9 @@ public class RoyaltyReportServiceImpl implements RoyaltyReportService {
               reportLine.setPeriod(currentPeriod);
               reportLine.setApplication(currentApplication);
               reportLine.setZone(currentZone);
-              reportLine.setOriginalCurrencyAmount(currentPrice.setScale(2, RoundingMode.HALF_EVEN));
+              reportLine.setOriginalCurrencyAmount(currentPrice);
               currency = new String();
+              changeRate = new BigDecimal(0);
               for (FXRateDTO fxRate : fxRates) {
                   if (fxRate.getId() != null
                           && fxRate.getZone().getId() == currentZone.getId()) {
@@ -400,25 +165,40 @@ public class RoyaltyReportServiceImpl implements RoyaltyReportService {
                 }
             }
           }
+          try {
+            
+         } catch (Exception e) {
+            // TODO: handle exception
+         }
           reportLine.setOriginalCurrency(currentZone.getCurrencyISO());
           reportLine.setReferenceCurrency(currency);
           reportLine.setSalesNumber(reportLine.getSalesNumber()+salesDTO.getSoldUnits());
-          reportLine.setOriginalCurrencyTotalAmount(reportLine.getOriginalCurrencyTotalAmount().setScale(2, RoundingMode.HALF_EVEN).add(salesDTO.getTotalPrice()).setScale(2, RoundingMode.HALF_EVEN));
-          BigDecimal proceedsAfterTax = ((salesDTO.getTotalProceeds()!=null)?(salesDTO.getTotalProceeds().multiply((new BigDecimal(1).subtract(taxRate)))):new BigDecimal(0)).multiply(changeRate).setScale(2, RoundingMode.HALF_EVEN);
-          BigDecimal totalAmount =  ((salesDTO.getTotalPrice()!=null)?salesDTO.getTotalPrice():new BigDecimal(0)).multiply(changeRate).setScale(2, RoundingMode.HALF_EVEN);
-          reportLine.setReferenceCurrencyProceedsAfterTaxTotalAmount(reportLine.getReferenceCurrencyProceedsAfterTaxTotalAmount().add(proceedsAfterTax).setScale(2, RoundingMode.HALF_EVEN));
-          reportLine.setReferenceCurrencyTotalAmount(reportLine.getReferenceCurrencyTotalAmount().add(totalAmount).setScale(2, RoundingMode.HALF_EVEN));
+          reportLine.setOriginalCurrencyTotalAmount(reportLine.getOriginalCurrencyTotalAmount().add(salesDTO.getTotalPrice()));
+          BigDecimal proceedsAfterTax = ((salesDTO.getTotalProceeds()!=null)?(salesDTO.getTotalProceeds().multiply((new BigDecimal(1).subtract(taxRate)))):new BigDecimal(0)).multiply(changeRate);
+          BigDecimal totalAmount =  ((salesDTO.getTotalPrice()!=null)?salesDTO.getTotalPrice():new BigDecimal(0)).multiply(changeRate);
+          reportLine.setReferenceCurrencyProceedsAfterTaxTotalAmount(reportLine.getReferenceCurrencyProceedsAfterTaxTotalAmount().add(proceedsAfterTax));
+          reportLine.setReferenceCurrencyTotalAmount(reportLine.getReferenceCurrencyTotalAmount().add(totalAmount));
           if (shareRate != new BigDecimal(0)){
           vatFactor = new BigDecimal(0);
-          if (royaltyOnSales){
-              vatFactor = (totalAmount.multiply(new BigDecimal(0.7))).divide((proceedsAfterTax.multiply(changeRate)),2, RoundingMode.HALF_EVEN).setScale(2, RoundingMode.HALF_EVEN);
-              reportLine.setReferenceCurrencyCompanyRoyaltiesTotalAmount(reportLine.getReferenceCurrencyCompanyRoyaltiesTotalAmount().setScale(2, RoundingMode.HALF_EVEN).add((salesDTO.getTotalPrice().divide(vatFactor,2, RoundingMode.HALF_EVEN)).multiply(shareRate.divide(new BigDecimal(100),2, RoundingMode.HALF_EVEN))).setScale(2, RoundingMode.HALF_EVEN));
-          } else {
-              reportLine.setReferenceCurrencyCompanyRoyaltiesTotalAmount(reportLine.getReferenceCurrencyCompanyRoyaltiesTotalAmount().setScale(2, RoundingMode.HALF_EVEN).add(proceedsAfterTax.multiply(shareRate).divide(new BigDecimal(100),2, RoundingMode.HALF_EVEN)).setScale(2, RoundingMode.HALF_EVEN));
+          if (changeRate.equals(new BigDecimal(0))){
+             throw new RuntimeException("Change Rate not found for "+currentZone.getName()+" for period "+currentPeriod);
           }
+          if (proceedsAfterTax.equals(new BigDecimal(0))){
+             throw new RuntimeException("Proceeds after tax = 0 for zone "+currentZone.getName()+" for period "+currentPeriod+" for application "+currentApplication.getName());
+          }
+          try {
+          if (royaltyOnSales){
+              vatFactor = (totalAmount.multiply(new BigDecimal(0.7))).divide((proceedsAfterTax.multiply(changeRate)),2, RoundingMode.HALF_UP);
+              reportLine.setReferenceCurrencyCompanyRoyaltiesTotalAmount(reportLine.getReferenceCurrencyCompanyRoyaltiesTotalAmount().add((salesDTO.getTotalPrice().divide(vatFactor,4, RoundingMode.HALF_UP)).multiply(shareRate.divide(new BigDecimal(100),4, RoundingMode.HALF_UP))));
+          } else {
+              reportLine.setReferenceCurrencyCompanyRoyaltiesTotalAmount(reportLine.getReferenceCurrencyCompanyRoyaltiesTotalAmount().add(proceedsAfterTax.multiply(shareRate).divide(new BigDecimal(100),4, RoundingMode.HALF_UP)));
+          }
+          } catch (Exception e) {
+             throw new RuntimeException(e.getMessage());
+         }
           }
     }
-      if (reportLine !=null){
+      if (reportLine !=null && reportLine.getPeriod()!=null){
           report.add(reportLine);
       }
       return report;

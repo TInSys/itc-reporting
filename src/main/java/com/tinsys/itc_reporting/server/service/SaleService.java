@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tinsys.itc_reporting.dao.ApplicationDAO;
-import com.tinsys.itc_reporting.dao.FXRateDAO;
 import com.tinsys.itc_reporting.dao.FiscalPeriodDAO;
 import com.tinsys.itc_reporting.dao.SalesDAO;
 import com.tinsys.itc_reporting.dao.ZoneDAO;
@@ -27,10 +26,6 @@ public class SaleService {
     @Autowired
     @Qualifier("applicationDAO")
     private ApplicationDAO applicationDAO;
-
-    @Autowired
-    @Qualifier("fxRateDAO")
-    private FXRateDAO fxRateDAO;
 
     @Autowired
     @Qualifier("fiscalPeriodDAO")

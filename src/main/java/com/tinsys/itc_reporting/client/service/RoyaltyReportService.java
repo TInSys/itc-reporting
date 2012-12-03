@@ -11,5 +11,5 @@ import com.tinsys.itc_reporting.shared.dto.RoyaltyReportLine;
 @RemoteServiceRelativePath("springGwtServices/royaltyReportService")
 public interface RoyaltyReportService extends RemoteService {
 
-    public List<RoyaltyReportLine> getCompanyReport(CompanyDTO company,FiscalPeriodDTO startPeriod, FiscalPeriodDTO endPeriod);
+    public List<RoyaltyReportLine> getCompanyReport(CompanyDTO company,FiscalPeriodDTO startPeriod, FiscalPeriodDTO endPeriod) throws RuntimeException;
 }
