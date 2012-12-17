@@ -236,7 +236,6 @@ public class SalesReportServiceImpl implements SalesReportService {
             }
             total.setReferenceCurrencyAmount(total.getReferenceCurrencyAmount().setScale(2, RoundingMode.HALF_UP).add(reportSummary.getReferenceCurrencyAmount().setScale(5, RoundingMode.HALF_UP)));
             total.setReferenceCurrencyProceeds(total.getReferenceCurrencyProceeds().setScale(2, RoundingMode.HALF_UP).add(reportSummary.getReferenceCurrencyProceeds().setScale(5, RoundingMode.HALF_UP)));
-            System.out.println("###########   Reference currency proceeds :"+total.getReferenceCurrencyProceeds().toPlainString());
             total.setReferenceCurrencyProceedsAfterTax(total.getReferenceCurrencyProceedsAfterTax().setScale(5, RoundingMode.HALF_UP).add(reportSummary.getReferenceCurrencyProceedsAfterTax().setScale(5, RoundingMode.HALF_UP)));
             
             total.setReferenceCurrency(reportSummary.getReferenceCurrency());
