@@ -99,6 +99,7 @@ public class RoyaltyReportServiceImpl implements RoyaltyReportService {
       BigDecimal vatFactor;
       
       for (SalesDTO salesDTO : salesDTOList) {
+         if (salesDTO.getTotalPrice().compareTo(new BigDecimal(0))!=0){
           if (currentPeriod == null || currentPeriod.getId() != salesDTO.getPeriod().getId() || currentApplication.getId()!= salesDTO.getApplication().getId() || currentZone.getId() != salesDTO.getZone().getId() || !currentPrice.equals(salesDTO.getIndividualPrice()) ){
               if (currentPeriod != null){
               logger.debug("period "+currentPeriod.getId() +" "+salesDTO.getPeriod().getId() +" " + (currentPeriod.getId() != salesDTO.getPeriod().getId()));
@@ -178,25 +179,23 @@ public class RoyaltyReportServiceImpl implements RoyaltyReportService {
           BigDecimal totalAmount =  ((salesDTO.getTotalPrice()!=null)?salesDTO.getTotalPrice():new BigDecimal(0)).multiply(changeRate);
           reportLine.setReferenceCurrencyProceedsAfterTaxTotalAmount(reportLine.getReferenceCurrencyProceedsAfterTaxTotalAmount().add(proceedsAfterTax));
           reportLine.setReferenceCurrencyTotalAmount(reportLine.getReferenceCurrencyTotalAmount().add(totalAmount));
-          if (shareRate != new BigDecimal(0)){
+          if (shareRate.compareTo(new BigDecimal(0))!=0 && proceedsAfterTax.compareTo(new BigDecimal(0))!=0){
           vatFactor = new BigDecimal(0);
           if (changeRate.equals(new BigDecimal(0))){
              throw new RuntimeException("Change Rate not found for "+currentZone.getName()+" for period "+currentPeriod);
           }
-          if (proceedsAfterTax.equals(new BigDecimal(0))){
-             throw new RuntimeException("Proceeds after tax = 0 for zone "+currentZone.getName()+" for period "+currentPeriod+" for application "+currentApplication.getName());
-          }
           try {
           if (royaltyOnSales){
-              vatFactor = (totalAmount.multiply(new BigDecimal(0.7))).divide((proceedsAfterTax.multiply(changeRate)),2, RoundingMode.HALF_UP);
-              reportLine.setReferenceCurrencyCompanyRoyaltiesTotalAmount(reportLine.getReferenceCurrencyCompanyRoyaltiesTotalAmount().add((salesDTO.getTotalPrice().divide(vatFactor,4, RoundingMode.HALF_UP)).multiply(shareRate.divide(new BigDecimal(100),4, RoundingMode.HALF_UP))));
+              vatFactor = (totalAmount.multiply(new BigDecimal(0.7))).divide((proceedsAfterTax.multiply(changeRate)),5, RoundingMode.HALF_UP);
+              reportLine.setReferenceCurrencyCompanyRoyaltiesTotalAmount(reportLine.getReferenceCurrencyCompanyRoyaltiesTotalAmount().add((salesDTO.getTotalPrice().divide(vatFactor,5, RoundingMode.HALF_UP)).multiply(shareRate.divide(new BigDecimal(100),5, RoundingMode.HALF_UP))));
           } else {
-              reportLine.setReferenceCurrencyCompanyRoyaltiesTotalAmount(reportLine.getReferenceCurrencyCompanyRoyaltiesTotalAmount().add(proceedsAfterTax.multiply(shareRate).divide(new BigDecimal(100),4, RoundingMode.HALF_UP)));
+              reportLine.setReferenceCurrencyCompanyRoyaltiesTotalAmount(reportLine.getReferenceCurrencyCompanyRoyaltiesTotalAmount().add(proceedsAfterTax.multiply(shareRate).divide(new BigDecimal(100),5, RoundingMode.HALF_UP)));
           }
           } catch (Exception e) {
              throw new RuntimeException(e.getMessage());
          }
           }
+      }
     }
       if (reportLine !=null && reportLine.getPeriod()!=null){
           report.add(reportLine);

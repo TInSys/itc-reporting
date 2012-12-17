@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.gwt.core.shared.GWT;
 import com.tinsys.itc_reporting.client.service.SalesReportService;
 import com.tinsys.itc_reporting.dao.FXRateDAO;
 import com.tinsys.itc_reporting.dao.SalesDAO;
@@ -225,17 +226,18 @@ public class SalesReportServiceImpl implements SalesReportService {
         for ( ApplicationReportSummary reportSummary: monthReportLine.getApplications()) {
             total.setApplicationName(ZONE_TOTAL_COLUMN);
             if (reportSummary.getOriginalCurrencyAmount()!=null){
-            total.setOriginalCurrencyAmount(total.getOriginalCurrencyAmount().setScale(2, RoundingMode.HALF_EVEN).add(reportSummary.getOriginalCurrencyAmount().setScale(2, RoundingMode.HALF_EVEN)));
+            total.setOriginalCurrencyAmount(total.getOriginalCurrencyAmount().setScale(2, RoundingMode.HALF_UP).add(reportSummary.getOriginalCurrencyAmount().setScale(5, RoundingMode.HALF_UP)));
             }
             if (reportSummary.getOriginalCurrencyProceeds()!=null){
-            total.setOriginalCurrencyProceeds(total.getOriginalCurrencyProceeds().setScale(2, RoundingMode.HALF_EVEN).add(reportSummary.getOriginalCurrencyProceeds().setScale(2, RoundingMode.HALF_EVEN)));
+            total.setOriginalCurrencyProceeds(total.getOriginalCurrencyProceeds().setScale(2, RoundingMode.HALF_UP).add(reportSummary.getOriginalCurrencyProceeds().setScale(5, RoundingMode.HALF_UP)));
             }
             if (reportSummary.getOriginalCurrencyProceedsAfterTax()!=null){
-            total.setOriginalCurrencyProceedsAfterTax(total.getOriginalCurrencyProceedsAfterTax().setScale(2, RoundingMode.HALF_EVEN).add(reportSummary.getOriginalCurrencyProceedsAfterTax().setScale(2, RoundingMode.HALF_EVEN)));
+            total.setOriginalCurrencyProceedsAfterTax(total.getOriginalCurrencyProceedsAfterTax().setScale(2, RoundingMode.HALF_UP).add(reportSummary.getOriginalCurrencyProceedsAfterTax().setScale(5, RoundingMode.HALF_UP)));
             }
-            total.setReferenceCurrencyAmount(total.getReferenceCurrencyAmount().setScale(2, RoundingMode.HALF_EVEN).add(reportSummary.getReferenceCurrencyAmount().setScale(2, RoundingMode.HALF_EVEN)));
-            total.setReferenceCurrencyProceeds(total.getReferenceCurrencyProceeds().setScale(2, RoundingMode.HALF_EVEN).add(reportSummary.getReferenceCurrencyProceeds().setScale(2, RoundingMode.HALF_EVEN)));
-            total.setReferenceCurrencyProceedsAfterTax(total.getReferenceCurrencyProceedsAfterTax().setScale(2, RoundingMode.HALF_EVEN).add(reportSummary.getReferenceCurrencyProceedsAfterTax().setScale(2, RoundingMode.HALF_EVEN)));
+            total.setReferenceCurrencyAmount(total.getReferenceCurrencyAmount().setScale(2, RoundingMode.HALF_UP).add(reportSummary.getReferenceCurrencyAmount().setScale(5, RoundingMode.HALF_UP)));
+            total.setReferenceCurrencyProceeds(total.getReferenceCurrencyProceeds().setScale(2, RoundingMode.HALF_UP).add(reportSummary.getReferenceCurrencyProceeds().setScale(5, RoundingMode.HALF_UP)));
+            System.out.println("###########   Reference currency proceeds :"+total.getReferenceCurrencyProceeds().toPlainString());
+            total.setReferenceCurrencyProceedsAfterTax(total.getReferenceCurrencyProceedsAfterTax().setScale(5, RoundingMode.HALF_UP).add(reportSummary.getReferenceCurrencyProceedsAfterTax().setScale(5, RoundingMode.HALF_UP)));
             
             total.setReferenceCurrency(reportSummary.getReferenceCurrency());
             total.setOriginalCurrency(reportSummary.getOriginalCurrency());
@@ -251,9 +253,9 @@ public class SalesReportServiceImpl implements SalesReportService {
                 if (reportSummaryTotal.getApplicationName().equals(reportSummary.getApplicationName())){
                     appFound = true;
                     reportSummaryTotal.setSalesNumber(reportSummaryTotal.getSalesNumber()+reportSummary.getSalesNumber());
-                    reportSummaryTotal.setReferenceCurrencyAmount(reportSummaryTotal.getReferenceCurrencyAmount().setScale(2, RoundingMode.HALF_EVEN).add(reportSummary.getReferenceCurrencyAmount().setScale(2, RoundingMode.HALF_EVEN)));
-                    reportSummaryTotal.setReferenceCurrencyProceeds(reportSummaryTotal.getReferenceCurrencyProceeds().setScale(2, RoundingMode.HALF_EVEN).add(reportSummary.getReferenceCurrencyProceeds().setScale(2, RoundingMode.HALF_EVEN)));
-                    reportSummaryTotal.setReferenceCurrencyProceedsAfterTax(reportSummaryTotal.getReferenceCurrencyProceedsAfterTax().setScale(2, RoundingMode.HALF_EVEN).add(reportSummary.getReferenceCurrencyProceedsAfterTax().setScale(2, RoundingMode.HALF_EVEN)));
+                    reportSummaryTotal.setReferenceCurrencyAmount(reportSummaryTotal.getReferenceCurrencyAmount().setScale(5, RoundingMode.HALF_UP).add(reportSummary.getReferenceCurrencyAmount().setScale(5, RoundingMode.HALF_UP)));
+                    reportSummaryTotal.setReferenceCurrencyProceeds(reportSummaryTotal.getReferenceCurrencyProceeds().setScale(5, RoundingMode.HALF_UP).add(reportSummary.getReferenceCurrencyProceeds().setScale(5, RoundingMode.HALF_UP)));
+                    reportSummaryTotal.setReferenceCurrencyProceedsAfterTax(reportSummaryTotal.getReferenceCurrencyProceedsAfterTax().setScale(5, RoundingMode.HALF_UP).add(reportSummary.getReferenceCurrencyProceedsAfterTax().setScale(5, RoundingMode.HALF_UP)));
                     reportSummaryTotal.setReferenceCurrency(reportSummary.getReferenceCurrency());
                 }
             }
@@ -261,9 +263,9 @@ public class SalesReportServiceImpl implements SalesReportService {
                 ApplicationReportSummary reportSummaryTotal = new ApplicationReportSummary();
                 reportSummaryTotal.setApplicationName(reportSummary.getApplicationName());
                 reportSummaryTotal.setSalesNumber(reportSummary.getSalesNumber());
-                reportSummaryTotal.setReferenceCurrencyAmount(reportSummary.getReferenceCurrencyAmount().setScale(2, RoundingMode.HALF_EVEN));
-                reportSummaryTotal.setReferenceCurrencyProceeds(reportSummary.getReferenceCurrencyProceeds().setScale(2, RoundingMode.HALF_EVEN));
-                reportSummaryTotal.setReferenceCurrencyProceedsAfterTax(reportSummary.getReferenceCurrencyProceedsAfterTax().setScale(2, RoundingMode.HALF_EVEN));
+                reportSummaryTotal.setReferenceCurrencyAmount(reportSummary.getReferenceCurrencyAmount().setScale(5, RoundingMode.HALF_UP));
+                reportSummaryTotal.setReferenceCurrencyProceeds(reportSummary.getReferenceCurrencyProceeds().setScale(5, RoundingMode.HALF_UP));
+                reportSummaryTotal.setReferenceCurrencyProceedsAfterTax(reportSummary.getReferenceCurrencyProceedsAfterTax().setScale(5, RoundingMode.HALF_UP));
                 reportSummaryTotal.setReferenceCurrency(reportSummary.getReferenceCurrency());
                 monthReportLineTotal.getApplications().add(reportSummaryTotal);
             }}
