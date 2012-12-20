@@ -271,7 +271,7 @@ public class RoyaltyManagement extends Composite implements
             "Royalty for Application ");
       royaltyCellTable.setSelectionModel(selectionModel);
       selectionModel.addSelectionChangeHandler(getSelectionChangeHandler());
-      royaltyCellTable.setPageSize(15);
+      royaltyCellTable.setPageSize(25);
       pager.setDisplay(royaltyCellTable);
       pager.setRangeLimited(true);
 

@@ -183,7 +183,7 @@ public class FXRateManagementByMonth extends Composite implements
       fxRateCellTable.addColumn(fxRateRateColumn, "Rate ");
       fxRateCellTable.addColumn(fxRateISOCurrencyColumn, "Currency ISO");
       fxRateCellTable.setColumnWidth(fxRateISOCurrencyColumn, "50px");
-      fxRateCellTable.setPageSize(15);
+      fxRateCellTable.setPageSize(25);
       pager.setDisplay(fxRateCellTable);
       pager.setRangeLimited(true);
       fxRateCellTable

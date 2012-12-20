@@ -165,7 +165,7 @@ public class TaxManagement extends Composite implements WidgetSwitchManagement {
         taxCellTable.addColumn(taxPeriodColumn, "Period ");
         taxCellTable.setSelectionModel(selectionModel);
         selectionModel.addSelectionChangeHandler(getSelectionChangeHandler());
-        taxCellTable.setPageSize(15);
+        taxCellTable.setPageSize(25);
         pager.setDisplay(taxCellTable);
         pager.setRangeLimited(true);
 

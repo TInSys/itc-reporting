@@ -112,7 +112,7 @@ public class ZoneManagement extends Composite implements WidgetSwitchManagement 
       zoneCellTable.addColumn(zoneCurrencyISOColumn, "Currency ISO ");
       zoneCellTable.setSelectionModel(selectionModel);
       selectionModel.addSelectionChangeHandler(getSelectionChangeHandler());
-      zoneCellTable.setPageSize(15);
+      zoneCellTable.setPageSize(25);
       pager.setDisplay(zoneCellTable);
       pager.setRangeLimited(true);
 

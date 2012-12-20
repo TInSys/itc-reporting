@@ -100,7 +100,7 @@ public class CompanyManagement extends Composite implements WidgetSwitchManageme
       companyCellTable.addColumn(companyCurrencyISOColumn, "Currency ISO ");
       companyCellTable.setSelectionModel(selectionModel);
       selectionModel.addSelectionChangeHandler(getSelectionChangeHandler());
-      companyCellTable.setPageSize(15);
+      companyCellTable.setPageSize(25);
       pager.setDisplay(companyCellTable);
       pager.setRangeLimited(true);
 

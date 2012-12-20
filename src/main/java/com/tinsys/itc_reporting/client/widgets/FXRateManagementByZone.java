@@ -204,7 +204,7 @@ public class FXRateManagementByZone extends Composite implements
       fxRateCellTable.addColumn(fxRateCurrencyColumn, "Currency");
       fxRateCellTable.setSelectionModel(selectionModel);
       selectionModel.addSelectionChangeHandler(getSelectionChangeHandler());
-      fxRateCellTable.setPageSize(15);
+      fxRateCellTable.setPageSize(25);
       pager.setDisplay(fxRateCellTable);
       pager.setRangeLimited(true);
 

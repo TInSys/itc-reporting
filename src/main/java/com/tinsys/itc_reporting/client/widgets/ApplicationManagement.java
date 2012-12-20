@@ -104,7 +104,7 @@ public class ApplicationManagement extends Composite implements WidgetSwitchMana
         applicationCellTable.addColumn(applicationNameColumn,"Name ");
         applicationCellTable.setSelectionModel(selectionModel);
         selectionModel.addSelectionChangeHandler(getSelectionChangeHandler());
-        applicationCellTable.setPageSize(15);
+        applicationCellTable.setPageSize(25);
         pager.setDisplay(applicationCellTable);
         pager.setRangeLimited(true);
 
