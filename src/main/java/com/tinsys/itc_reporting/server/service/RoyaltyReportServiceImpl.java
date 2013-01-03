@@ -109,6 +109,9 @@ public class RoyaltyReportServiceImpl implements RoyaltyReportService {
               }
               // add royalty line to table
               if (currentPeriod!=null){
+                  reportLine.setReferenceCurrencyCompanyRoyaltiesTotalAmount(reportLine.getReferenceCurrencyCompanyRoyaltiesTotalAmount().multiply(changeRate));
+                  reportLine.setReferenceCurrencyProceedsAfterTaxTotalAmount(reportLine.getReferenceCurrencyProceedsAfterTaxTotalAmount().multiply(changeRate));
+                  reportLine.setReferenceCurrencyTotalAmount(reportLine.getReferenceCurrencyTotalAmount().multiply(changeRate));                
                   report.add(reportLine);
               }
               //reset royalty line
@@ -182,10 +185,11 @@ public class RoyaltyReportServiceImpl implements RoyaltyReportService {
           }
           try {
           if (royaltyOnSales){
-              vatFactor = (totalAmount.multiply(new BigDecimal(0.7))).divide((proceedsAfterTax),5, RoundingMode.HALF_UP);
-              reportLine.setReferenceCurrencyCompanyRoyaltiesTotalAmount(reportLine.getReferenceCurrencyCompanyRoyaltiesTotalAmount().add(((salesDTO.getTotalPrice().divide(vatFactor,5, RoundingMode.HALF_UP)).multiply(shareRate.divide(new BigDecimal(100),5, RoundingMode.HALF_UP)))).multiply(changeRate));
+              vatFactor = (totalAmount.multiply(new BigDecimal(0.7))).divide((proceedsAfterTax),2, RoundingMode.HALF_UP);
+              reportLine.setReferenceCurrencyCompanyRoyaltiesTotalAmount(reportLine.getReferenceCurrencyCompanyRoyaltiesTotalAmount().add(((salesDTO.getTotalPrice().divide(vatFactor,5, RoundingMode.HALF_UP)).multiply(shareRate.divide(new BigDecimal(100),5, RoundingMode.HALF_UP)))));
+              logger.debug("VAT factor : "+vatFactor+"  Royalties : "+reportLine.getReferenceCurrencyCompanyRoyaltiesTotalAmount()+"   change Rate :"+changeRate+ " total sales(tot price) :"+salesDTO.getTotalPrice());
           } else {
-              reportLine.setReferenceCurrencyCompanyRoyaltiesTotalAmount(reportLine.getReferenceCurrencyCompanyRoyaltiesTotalAmount().add((proceedsAfterTax.multiply(shareRate).divide(new BigDecimal(100),5, RoundingMode.HALF_UP))).multiply(changeRate));
+              reportLine.setReferenceCurrencyCompanyRoyaltiesTotalAmount(reportLine.getReferenceCurrencyCompanyRoyaltiesTotalAmount().add((proceedsAfterTax.multiply(shareRate).divide(new BigDecimal(100),5, RoundingMode.HALF_UP))));
           }
           } catch (Exception e) {
              throw new RuntimeException(e.getMessage());
@@ -194,6 +198,9 @@ public class RoyaltyReportServiceImpl implements RoyaltyReportService {
       }
     }
       if (reportLine !=null && reportLine.getPeriod()!=null){
+         reportLine.setReferenceCurrencyCompanyRoyaltiesTotalAmount(reportLine.getReferenceCurrencyCompanyRoyaltiesTotalAmount().multiply(changeRate));
+         reportLine.setReferenceCurrencyProceedsAfterTaxTotalAmount(reportLine.getReferenceCurrencyProceedsAfterTaxTotalAmount().multiply(changeRate));
+         reportLine.setReferenceCurrencyTotalAmount(reportLine.getReferenceCurrencyTotalAmount().multiply(changeRate));      
           report.add(reportLine);
       }
       return report;
