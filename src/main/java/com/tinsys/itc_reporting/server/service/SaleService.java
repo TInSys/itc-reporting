@@ -23,79 +23,72 @@ import com.tinsys.itc_reporting.server.utils.DTOUtils;
 @Transactional
 public class SaleService {
 
-    @Autowired
-    @Qualifier("applicationDAO")
-    private ApplicationDAO applicationDAO;
+  @Autowired
+  @Qualifier("applicationDAO")
+  private ApplicationDAO applicationDAO;
 
-    @Autowired
-    @Qualifier("fiscalPeriodDAO")
-    private FiscalPeriodDAO periodDAO;
+  @Autowired
+  @Qualifier("fiscalPeriodDAO")
+  private FiscalPeriodDAO periodDAO;
 
-    @Autowired
-    @Qualifier("zoneDAO")
-    private ZoneDAO zoneDAO;
+  @Autowired
+  @Qualifier("zoneDAO")
+  private ZoneDAO zoneDAO;
 
-    @Autowired
-    @Qualifier("salesDAO")
-    private SalesDAO saleDAO;
+  @Autowired
+  @Qualifier("salesDAO")
+  private SalesDAO saleDAO;
 
-    private List<Sales> summarizedSales;
+  private List<Sales> summarizedSales;
 
-    public FiscalPeriod findOrCreatePeriod(FiscalPeriod period) {
-        FiscalPeriod result = periodDAO.findPeriod(period);
-        if (result==null){
-            result = DTOUtils.periodDTOtoPeriod(periodDAO.createPeriod(DTOUtils.periodToPeriodDTO(period)));
+  public FiscalPeriod findOrCreatePeriod(FiscalPeriod period) {
+    FiscalPeriod result = periodDAO.findPeriod(period);
+    if (result == null) {
+      result = DTOUtils.periodDTOtoPeriod(periodDAO.createPeriod(DTOUtils.periodToPeriodDTO(period)));
+    }
+    return result;
+  }
+
+  public Zone findZone(String code) {
+    Zone result = zoneDAO.findZoneByCode(code);
+    return result;
+  }
+
+  public Application findApplication(String vendorID) {
+    Application result = applicationDAO.findApplicationByVendorID(vendorID);
+    return result;
+  }
+
+  public void summarizeSale(Sales tmpSale) {
+    boolean summarized = false;
+    for (Sales sale : summarizedSales) {
+      if (sale.getApplication().equals(tmpSale.getApplication()) && sale.getPeriod().equals(tmpSale.getPeriod()) && sale.getZone().equals(tmpSale.getZone())
+          && sale.getCountryCode().equals(tmpSale.getCountryCode()) && sale.getPromoCode().equals(tmpSale.getPromoCode())
+          && sale.getIndividualPrice().equals(tmpSale.getIndividualPrice())) {
+        summarized = true;
+        sale.setSoldUnits(sale.getSoldUnits());
+        sale.setTotalPrice(tmpSale.getIndividualPrice().multiply(new BigDecimal(tmpSale.getSoldUnits())));
+      }
+    }
+    if (!summarized) {
+      summarizedSales.add(tmpSale);
+    }
+
+  }
+
+  public void saveOrUpdate() {
+    if (summarizedSales.size() != 0) {
+      for (Sales sale : summarizedSales) {
+        Sales existingSale = saleDAO.findSale(sale);
+        if (existingSale != null) {
+          sale.setId(existingSale.getId());
         }
-        return result;
+      }
+      saleDAO.saveOrUpdate(summarizedSales);
     }
+  }
 
-    public Zone findZone(String code) {
-        Zone result = zoneDAO.findZoneByCode(code);
-        return result;
-    }
-
-    public Application findApplication(String vendorID) {
-        Application result = applicationDAO.findApplicationByVendorID(vendorID);
-        return result;
-    }
-
-    public void summarizeSale(Sales tmpSale) {
-        boolean summarized = false;
-            for (Sales sale : summarizedSales) {
-                if (sale.getApplication().equals(tmpSale.getApplication())
-                        && sale.getPeriod().equals(tmpSale.getPeriod())
-                        && sale.getZone().equals(tmpSale.getZone())
-                        && sale.getCountryCode().equals(
-                                tmpSale.getCountryCode())
-                        && sale.getPromoCode().equals(
-                                tmpSale.getPromoCode())
-                        && sale.getIndividualPrice().equals(
-                                tmpSale.getIndividualPrice())) {
-                    summarized = true;
-                    sale.setSoldUnits(sale.getSoldUnits());
-                    sale.setTotalPrice(tmpSale.getIndividualPrice().multiply(
-                                    new BigDecimal(tmpSale.getSoldUnits())));
-                }
-            }
-        if (!summarized) {
-            summarizedSales.add(tmpSale);
-        }
-
-    }
-
-    public void saveOrUpdate() {
-        if (summarizedSales.size() != 0) {
-            for (Sales sale : summarizedSales) {
-                Sales existingSale = saleDAO.findSale(sale);
-                if (existingSale != null) {
-                    sale.setId(existingSale.getId());
-                }
-            }
-            saleDAO.saveOrUpdate(summarizedSales);
-        }
-    }
-
-    public void reset() {
-        summarizedSales = new ArrayList<Sales>();
-    }
+  public void reset() {
+    summarizedSales = new ArrayList<Sales>();
+  }
 }

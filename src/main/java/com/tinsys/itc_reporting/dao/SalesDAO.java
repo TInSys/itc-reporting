@@ -10,22 +10,22 @@ import com.tinsys.itc_reporting.shared.dto.SalesDTO;
 
 public interface SalesDAO {
 
-    public ArrayList<SalesDTO> getAllSales();
+  public ArrayList<SalesDTO> getAllSales();
 
-    public List<Sales> getAllSales(FiscalPeriodDTO aFiscalPeriodDTO);
+  public List<Sales> getAllSales(FiscalPeriodDTO aFiscalPeriodDTO);
 
-    public List<Sales> getAllSales(FiscalPeriodDTO fromFiscalPeriodDTO,FiscalPeriodDTO toFiscalPeriodDTO, List<RoyaltyDTO> royalties);
-    
-    public SalesDTO findSale(Long id);
+  public List<Sales> getAllSales(FiscalPeriodDTO fromFiscalPeriodDTO, FiscalPeriodDTO toFiscalPeriodDTO, List<RoyaltyDTO> royalties);
 
-    public Sales findSale(Sales sale);
-    
-    public Sales createSale(Sales aSale);
+  public SalesDTO findSale(Long id);
 
-    public Sales updateSale(Sales aSale);
+  public Sales findSale(Sales sale);
 
-    public void deleteSale(SalesDTO aSale);
+  public Sales createSale(Sales aSale);
 
-   public void saveOrUpdate(List<Sales> summarizedSales);
+  public Sales updateSale(Sales aSale);
+
+  public void deleteSale(SalesDTO aSale);
+
+  public void saveOrUpdate(List<Sales> summarizedSales);
 
 }

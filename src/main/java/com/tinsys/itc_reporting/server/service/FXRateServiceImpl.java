@@ -21,64 +21,65 @@ import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 @Transactional
 public class FXRateServiceImpl implements FXRateService {
 
-    @Autowired
-    @Qualifier("fxRateDAO")
-    private FXRateDAO fxRateDAO;
-    @Autowired
-    @Qualifier("fiscalPeriodDAO")
-    private FiscalPeriodDAO periodDAO;
+  @Autowired
+  @Qualifier("fxRateDAO")
+  private FXRateDAO fxRateDAO;
+  @Autowired
+  @Qualifier("fiscalPeriodDAO")
+  private FiscalPeriodDAO periodDAO;
 
-    @Override
-    public ArrayList<FXRateDTO> getAllFXRates(ZoneDTO zoneDTO) {
-        return fxRateDAO.getAllFXRates(zoneDTO);
+  @Override
+  public ArrayList<FXRateDTO> getAllFXRates(ZoneDTO zoneDTO) {
+    return fxRateDAO.getAllFXRates(zoneDTO);
+  }
+
+  @Override
+  public FXRateDTO findFXRate(Long id) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public FXRateDTO createFXRate(FXRateDTO aFXRate) {
+    FiscalPeriodDTO aPeriod;
+    FiscalPeriod period = DTOUtils.periodDTOtoPeriod(aFXRate.getPeriod());
+    aPeriod = DTOUtils.periodToPeriodDTO(periodDAO.findPeriod(period));
+    if (aPeriod == null) {
+      aPeriod = periodDAO.createPeriod(aFXRate.getPeriod());
     }
+    aFXRate.getPeriod().setId(aPeriod.getId());
+    return fxRateDAO.createFXRate(aFXRate);
+  }
 
-    @Override
-    public FXRateDTO findFXRate(Long id) {
-        // TODO Auto-generated method stub
-        return null;
+  @Override
+  public FXRateDTO updateFXRate(FXRateDTO aFXRate) {
+    periodDAO.updatePeriod(aFXRate.getPeriod());
+    aFXRate.setPeriod(aFXRate.getPeriod());
+    return fxRateDAO.updateFXRate(aFXRate);
+  }
+
+  @Override
+  public void deleteFXRate(FXRateDTO aFXRate) {
+    fxRateDAO.deleteFXRate(aFXRate);
+  }
+
+  @Override
+  public ArrayList<FXRateDTO> getAllFXRatesForPeriod(FiscalPeriodDTO fiscalPeriodDTO) {
+    FiscalPeriodDTO aPeriod;
+    FiscalPeriod period = DTOUtils.periodDTOtoPeriod(fiscalPeriodDTO);
+    period = periodDAO.findPeriod(period);
+    if (period == null) {
+      aPeriod = periodDAO.createPeriod(fiscalPeriodDTO);
+    } else {
+      aPeriod = DTOUtils.periodToPeriodDTO(period);
     }
+    return fxRateDAO.getAllFXRatesForPeriod(aPeriod);
+  }
 
-    @Override
-    public FXRateDTO createFXRate(FXRateDTO aFXRate) {
-       FiscalPeriodDTO aPeriod;
-       FiscalPeriod period = DTOUtils.periodDTOtoPeriod(aFXRate.getPeriod());
-       aPeriod = DTOUtils.periodToPeriodDTO(periodDAO.findPeriod(period));
-       if (aPeriod == null){
-       aPeriod = periodDAO.createPeriod(aFXRate.getPeriod());}
-       aFXRate.getPeriod().setId(aPeriod.getId());
-       return fxRateDAO.createFXRate(aFXRate);
-    }
-
-    @Override
-    public FXRateDTO updateFXRate(FXRateDTO aFXRate) {
-        periodDAO.updatePeriod(aFXRate.getPeriod());
-        aFXRate.setPeriod(aFXRate.getPeriod());
-        return fxRateDAO.updateFXRate(aFXRate);
-    }
-
-    @Override
-    public void deleteFXRate(FXRateDTO aFXRate) {
-        fxRateDAO.deleteFXRate(aFXRate);
-    }
-
-   @Override
-   public ArrayList<FXRateDTO> getAllFXRatesForPeriod(FiscalPeriodDTO fiscalPeriodDTO) {
-      FiscalPeriodDTO aPeriod;
-      FiscalPeriod period = DTOUtils.periodDTOtoPeriod(fiscalPeriodDTO);
-      period = periodDAO.findPeriod(period);
-      if (period == null){
-         aPeriod = periodDAO.createPeriod(fiscalPeriodDTO);
-      } else {
-         aPeriod = DTOUtils.periodToPeriodDTO(period);
-      }
-      return fxRateDAO.getAllFXRatesForPeriod(aPeriod);
-   }
-
-@Override
-public void saveOrUpdate(List<FXRateDTO> fxRateList) {
+  @Override
+  public void saveOrUpdate(List<FXRateDTO> fxRateList) {
     fxRateDAO.saveOrUpdate(fxRateList);
-    
-}
+
+  }
 
 }

@@ -9,18 +9,17 @@ import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
 public interface FXRateDAO {
 
-    public ArrayList<FXRateDTO> getAllFXRates(ZoneDTO zoneDTO);
+  public ArrayList<FXRateDTO> getAllFXRates(ZoneDTO zoneDTO);
 
-    public FXRateDTO findFXRate(Long id);
+  public FXRateDTO findFXRate(Long id);
 
-    public FXRateDTO createFXRate(FXRateDTO aFXRate);
+  public FXRateDTO createFXRate(FXRateDTO aFXRate);
 
-    public FXRateDTO updateFXRate(FXRateDTO aFXRate);
+  public FXRateDTO updateFXRate(FXRateDTO aFXRate);
 
-    public void deleteFXRate(FXRateDTO aFXRate);
+  public void deleteFXRate(FXRateDTO aFXRate);
 
-   public ArrayList<FXRateDTO> getAllFXRatesForPeriod(
-         FiscalPeriodDTO monthYearToPeriod);
-   
-   public void saveOrUpdate(List<FXRateDTO> fxRateList);
+  public ArrayList<FXRateDTO> getAllFXRatesForPeriod(FiscalPeriodDTO monthYearToPeriod);
+
+  public void saveOrUpdate(List<FXRateDTO> fxRateList);
 }

@@ -10,21 +10,18 @@ import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
 public interface FXRateServiceAsync {
 
-    void createFXRate(FXRateDTO aFXRate,
-            AsyncCallback<FXRateDTO> callback);
+  void createFXRate(FXRateDTO aFXRate, AsyncCallback<FXRateDTO> callback);
 
-    void deleteFXRate(FXRateDTO aFXRate, AsyncCallback<Void> callback);
+  void deleteFXRate(FXRateDTO aFXRate, AsyncCallback<Void> callback);
 
-    void findFXRate(Long id, AsyncCallback<FXRateDTO> callback);
+  void findFXRate(Long id, AsyncCallback<FXRateDTO> callback);
 
-    void getAllFXRates(ZoneDTO zoneDTO,
-            AsyncCallback<ArrayList<FXRateDTO>> callback);
+  void getAllFXRates(ZoneDTO zoneDTO, AsyncCallback<ArrayList<FXRateDTO>> callback);
 
-    void updateFXRate(FXRateDTO aFXRate, AsyncCallback<FXRateDTO> callback);
+  void updateFXRate(FXRateDTO aFXRate, AsyncCallback<FXRateDTO> callback);
 
-   void getAllFXRatesForPeriod(FiscalPeriodDTO fiscalPeriodDto,
-         AsyncCallback<ArrayList<FXRateDTO>> callback);
+  void getAllFXRatesForPeriod(FiscalPeriodDTO fiscalPeriodDto, AsyncCallback<ArrayList<FXRateDTO>> callback);
 
-   void saveOrUpdate(List<FXRateDTO> fxRateList, AsyncCallback<Void> callback);
+  void saveOrUpdate(List<FXRateDTO> fxRateList, AsyncCallback<Void> callback);
 
 }

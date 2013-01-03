@@ -7,10 +7,10 @@ import com.tinsys.itc_reporting.shared.dto.PreferencesDTO;
 @RemoteServiceRelativePath("springGwtServices/preferencesService")
 public interface PreferencesService extends RemoteService {
 
-   public PreferencesDTO createPreference(PreferencesDTO aPreferences);
+  public PreferencesDTO createPreference(PreferencesDTO aPreferences);
 
-   public PreferencesDTO updatePreference(PreferencesDTO aPreferences);
+  public PreferencesDTO updatePreference(PreferencesDTO aPreferences);
 
-   public PreferencesDTO findPreference(PreferencesDTO aPreferences);
+  public PreferencesDTO findPreference(PreferencesDTO aPreferences);
 
 }

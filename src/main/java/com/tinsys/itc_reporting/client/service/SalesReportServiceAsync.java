@@ -8,7 +8,6 @@ import com.tinsys.itc_reporting.shared.dto.ZoneReportSummary;
 
 public interface SalesReportServiceAsync {
 
-    void getMonthlyReport(FiscalPeriodDTO period,
-            AsyncCallback<List<ZoneReportSummary>> callback);
+  void getMonthlyReport(FiscalPeriodDTO period, AsyncCallback<List<ZoneReportSummary>> callback);
 
 }

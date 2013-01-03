@@ -9,46 +9,43 @@ import com.tinsys.itc_reporting.shared.dto.PreferencesDTO;
 @Repository
 public class PreferencesDAOImpl implements PreferencesDAO {
 
-   private SessionFactory factory;
+  private SessionFactory factory;
 
-   public SessionFactory getFactory() {
-      return factory;
-   }
+  public SessionFactory getFactory() {
+    return factory;
+  }
 
-   public void setFactory(SessionFactory factory) {
-      this.factory = factory;
-   }
+  public void setFactory(SessionFactory factory) {
+    this.factory = factory;
+  }
 
-   @Override
-   public PreferencesDTO createPreference(PreferencesDTO aPreferences) {
-      Preferences preferences = new Preferences();
-      preferences.setReferenceCurrency(aPreferences.getReferenceCurrency());
-      factory.getCurrentSession().persist(preferences);
-      return aPreferences;
-   }
+  @Override
+  public PreferencesDTO createPreference(PreferencesDTO aPreferences) {
+    Preferences preferences = new Preferences();
+    preferences.setReferenceCurrency(aPreferences.getReferenceCurrency());
+    factory.getCurrentSession().persist(preferences);
+    return aPreferences;
+  }
 
-   @Override
-   public PreferencesDTO updatePreference(PreferencesDTO aPreferences) {
-      Preferences preferences = (Preferences) factory.getCurrentSession()
-            .createCriteria(Preferences.class).uniqueResult();
-      preferences.setReferenceCurrency(aPreferences.getReferenceCurrency());
-      factory.getCurrentSession().update(preferences);
-      return aPreferences;
-   }
+  @Override
+  public PreferencesDTO updatePreference(PreferencesDTO aPreferences) {
+    Preferences preferences = (Preferences) factory.getCurrentSession().createCriteria(Preferences.class).uniqueResult();
+    preferences.setReferenceCurrency(aPreferences.getReferenceCurrency());
+    factory.getCurrentSession().update(preferences);
+    return aPreferences;
+  }
 
-   @Override
-   public PreferencesDTO findPreference(PreferencesDTO aPreferences) {
-      Preferences preferences = (Preferences) factory.getCurrentSession()
-            .createCriteria(Preferences.class).uniqueResult();
-      PreferencesDTO result = new PreferencesDTO();
-      if (preferences == null){
-          result.setReferenceCurrency("");
-          this.createPreference(result);
-          preferences = (Preferences) factory.getCurrentSession()
-                  .createCriteria(Preferences.class).uniqueResult();
-      }
-      result.setReferenceCurrency(preferences.getReferenceCurrency());
-      return result;
-   }
+  @Override
+  public PreferencesDTO findPreference(PreferencesDTO aPreferences) {
+    Preferences preferences = (Preferences) factory.getCurrentSession().createCriteria(Preferences.class).uniqueResult();
+    PreferencesDTO result = new PreferencesDTO();
+    if (preferences == null) {
+      result.setReferenceCurrency("");
+      this.createPreference(result);
+      preferences = (Preferences) factory.getCurrentSession().createCriteria(Preferences.class).uniqueResult();
+    }
+    result.setReferenceCurrency(preferences.getReferenceCurrency());
+    return result;
+  }
 
 }

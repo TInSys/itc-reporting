@@ -15,28 +15,28 @@ import com.tinsys.itc_reporting.shared.dto.ApplicationDTO;
 @Transactional
 public class ApplicationServiceImpl implements ApplicationService {
 
-    @Autowired
-    @Qualifier("applicationDAO")
-    private ApplicationDAO applicationDAO;
+  @Autowired
+  @Qualifier("applicationDAO")
+  private ApplicationDAO applicationDAO;
 
-    public ArrayList<ApplicationDTO> getAllApplications() {
-        return applicationDAO.getAllApplications();
-    }
+  public ArrayList<ApplicationDTO> getAllApplications() {
+    return applicationDAO.getAllApplications();
+  }
 
-    public ApplicationDTO findApplication(Long id) {
-        return applicationDAO.findApplication(id);
-    }
+  public ApplicationDTO findApplication(Long id) {
+    return applicationDAO.findApplication(id);
+  }
 
-    public ApplicationDTO createApplication(ApplicationDTO aApplication) {
-        return applicationDAO.createApplication(aApplication);
-    }
+  public ApplicationDTO createApplication(ApplicationDTO aApplication) {
+    return applicationDAO.createApplication(aApplication);
+  }
 
-    public ApplicationDTO updateApplication(ApplicationDTO aApplication) {
-        return applicationDAO.updateApplication(aApplication);
-    }
+  public ApplicationDTO updateApplication(ApplicationDTO aApplication) {
+    return applicationDAO.updateApplication(aApplication);
+  }
 
-    public void deleteApplication(ApplicationDTO aApplication) {
-        applicationDAO.deleteApplication(aApplication);
-    }
+  public void deleteApplication(ApplicationDTO aApplication) {
+    applicationDAO.deleteApplication(aApplication);
+  }
 
 }

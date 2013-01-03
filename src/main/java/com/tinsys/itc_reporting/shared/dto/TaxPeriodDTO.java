@@ -5,42 +5,42 @@ import java.util.Date;
 
 public class TaxPeriodDTO implements Serializable {
 
-    /**
+  /**
      * 
      */
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private Long id;
-    private Date startDate;
-    private Date stopDate;
-    
-    public Long getId() {
-        return id;
-    }
+  private Long id;
+  private Date startDate;
+  private Date stopDate;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public Date getStartDate() {
-        return startDate;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
+  public Date getStartDate() {
+    return startDate;
+  }
 
-    public Date getStopDate() {
-        return stopDate;
-    }
+  public void setStartDate(Date startDate) {
+    this.startDate = startDate;
+  }
 
-    public void setStopDate(Date stopDate) {
-        this.stopDate = stopDate;
-    }
+  public Date getStopDate() {
+    return stopDate;
+  }
 
-   @Override
-   public String toString() {
-      return startDate +((stopDate!=null)?" to "+stopDate:" ");
-   }
+  public void setStopDate(Date stopDate) {
+    this.stopDate = stopDate;
+  }
+
+  @Override
+  public String toString() {
+    return startDate + ((stopDate != null) ? " to " + stopDate : " ");
+  }
 
 }

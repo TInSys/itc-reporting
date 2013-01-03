@@ -13,23 +13,23 @@ import com.tinsys.itc_reporting.shared.dto.PreferencesDTO;
 @Transactional
 public class PreferencesServiceImpl implements PreferencesService {
 
-   @Autowired
-   @Qualifier("preferencesDAO")
-   private PreferencesDAO preferencesDAO;
+  @Autowired
+  @Qualifier("preferencesDAO")
+  private PreferencesDAO preferencesDAO;
 
-   @Override
-   public PreferencesDTO createPreference(PreferencesDTO aPreferences) {
-      return preferencesDAO.createPreference(aPreferences);
-   }
+  @Override
+  public PreferencesDTO createPreference(PreferencesDTO aPreferences) {
+    return preferencesDAO.createPreference(aPreferences);
+  }
 
-   @Override
-   public PreferencesDTO updatePreference(PreferencesDTO aPreferences) {
-      return preferencesDAO.updatePreference(aPreferences);
-   }
+  @Override
+  public PreferencesDTO updatePreference(PreferencesDTO aPreferences) {
+    return preferencesDAO.updatePreference(aPreferences);
+  }
 
-   @Override
-   public PreferencesDTO findPreference(PreferencesDTO aPreferences) {
-      return preferencesDAO.findPreference(aPreferences);
-   }
+  @Override
+  public PreferencesDTO findPreference(PreferencesDTO aPreferences) {
+    return preferencesDAO.findPreference(aPreferences);
+  }
 
 }

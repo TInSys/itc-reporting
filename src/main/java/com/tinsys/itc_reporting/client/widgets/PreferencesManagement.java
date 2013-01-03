@@ -20,101 +20,94 @@ import com.tinsys.itc_reporting.client.service.PreferencesService;
 import com.tinsys.itc_reporting.client.service.PreferencesServiceAsync;
 import com.tinsys.itc_reporting.shared.dto.PreferencesDTO;
 
-public class PreferencesManagement extends Composite implements
-        WidgetSwitchManagement {
+public class PreferencesManagement extends Composite implements WidgetSwitchManagement {
 
-    private static Binder uiBinder = GWT.create(Binder.class);
-    private PreferencesServiceAsync preferencesService = GWT
-            .create(PreferencesService.class);
-    private boolean editionInProgress;
-    private String oldReferenceCurrencyTextBoxContent;
-    private PreferencesDTO preferences;
+  private static Binder uiBinder = GWT.create(Binder.class);
+  private PreferencesServiceAsync preferencesService = GWT.create(PreferencesService.class);
+  private boolean editionInProgress;
+  private String oldReferenceCurrencyTextBoxContent;
+  private PreferencesDTO preferences;
 
-    public PreferencesDTO getPreferences() {
-        return preferences;
-    }
+  public PreferencesDTO getPreferences() {
+    return preferences;
+  }
 
-    public void setPreferences(PreferencesDTO preferences) {
-        this.preferences = preferences;
-    }
+  public void setPreferences(PreferencesDTO preferences) {
+    this.preferences = preferences;
+  }
 
-    @UiField
-    TextBox referenceCurrencyTextBox = new TextBox();
+  @UiField
+  TextBox referenceCurrencyTextBox = new TextBox();
 
-    @UiField
-    Button savePreferences = new Button();
+  @UiField
+  Button savePreferences = new Button();
 
-    @UiField
-    Button cancelUpdatePreferences = new Button();
+  @UiField
+  Button cancelUpdatePreferences = new Button();
 
-    @UiTemplate("PreferencesManagement.ui.xml")
-    interface Binder extends UiBinder<Widget, PreferencesManagement> {
-    }
+  @UiTemplate("PreferencesManagement.ui.xml")
+  interface Binder extends UiBinder<Widget, PreferencesManagement> {
+  }
 
-    public PreferencesManagement(PreferencesDTO thePreferences) {
-        initWidget(uiBinder.createAndBindUi(this));
-        preferences = thePreferences;
-        referenceCurrencyTextBox.setText(thePreferences.getReferenceCurrency());
-        oldReferenceCurrencyTextBoxContent = referenceCurrencyTextBox.getText();
+  public PreferencesManagement(PreferencesDTO thePreferences) {
+    initWidget(uiBinder.createAndBindUi(this));
+    preferences = thePreferences;
+    referenceCurrencyTextBox.setText(thePreferences.getReferenceCurrency());
+    oldReferenceCurrencyTextBoxContent = referenceCurrencyTextBox.getText();
 
-        referenceCurrencyTextBox
-                .addValueChangeHandler(new ValueChangeHandler<String>() {
-                    public void onValueChange(ValueChangeEvent<String> arg0) {
-                        editionInProgress = true;
-                        cancelUpdatePreferences.setVisible(true);
-                    }
-                });
+    referenceCurrencyTextBox.addValueChangeHandler(new ValueChangeHandler<String>() {
+      public void onValueChange(ValueChangeEvent<String> arg0) {
+        editionInProgress = true;
+        cancelUpdatePreferences.setVisible(true);
+      }
+    });
 
-        referenceCurrencyTextBox.addKeyUpHandler(new KeyUpHandler() {
-            public void onKeyUp(KeyUpEvent arg0) {
-                editionInProgress = true;
-                cancelUpdatePreferences.setVisible(true);
-            }
+    referenceCurrencyTextBox.addKeyUpHandler(new KeyUpHandler() {
+      public void onKeyUp(KeyUpEvent arg0) {
+        editionInProgress = true;
+        cancelUpdatePreferences.setVisible(true);
+      }
+    });
+  }
+
+  @UiHandler("savePreferences")
+  void handleClickSave(ClickEvent e) {
+    if (referenceCurrencyTextBox.getText().length() > 0) {
+      {
+        preferences.setReferenceCurrency(referenceCurrencyTextBox.getText());
+
+        preferencesService.updatePreference(preferences, new AsyncCallback<PreferencesDTO>() {
+
+          @Override
+          public void onFailure(Throwable caught) {
+            Window.alert("Error updating application :" + caught.getMessage());
+          }
+
+          @Override
+          public void onSuccess(PreferencesDTO result) {
+            preferences = result;
+            oldReferenceCurrencyTextBoxContent = result.getReferenceCurrency();
+            resetUpdateStatus();
+          }
         });
+      }
     }
+  }
 
-    @UiHandler("savePreferences")
-    void handleClickSave(ClickEvent e) {
-        if (referenceCurrencyTextBox.getText().length() > 0) {
-            {
-                preferences.setReferenceCurrency(referenceCurrencyTextBox
-                        .getText());
+  @UiHandler("cancelUpdatePreferences")
+  void handleClickCancel(ClickEvent e) {
+    resetUpdateStatus();
+  }
 
-                preferencesService.updatePreference(preferences,
-                        new AsyncCallback<PreferencesDTO>() {
+  private void resetUpdateStatus() {
+    cancelUpdatePreferences.setVisible(false);
+    referenceCurrencyTextBox.setText(oldReferenceCurrencyTextBoxContent);
+    editionInProgress = false;
+  }
 
-                            @Override
-                            public void onFailure(Throwable caught) {
-                                Window.alert("Error updating application :"
-                                        + caught.getMessage());
-                            }
-
-                            @Override
-                            public void onSuccess(PreferencesDTO result) {
-                                preferences = result;
-                                oldReferenceCurrencyTextBoxContent = result
-                                        .getReferenceCurrency();
-                                resetUpdateStatus();
-                            }
-                        });
-            }
-        }
-    }
-
-    @UiHandler("cancelUpdatePreferences")
-    void handleClickCancel(ClickEvent e) {
-        resetUpdateStatus();
-    }
-
-    private void resetUpdateStatus() {
-        cancelUpdatePreferences.setVisible(false);
-        referenceCurrencyTextBox.setText(oldReferenceCurrencyTextBoxContent);
-        editionInProgress = false;
-    }
-
-    @Override
-    public boolean isEditing() {
-        return this.editionInProgress;
-    }
+  @Override
+  public boolean isEditing() {
+    return this.editionInProgress;
+  }
 
 }

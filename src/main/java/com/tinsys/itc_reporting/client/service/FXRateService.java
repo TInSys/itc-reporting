@@ -12,17 +12,17 @@ import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 @RemoteServiceRelativePath("springGwtServices/fxRateService")
 public interface FXRateService extends RemoteService {
 
-    public ArrayList<FXRateDTO> getAllFXRates(ZoneDTO zoneDTO) throws RuntimeException;
+  public ArrayList<FXRateDTO> getAllFXRates(ZoneDTO zoneDTO) throws RuntimeException;
 
-    public FXRateDTO findFXRate(Long id);
+  public FXRateDTO findFXRate(Long id);
 
-    public FXRateDTO createFXRate(FXRateDTO aFXRate) throws RuntimeException;
+  public FXRateDTO createFXRate(FXRateDTO aFXRate) throws RuntimeException;
 
-    public FXRateDTO updateFXRate(FXRateDTO aFXRate);
+  public FXRateDTO updateFXRate(FXRateDTO aFXRate);
 
-    public void deleteFXRate(FXRateDTO aFXRate);
-    
-    ArrayList<FXRateDTO> getAllFXRatesForPeriod(FiscalPeriodDTO fiscalPeriodDto);
-    
-    void saveOrUpdate(List<FXRateDTO> fxRateList);
+  public void deleteFXRate(FXRateDTO aFXRate);
+
+  ArrayList<FXRateDTO> getAllFXRatesForPeriod(FiscalPeriodDTO fiscalPeriodDto);
+
+  void saveOrUpdate(List<FXRateDTO> fxRateList);
 }

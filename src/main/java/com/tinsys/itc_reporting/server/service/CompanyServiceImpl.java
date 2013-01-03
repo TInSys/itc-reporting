@@ -15,28 +15,28 @@ import com.tinsys.itc_reporting.shared.dto.CompanyDTO;
 @Transactional
 public class CompanyServiceImpl implements CompanyService {
 
-    @Autowired
-    @Qualifier("companyDAO")
-    private CompanyDAO companyDAO;
+  @Autowired
+  @Qualifier("companyDAO")
+  private CompanyDAO companyDAO;
 
-    public ArrayList<CompanyDTO> getAllCompanies() {
-        return companyDAO.getAllCompanies();
-    }
+  public ArrayList<CompanyDTO> getAllCompanies() {
+    return companyDAO.getAllCompanies();
+  }
 
-    public CompanyDTO findCompany(Long id) {
-        return companyDAO.findCompany(id);
-    }
+  public CompanyDTO findCompany(Long id) {
+    return companyDAO.findCompany(id);
+  }
 
-    public CompanyDTO createCompany(CompanyDTO aCompany) {
-        return companyDAO.createCompany(aCompany);
-    }
+  public CompanyDTO createCompany(CompanyDTO aCompany) {
+    return companyDAO.createCompany(aCompany);
+  }
 
-    public CompanyDTO updateCompany(CompanyDTO aCompany) {
-        return companyDAO.updateCompany(aCompany);
-    }
+  public CompanyDTO updateCompany(CompanyDTO aCompany) {
+    return companyDAO.updateCompany(aCompany);
+  }
 
-    public void deleteCompany(CompanyDTO aCompany) {
-        companyDAO.deleteCompany(aCompany);
-    }
+  public void deleteCompany(CompanyDTO aCompany) {
+    companyDAO.deleteCompany(aCompany);
+  }
 
 }

@@ -18,43 +18,43 @@ import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 @Transactional
 public class TaxServiceImpl implements TaxService {
 
-    @Autowired
-    @Qualifier("taxDAO")
-    private TaxDAO taxDAO;
-    @Autowired
-    @Qualifier("taxPeriodDAO")
-    private TaxPeriodDAO periodDAO;
+  @Autowired
+  @Qualifier("taxDAO")
+  private TaxDAO taxDAO;
+  @Autowired
+  @Qualifier("taxPeriodDAO")
+  private TaxPeriodDAO periodDAO;
 
-    @Override
-    public ArrayList<TaxDTO> getAllTaxs(ZoneDTO zoneDTO) {
-        return taxDAO.getAllTaxs(zoneDTO);
+  @Override
+  public ArrayList<TaxDTO> getAllTaxs(ZoneDTO zoneDTO) {
+    return taxDAO.getAllTaxs(zoneDTO);
+  }
+
+  @Override
+  public TaxDTO findTax(Long id) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public TaxDTO createTax(TaxDTO aTax, TaxPeriodDTO aPeriod) {
+    if (aPeriod != null) {
+      periodDAO.updatePeriod(aPeriod);
     }
+    aTax.setPeriod(periodDAO.createPeriod(aTax.getPeriod()));
+    return taxDAO.createTax(aTax);
+  }
 
-    @Override
-    public TaxDTO findTax(Long id) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+  @Override
+  public TaxDTO updateTax(TaxDTO aTax) {
+    aTax.setPeriod(periodDAO.updatePeriod(aTax.getPeriod()));
+    return taxDAO.updateTax(aTax);
+  }
 
-    @Override
-    public TaxDTO createTax(TaxDTO aTax, TaxPeriodDTO aPeriod) {
-        if (aPeriod != null) {
-            periodDAO.updatePeriod(aPeriod);
-        }
-       aTax.setPeriod(periodDAO.createPeriod(aTax.getPeriod()));
-        return taxDAO.createTax(aTax);
-    }
+  @Override
+  public void deleteTax(TaxDTO aTax) {
+    taxDAO.deleteTax(aTax);
+    periodDAO.deletePeriod(aTax.getPeriod());
 
-    @Override
-    public TaxDTO updateTax(TaxDTO aTax) {
-        aTax.setPeriod(periodDAO.updatePeriod(aTax.getPeriod()));
-        return taxDAO.updateTax(aTax);
-    }
-
-    @Override
-    public void deleteTax(TaxDTO aTax) {
-        taxDAO.deleteTax(aTax);
-        periodDAO.deletePeriod(aTax.getPeriod());
-
-    }
+  }
 }

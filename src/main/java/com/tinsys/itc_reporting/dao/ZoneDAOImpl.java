@@ -13,79 +13,76 @@ import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 @Repository
 public class ZoneDAOImpl implements ZoneDAO {
 
-    private SessionFactory factory;
+  private SessionFactory factory;
 
-    public SessionFactory getFactory() {
-        return factory;
+  public SessionFactory getFactory() {
+    return factory;
+  }
+
+  public void setFactory(SessionFactory factory) {
+    this.factory = factory;
+  }
+
+  public ArrayList<ZoneDTO> getAllZones() {
+    ArrayList<ZoneDTO> result = new ArrayList<ZoneDTO>();
+    @SuppressWarnings("unchecked")
+    ArrayList<Zone> zoneList = (ArrayList<Zone>) factory.getCurrentSession().createCriteria(Zone.class).addOrder(Order.asc("code")).list();
+
+    for (Zone zone : zoneList) {
+      ZoneDTO zoneDTO = new ZoneDTO();
+      zoneDTO.setId(zone.getId());
+      zoneDTO.setCode(zone.getCode());
+      zoneDTO.setName(zone.getName());
+      zoneDTO.setCurrencyISO(zone.getCurrencyISO());
+      result.add(zoneDTO);
     }
 
-    public void setFactory(SessionFactory factory) {
-        this.factory = factory;
-    }
+    return result;
+  }
 
-    public ArrayList<ZoneDTO> getAllZones() {
-        ArrayList<ZoneDTO> result = new ArrayList<ZoneDTO>();
-        @SuppressWarnings("unchecked")
-        ArrayList<Zone> zoneList = (ArrayList<Zone>) factory
-                .getCurrentSession().createCriteria(Zone.class)
-                .addOrder(Order.asc("code")).list();
+  public ZoneDTO findZone(Long id) {
+    Zone zone = (Zone) factory.getCurrentSession().get(Zone.class, id);
+    ZoneDTO result = new ZoneDTO();
+    result.setId(zone.getId());
+    result.setCode(zone.getCode());
+    result.setName(zone.getName());
+    result.setCurrencyISO(zone.getCurrencyISO());
+    return result;
+  }
 
-        for (Zone zone : zoneList) {
-            ZoneDTO zoneDTO = new ZoneDTO();
-            zoneDTO.setId(zone.getId());
-            zoneDTO.setCode(zone.getCode());
-            zoneDTO.setName(zone.getName());
-            zoneDTO.setCurrencyISO(zone.getCurrencyISO());
-            result.add(zoneDTO);
-        }
+  public ZoneDTO createZone(ZoneDTO aZone) {
+    Zone zone = new Zone();
+    zone.setCode(aZone.getCode());
+    zone.setName(aZone.getName());
+    zone.setCurrencyISO(aZone.getCurrencyISO());
+    factory.getCurrentSession().persist(zone);
+    Long id = (Long) factory.getCurrentSession().getIdentifier(zone);
+    aZone.setId(id);
+    return aZone;
+  }
 
-        return result;
-    }
+  public ZoneDTO updateZone(ZoneDTO aZone) {
+    Zone zone = (Zone) factory.getCurrentSession().get(Zone.class, aZone.getId());
+    zone.setCode(aZone.getCode());
+    zone.setName(aZone.getName());
+    zone.setCurrencyISO(aZone.getCurrencyISO());
+    factory.getCurrentSession().saveOrUpdate(zone);
+    return aZone;
+  }
 
-    public ZoneDTO findZone(Long id) {
-        Zone zone = (Zone) factory.getCurrentSession().get(Zone.class, id);
-        ZoneDTO result = new ZoneDTO();
-        result.setId(zone.getId());
-        result.setCode(zone.getCode());
-        result.setName(zone.getName());
-        result.setCurrencyISO(zone.getCurrencyISO());
-        return result;
-    }
+  public void deleteZone(ZoneDTO aZone) {
+    Zone zone = new Zone();
+    zone.setId(aZone.getId());
+    zone.setCode(aZone.getCode());
+    zone.setName(aZone.getName());
+    zone.setCurrencyISO(aZone.getCurrencyISO());
+    factory.getCurrentSession().delete(zone);
+  }
 
-    public ZoneDTO createZone(ZoneDTO aZone) {
-        Zone zone = new Zone();
-        zone.setCode(aZone.getCode());
-        zone.setName(aZone.getName());
-        zone.setCurrencyISO(aZone.getCurrencyISO());
-        factory.getCurrentSession().persist(zone);
-        Long id = (Long) factory.getCurrentSession().getIdentifier(zone);
-        aZone.setId(id);
-        return aZone;
-    }
-
-    public ZoneDTO updateZone(ZoneDTO aZone) {
-        Zone zone = (Zone) factory.getCurrentSession().get(Zone.class,
-                aZone.getId());
-        zone.setCode(aZone.getCode());
-        zone.setName(aZone.getName());
-        zone.setCurrencyISO(aZone.getCurrencyISO());
-        factory.getCurrentSession().saveOrUpdate(zone);
-        return aZone;
-    }
-
-    public void deleteZone(ZoneDTO aZone) {
-        Zone zone = new Zone();
-        zone.setId(aZone.getId());
-        zone.setCode(aZone.getCode());
-        zone.setName(aZone.getName());
-        zone.setCurrencyISO(aZone.getCurrencyISO());
-        factory.getCurrentSession().delete(zone);
-    }
-
-   @Override
-   public Zone findZoneByCode(String code) {
-      Zone zone = (Zone) factory.getCurrentSession().createCriteria(Zone.class).add(Restrictions.eq("code", code)).uniqueResult();
-      return zone;
-   }
+  @Override
+  public Zone findZoneByCode(String code) {
+    Zone zone = (Zone) factory.getCurrentSession().createCriteria(Zone.class).add(Restrictions.eq("code", code)).uniqueResult();
+    return zone;
+  }
 
 }

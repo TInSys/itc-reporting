@@ -11,15 +11,15 @@ import com.tinsys.itc_reporting.shared.dto.RoyaltyDTO;
 @RemoteServiceRelativePath("springGwtServices/royaltyService")
 public interface RoyaltyService extends RemoteService {
 
-    public ArrayList<RoyaltyDTO> getAllRoyalties();
+  public ArrayList<RoyaltyDTO> getAllRoyalties();
 
-    public List<RoyaltyDTO> getAllRoyalty(CompanyDTO aCompanyDTO);
+  public List<RoyaltyDTO> getAllRoyalty(CompanyDTO aCompanyDTO);
 
-    public RoyaltyDTO findRoyalty(Long id);
+  public RoyaltyDTO findRoyalty(Long id);
 
-    public RoyaltyDTO createRoyalty(RoyaltyDTO aRoyalty);
+  public RoyaltyDTO createRoyalty(RoyaltyDTO aRoyalty);
 
-    public RoyaltyDTO updateRoyalty(RoyaltyDTO aRoyalty);
+  public RoyaltyDTO updateRoyalty(RoyaltyDTO aRoyalty);
 
-    public void deleteRoyalty(RoyaltyDTO aRoyalty);
+  public void deleteRoyalty(RoyaltyDTO aRoyalty);
 }

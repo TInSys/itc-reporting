@@ -7,15 +7,15 @@ import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
 public interface ZoneDAO {
 
-    public ArrayList<ZoneDTO> getAllZones();
+  public ArrayList<ZoneDTO> getAllZones();
 
-    public ZoneDTO findZone(Long id);
+  public ZoneDTO findZone(Long id);
 
-    public ZoneDTO createZone(ZoneDTO aZone);
+  public ZoneDTO createZone(ZoneDTO aZone);
 
-    public ZoneDTO updateZone(ZoneDTO aZone);
+  public ZoneDTO updateZone(ZoneDTO aZone);
 
-    public void deleteZone(ZoneDTO aZone);
+  public void deleteZone(ZoneDTO aZone);
 
-   public Zone findZoneByCode(String code);
+  public Zone findZoneByCode(String code);
 }

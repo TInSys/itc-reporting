@@ -17,38 +17,38 @@ import com.tinsys.itc_reporting.shared.dto.RoyaltyDTO;
 @Transactional
 public class RoyaltyServiceImpl implements RoyaltyService {
 
-    @Autowired
-    @Qualifier("royaltyDAO")
-    private RoyaltyDAO royaltyDAO;
-    
-    @Override
-    public ArrayList<RoyaltyDTO> getAllRoyalties() {
-        return royaltyDAO.getAllRoyalties();
-    }
+  @Autowired
+  @Qualifier("royaltyDAO")
+  private RoyaltyDAO royaltyDAO;
 
-    @Override
-    public List<RoyaltyDTO> getAllRoyalty(CompanyDTO aCompanyDTO) {
-        return royaltyDAO.getAllRoyalty(aCompanyDTO);
-    }
+  @Override
+  public ArrayList<RoyaltyDTO> getAllRoyalties() {
+    return royaltyDAO.getAllRoyalties();
+  }
 
-    @Override
-    public RoyaltyDTO findRoyalty(Long id) {
-        return royaltyDAO.findRoyalty(id);
-    }
+  @Override
+  public List<RoyaltyDTO> getAllRoyalty(CompanyDTO aCompanyDTO) {
+    return royaltyDAO.getAllRoyalty(aCompanyDTO);
+  }
 
-    @Override
-    public RoyaltyDTO createRoyalty(RoyaltyDTO aRoyalty) {
-        return royaltyDAO.createRoyalty(aRoyalty);
-    }
+  @Override
+  public RoyaltyDTO findRoyalty(Long id) {
+    return royaltyDAO.findRoyalty(id);
+  }
 
-    @Override
-    public RoyaltyDTO updateRoyalty(RoyaltyDTO aRoyalty) {
-        return royaltyDAO.updateRoyalty(aRoyalty);
-    }
+  @Override
+  public RoyaltyDTO createRoyalty(RoyaltyDTO aRoyalty) {
+    return royaltyDAO.createRoyalty(aRoyalty);
+  }
 
-    @Override
-    public void deleteRoyalty(RoyaltyDTO aRoyalty) {
-        royaltyDAO.deleteRoyalty(aRoyalty);
-    }
+  @Override
+  public RoyaltyDTO updateRoyalty(RoyaltyDTO aRoyalty) {
+    return royaltyDAO.updateRoyalty(aRoyalty);
+  }
+
+  @Override
+  public void deleteRoyalty(RoyaltyDTO aRoyalty) {
+    royaltyDAO.deleteRoyalty(aRoyalty);
+  }
 
 }

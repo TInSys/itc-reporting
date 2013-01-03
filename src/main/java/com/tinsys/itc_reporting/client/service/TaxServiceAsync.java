@@ -9,14 +9,14 @@ import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
 public interface TaxServiceAsync {
 
-   void createTax(TaxDTO aTax, TaxPeriodDTO periodToClose, AsyncCallback<TaxDTO> callback);
+  void createTax(TaxDTO aTax, TaxPeriodDTO periodToClose, AsyncCallback<TaxDTO> callback);
 
-   void deleteTax(TaxDTO aTax, AsyncCallback<Void> callback);
+  void deleteTax(TaxDTO aTax, AsyncCallback<Void> callback);
 
-   void findTax(Long id, AsyncCallback<TaxDTO> callback);
+  void findTax(Long id, AsyncCallback<TaxDTO> callback);
 
-   void updateTax(TaxDTO aTax, AsyncCallback<TaxDTO> callback);
+  void updateTax(TaxDTO aTax, AsyncCallback<TaxDTO> callback);
 
-   void getAllTaxs(ZoneDTO zoneDTO, AsyncCallback<ArrayList<TaxDTO>> callback);
+  void getAllTaxs(ZoneDTO zoneDTO, AsyncCallback<ArrayList<TaxDTO>> callback);
 
 }

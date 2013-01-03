@@ -7,14 +7,14 @@ import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
 public interface ZoneServiceAsync {
 
-    void createZone(ZoneDTO aZone, AsyncCallback<ZoneDTO> callback);
+  void createZone(ZoneDTO aZone, AsyncCallback<ZoneDTO> callback);
 
-    void deleteZone(ZoneDTO aZone, AsyncCallback<Void> callback);
+  void deleteZone(ZoneDTO aZone, AsyncCallback<Void> callback);
 
-    void findZone(Long id, AsyncCallback<ZoneDTO> callback);
+  void findZone(Long id, AsyncCallback<ZoneDTO> callback);
 
-    void getAllZones(AsyncCallback<ArrayList<ZoneDTO>> callback);
+  void getAllZones(AsyncCallback<ArrayList<ZoneDTO>> callback);
 
-    void updateZone(ZoneDTO aZone, AsyncCallback<ZoneDTO> callback);
+  void updateZone(ZoneDTO aZone, AsyncCallback<ZoneDTO> callback);
 
 }

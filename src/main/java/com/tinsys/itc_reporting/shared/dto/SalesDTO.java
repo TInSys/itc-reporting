@@ -5,116 +5,113 @@ import java.math.BigDecimal;
 
 public class SalesDTO implements Serializable {
 
-   /**
+  /**
      * 
      */
-   private static final long serialVersionUID = 1L;
-   private Long id;
-   private Integer soldUnits;
-   private BigDecimal individualPrice;
-   private BigDecimal totalPrice;
-   private BigDecimal individualProceeds;
-   private BigDecimal totalProceeds;
-   private String countryCode;
-   private String promoCode;
-   private FiscalPeriodDTO periodDTO;
-   private ZoneDTO zoneDTO;
-   private ApplicationDTO applicationDTO;
+  private static final long serialVersionUID = 1L;
+  private Long id;
+  private Integer soldUnits;
+  private BigDecimal individualPrice;
+  private BigDecimal totalPrice;
+  private BigDecimal individualProceeds;
+  private BigDecimal totalProceeds;
+  private String countryCode;
+  private String promoCode;
+  private FiscalPeriodDTO periodDTO;
+  private ZoneDTO zoneDTO;
+  private ApplicationDTO applicationDTO;
 
-   public Long getId() {
-      return id;
-   }
+  public Long getId() {
+    return id;
+  }
 
-   public void setId(Long id) {
-      this.id = id;
-   }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-   public Integer getSoldUnits() {
-      return soldUnits;
-   }
+  public Integer getSoldUnits() {
+    return soldUnits;
+  }
 
-   public void setSoldUnits(Integer soldUnits) {
-      this.soldUnits = soldUnits;
-   }
+  public void setSoldUnits(Integer soldUnits) {
+    this.soldUnits = soldUnits;
+  }
 
-   public BigDecimal getIndividualPrice() {
-      return individualPrice;
-   }
+  public BigDecimal getIndividualPrice() {
+    return individualPrice;
+  }
 
-   public void setIndividualPrice(BigDecimal individualPrice) {
-      this.individualPrice = individualPrice;
-   }
+  public void setIndividualPrice(BigDecimal individualPrice) {
+    this.individualPrice = individualPrice;
+  }
 
-   public BigDecimal getTotalPrice() {
-      return totalPrice;
-   }
+  public BigDecimal getTotalPrice() {
+    return totalPrice;
+  }
 
-   public void setTotalPrice(BigDecimal totalPrice) {
-      this.totalPrice = totalPrice;
-   }
+  public void setTotalPrice(BigDecimal totalPrice) {
+    this.totalPrice = totalPrice;
+  }
 
-   public BigDecimal getIndividualProceeds() {
-      return individualProceeds;
-   }
+  public BigDecimal getIndividualProceeds() {
+    return individualProceeds;
+  }
 
-   public void setIndividualProceeds(BigDecimal individualProceeds) {
-      this.individualProceeds = individualProceeds;
-   }
+  public void setIndividualProceeds(BigDecimal individualProceeds) {
+    this.individualProceeds = individualProceeds;
+  }
 
-   public BigDecimal getTotalProceeds() {
-      return totalProceeds;
-   }
+  public BigDecimal getTotalProceeds() {
+    return totalProceeds;
+  }
 
-   public void setTotalProceeds(BigDecimal totalProceeds) {
-      this.totalProceeds = totalProceeds;
-   }
+  public void setTotalProceeds(BigDecimal totalProceeds) {
+    this.totalProceeds = totalProceeds;
+  }
 
-   public String getCountryCode() {
-      return countryCode;
-   }
+  public String getCountryCode() {
+    return countryCode;
+  }
 
-   public void setCountryCode(String countryCode) {
-      this.countryCode = countryCode;
-   }
+  public void setCountryCode(String countryCode) {
+    this.countryCode = countryCode;
+  }
 
-   public void setPromoCode(String promoCode) {
-      this.promoCode = promoCode;
-   }
+  public void setPromoCode(String promoCode) {
+    this.promoCode = promoCode;
+  }
 
-   public String getPromoCode() {
-      return promoCode;
-   }
+  public String getPromoCode() {
+    return promoCode;
+  }
 
-   public FiscalPeriodDTO getPeriod() {
-      return periodDTO;
-   }
+  public FiscalPeriodDTO getPeriod() {
+    return periodDTO;
+  }
 
-   public void setPeriod(FiscalPeriodDTO periodDTO) {
-      this.periodDTO = periodDTO;
-   }
+  public void setPeriod(FiscalPeriodDTO periodDTO) {
+    this.periodDTO = periodDTO;
+  }
 
-   public ZoneDTO getZone() {
-      return zoneDTO;
-   }
+  public ZoneDTO getZone() {
+    return zoneDTO;
+  }
 
-   public void setZone(ZoneDTO zoneDTO) {
-      this.zoneDTO = zoneDTO;
-   }
+  public void setZone(ZoneDTO zoneDTO) {
+    this.zoneDTO = zoneDTO;
+  }
 
-   public ApplicationDTO getApplication() {
-      return applicationDTO;
-   }
+  public ApplicationDTO getApplication() {
+    return applicationDTO;
+  }
 
-   public void setApplication(ApplicationDTO applicationDTO) {
-      this.applicationDTO = applicationDTO;
-   }
+  public void setApplication(ApplicationDTO applicationDTO) {
+    this.applicationDTO = applicationDTO;
+  }
 
-   @Override
-   public String toString() {
-      return "Id:" + this.getId() + "  SoldUnits:" + this.getSoldUnits()
-            + " IndividualPrice:" + this.getIndividualPrice() + " TotaPrice:"
-            + this.getTotalPrice() + " Country code:" + this.getCountryCode() + " Promo code:" + this.getPromoCode()
-            + " Period:" + this.getPeriod() + " Zone:" + this.getZone()
-            + " App:" + this.getApplication();
-   }
+  @Override
+  public String toString() {
+    return "Id:" + this.getId() + "  SoldUnits:" + this.getSoldUnits() + " IndividualPrice:" + this.getIndividualPrice() + " TotaPrice:" + this.getTotalPrice() + " Country code:"
+        + this.getCountryCode() + " Promo code:" + this.getPromoCode() + " Period:" + this.getPeriod() + " Zone:" + this.getZone() + " App:" + this.getApplication();
+  }
 }

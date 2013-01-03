@@ -11,13 +11,13 @@ import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 @RemoteServiceRelativePath("springGwtServices/taxService")
 public interface TaxService extends RemoteService {
 
-    public ArrayList<TaxDTO> getAllTaxs(ZoneDTO zoneDTO) throws RuntimeException;
+  public ArrayList<TaxDTO> getAllTaxs(ZoneDTO zoneDTO) throws RuntimeException;
 
-    public TaxDTO findTax(Long id);
+  public TaxDTO findTax(Long id);
 
-    public TaxDTO createTax(TaxDTO aTax,TaxPeriodDTO aPeriod) throws RuntimeException;
+  public TaxDTO createTax(TaxDTO aTax, TaxPeriodDTO aPeriod) throws RuntimeException;
 
-    public TaxDTO updateTax(TaxDTO aTax);
+  public TaxDTO updateTax(TaxDTO aTax);
 
-    public void deleteTax(TaxDTO aTax);
+  public void deleteTax(TaxDTO aTax);
 }

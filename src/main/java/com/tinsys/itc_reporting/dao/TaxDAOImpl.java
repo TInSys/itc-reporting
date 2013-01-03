@@ -25,160 +25,154 @@ import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 @Repository
 public class TaxDAOImpl implements TaxDAO {
 
-    private SessionFactory factory;
+  private SessionFactory factory;
 
-    public SessionFactory getFactory() {
-        return factory;
+  public SessionFactory getFactory() {
+    return factory;
+  }
+
+  public void setFactory(SessionFactory factory) {
+    this.factory = factory;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public ArrayList<TaxDTO> getAllTaxs(ZoneDTO zoneDTO) {
+    ArrayList<TaxDTO> result = new ArrayList<TaxDTO>();
+    Zone zone = new Zone();
+    zone.setId(zoneDTO.getId());
+    zone.setCode(zoneDTO.getCode());
+    zone.setName(zoneDTO.getName());
+    zone.setCurrencyISO(zoneDTO.getCurrencyISO());
+
+    ArrayList<Tax> taxList;
+    try {
+      Criteria criteria = factory.getCurrentSession().createCriteria(Tax.class);
+      Criteria subCriteria = criteria.createCriteria("period");
+      subCriteria.addOrder(Order.asc("startDate"));
+      taxList = (ArrayList<Tax>) criteria.add(Restrictions.eq("zone", zone)).list();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
 
-    public void setFactory(SessionFactory factory) {
-        this.factory = factory;
+    for (Tax tax : taxList) {
+      TaxDTO taxDTO = new TaxDTO();
+      taxDTO.setId(tax.getId());
+      taxDTO.setRate(tax.getRate());
+      taxDTO.setZone(zoneDTO);
+      TaxPeriodDTO periodDTO = new TaxPeriodDTO();
+      periodDTO.setId(tax.getPeriod().getId());
+      periodDTO.setStartDate(tax.getPeriod().getStartDate());
+      periodDTO.setStopDate(tax.getPeriod().getStopDate());
+      taxDTO.setPeriod(periodDTO);
+      result.add(taxDTO);
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public ArrayList<TaxDTO> getAllTaxs(ZoneDTO zoneDTO) {
-        ArrayList<TaxDTO> result = new ArrayList<TaxDTO>();
-        Zone zone = new Zone();
-        zone.setId(zoneDTO.getId());
-        zone.setCode(zoneDTO.getCode());
-        zone.setName(zoneDTO.getName());
-        zone.setCurrencyISO(zoneDTO.getCurrencyISO());
+    return result;
+  }
 
-        ArrayList<Tax> taxList;
-        try {
-            Criteria criteria = factory.getCurrentSession().createCriteria(
-                    Tax.class);
-            Criteria subCriteria = criteria.createCriteria("period");
-            subCriteria.addOrder(Order.asc("startDate"));
-            taxList = (ArrayList<Tax>) criteria.add(
-                    Restrictions.eq("zone", zone)).list();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+  @Override
+  public TaxDTO findTax(Long id) {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
-        for (Tax tax : taxList) {
-            TaxDTO taxDTO = new TaxDTO();
-            taxDTO.setId(tax.getId());
-            taxDTO.setRate(tax.getRate());
-            taxDTO.setZone(zoneDTO);
-            TaxPeriodDTO periodDTO = new TaxPeriodDTO();
-            periodDTO.setId(tax.getPeriod().getId());
-            periodDTO.setStartDate(tax.getPeriod().getStartDate());
-            periodDTO.setStopDate(tax.getPeriod().getStopDate());
-            taxDTO.setPeriod(periodDTO);
-            result.add(taxDTO);
-        }
+  @Override
+  public TaxDTO createTax(TaxDTO aTax) {
 
-        return result;
+    Tax tax = new Tax();
+    tax.setRate(aTax.getRate());
+    Zone zone = new Zone();
+    zone.setId(aTax.getZone().getId());
+    zone.setCode(aTax.getZone().getCode());
+    zone.setName(aTax.getZone().getName());
+    zone.setCurrencyISO(aTax.getZone().getCurrencyISO());
+    tax.setZone(zone);
+    TaxPeriod period = new TaxPeriod();
+    period.setStartDate(aTax.getPeriod().getStartDate());
+    period.setStopDate(aTax.getPeriod().getStopDate());
+    period.setId(aTax.getPeriod().getId());
+    tax.setPeriod(period);
+    try {
+      factory.getCurrentSession().persist(tax);
+      Long id = (Long) factory.getCurrentSession().getIdentifier(tax);
+      aTax.setId(id);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
 
-    @Override
-    public TaxDTO findTax(Long id) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    return aTax;
+  }
 
-    @Override
-    public TaxDTO createTax(TaxDTO aTax) {
+  @Override
+  public TaxDTO updateTax(TaxDTO aTax) {
+    Tax tax = (Tax) factory.getCurrentSession().get(Tax.class, aTax.getId());
+    tax.setRate(aTax.getRate());
+    Zone zone = new Zone();
+    zone.setId(aTax.getZone().getId());
+    zone.setCode(aTax.getZone().getCode());
+    zone.setName(aTax.getZone().getName());
+    zone.setCurrencyISO(aTax.getZone().getCurrencyISO());
+    tax.setZone(zone);
+    TaxPeriod period = new TaxPeriod();
+    period.setStartDate(aTax.getPeriod().getStartDate());
+    period.setStopDate(aTax.getPeriod().getStopDate());
+    period.setId(aTax.getPeriod().getId());
+    tax.setPeriod(period);
+    factory.getCurrentSession().saveOrUpdate(tax);
+    return aTax;
+  }
 
-        Tax tax = new Tax();
-        tax.setRate(aTax.getRate());
-        Zone zone = new Zone();
-        zone.setId(aTax.getZone().getId());
-        zone.setCode(aTax.getZone().getCode());
-        zone.setName(aTax.getZone().getName());
-        zone.setCurrencyISO(aTax.getZone().getCurrencyISO());
-        tax.setZone(zone);
-        TaxPeriod period = new TaxPeriod();
-        period.setStartDate(aTax.getPeriod().getStartDate());
-        period.setStopDate(aTax.getPeriod().getStopDate());
-        period.setId(aTax.getPeriod().getId());
-        tax.setPeriod(period);
-        try {
-            factory.getCurrentSession().persist(tax);
-            Long id = (Long) factory.getCurrentSession().getIdentifier(tax);
-            aTax.setId(id);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+  @Override
+  public void deleteTax(TaxDTO aTax) {
+    Tax tax = (Tax) factory.getCurrentSession().get(Tax.class, aTax.getId());
+    tax.setRate(aTax.getRate());
+    Zone zone = new Zone();
+    zone.setId(aTax.getZone().getId());
+    zone.setCode(aTax.getZone().getCode());
+    zone.setName(aTax.getZone().getName());
+    zone.setCurrencyISO(aTax.getZone().getCurrencyISO());
+    tax.setZone(zone);
+    TaxPeriod period = new TaxPeriod();
+    period.setStartDate(aTax.getPeriod().getStartDate());
+    period.setStopDate(aTax.getPeriod().getStopDate());
+    period.setId(aTax.getPeriod().getId());
+    tax.setPeriod(period);
+    factory.getCurrentSession().delete(tax);
 
-        return aTax;
-    }
+  }
 
-    @Override
-    public TaxDTO updateTax(TaxDTO aTax) {
-        Tax tax = (Tax) factory.getCurrentSession()
-                .get(Tax.class, aTax.getId());
-        tax.setRate(aTax.getRate());
-        Zone zone = new Zone();
-        zone.setId(aTax.getZone().getId());
-        zone.setCode(aTax.getZone().getCode());
-        zone.setName(aTax.getZone().getName());
-        zone.setCurrencyISO(aTax.getZone().getCurrencyISO());
-        tax.setZone(zone);
-        TaxPeriod period = new TaxPeriod();
-        period.setStartDate(aTax.getPeriod().getStartDate());
-        period.setStopDate(aTax.getPeriod().getStopDate());
-        period.setId(aTax.getPeriod().getId());
-        tax.setPeriod(period);
-        factory.getCurrentSession().saveOrUpdate(tax);
-        return aTax;
-    }
+  @SuppressWarnings("unchecked")
+  @Override
+  public List<Tax> getTaxesForPeriod(FiscalPeriodDTO period) {
+    Date startDate;
+    Date endDate;
+    Calendar cal1 = new GregorianCalendar();
+    cal1.set(Calendar.YEAR, period.getYear());
+    cal1.set(Calendar.MONTH, period.getMonth() - 1);
+    cal1.set(Calendar.DAY_OF_MONTH, 1);
+    cal1.set(Calendar.HOUR_OF_DAY, 0);
+    cal1.set(Calendar.MINUTE, 0);
+    cal1.set(Calendar.SECOND, 0);
+    cal1.set(Calendar.MILLISECOND, 0);
+    startDate = cal1.getTime();
+    Date endOfMonthDate = cal1.getTime();
+    CalendarUtil.addMonthsToDate(endOfMonthDate, 1);
+    CalendarUtil.addDaysToDate(endOfMonthDate, -1);
+    endDate = endOfMonthDate;
 
-    @Override
-    public void deleteTax(TaxDTO aTax) {
-        Tax tax = (Tax) factory.getCurrentSession()
-                .get(Tax.class, aTax.getId());
-        tax.setRate(aTax.getRate());
-        Zone zone = new Zone();
-        zone.setId(aTax.getZone().getId());
-        zone.setCode(aTax.getZone().getCode());
-        zone.setName(aTax.getZone().getName());
-        zone.setCurrencyISO(aTax.getZone().getCurrencyISO());
-        tax.setZone(zone);
-        TaxPeriod period = new TaxPeriod();
-        period.setStartDate(aTax.getPeriod().getStartDate());
-        period.setStopDate(aTax.getPeriod().getStopDate());
-        period.setId(aTax.getPeriod().getId());
-        tax.setPeriod(period);
-        factory.getCurrentSession().delete(tax);
+    Query query = factory.getCurrentSession().createQuery(
+        "select tax from Tax tax where tax.period.startDate <= :sStartDate and (tax.period.stopDate >= :sStopDate or tax.period.stopDate = null) ");
+    query.setParameter("sStartDate", startDate);
+    query.setParameter("sStopDate", endDate);
+    return (ArrayList<Tax>) query.list();
 
-    }
+  }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<Tax> getTaxesForPeriod(FiscalPeriodDTO period) {
-        Date startDate;
-        Date endDate;
-        Calendar cal1 = new GregorianCalendar();
-        cal1.set(Calendar.YEAR , period.getYear());
-        cal1.set(Calendar.MONTH, period.getMonth()-1);
-        cal1.set(Calendar.DAY_OF_MONTH, 1);
-        cal1.set(Calendar.HOUR_OF_DAY, 0);
-        cal1.set(Calendar.MINUTE, 0);
-        cal1.set(Calendar.SECOND, 0);
-        cal1.set(Calendar.MILLISECOND, 0);
-        startDate = cal1.getTime();
-        Date endOfMonthDate = cal1.getTime();
-        CalendarUtil.addMonthsToDate(endOfMonthDate,1);
-        CalendarUtil.addDaysToDate(endOfMonthDate,-1);
-        endDate = endOfMonthDate;
-        
-        Query query = factory
-                .getCurrentSession()
-                .createQuery(
-                        "select tax from Tax tax where tax.period.startDate <= :sStartDate and (tax.period.stopDate >= :sStopDate or tax.period.stopDate = null) ");
-        query.setParameter("sStartDate", startDate);
-        query.setParameter("sStopDate", endDate);
-        return (ArrayList<Tax>) query.list();
-
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<Tax> getAllTaxs() {
-        return factory.getCurrentSession().createCriteria(Tax.class).list();
-    }
+  @SuppressWarnings("unchecked")
+  @Override
+  public List<Tax> getAllTaxs() {
+    return factory.getCurrentSession().createCriteria(Tax.class).list();
+  }
 
 }

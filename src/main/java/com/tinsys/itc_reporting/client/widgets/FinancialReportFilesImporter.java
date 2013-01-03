@@ -19,87 +19,89 @@ import com.google.gwt.user.client.ui.SubmitButton;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
-public class FinancialReportFilesImporter extends Composite implements WidgetSwitchManagement{
+public class FinancialReportFilesImporter extends Composite implements WidgetSwitchManagement {
 
-    private static Binder uiBinder = GWT.create(Binder.class);
-    protected static final String UPLOAD_ACTION_URL = GWT.getModuleBaseURL() + "upload";
+  private static Binder uiBinder = GWT.create(Binder.class);
+  protected static final String UPLOAD_ACTION_URL = GWT.getModuleBaseURL() + "upload";
 
-    static class JsArray extends JavaScriptObject {
-       protected JsArray() { }
-       public final native int length() /*-{ return this.length; }-*/;
-       public final native String get(int i) /*-{ return this[i].name;     }-*/;
-     }
-    
-    @UiField
-    FileUpload uploadField;
-    
-    @UiField
-    FormPanel form;
-    
-    @UiField
-    SubmitButton submitButton;
-    
-    @UiField
-    TextArea uploadLog;
-    
-    @UiTemplate("FinancialReportFilesImporter.ui.xml")
-    interface Binder extends UiBinder<Widget, FinancialReportFilesImporter> {
+  static class JsArray extends JavaScriptObject {
+    protected JsArray() {
     }
-    
-    public FinancialReportFilesImporter() {
-        initWidget(uiBinder.createAndBindUi(this));
-        uploadField.getElement().setPropertyBoolean("multiple", true);
-        form.setAction(UPLOAD_ACTION_URL);
 
-        form.setEncoding(FormPanel.ENCODING_MULTIPART);
-        form.setMethod(FormPanel.METHOD_POST);
-        uploadField.addChangeHandler(new ChangeHandler() {
-         
-         @Override
-         public void onChange(ChangeEvent event) {
-            JsArray fileNameArray = (JsArray) uploadField.getElement().getPropertyJSO("files");
-            uploadLog.setText(" Files selected :\n");
-            for (int i = 0; i < fileNameArray.length(); i++) {
-               uploadLog.setText(uploadLog.getText()+fileNameArray.get(i)+"\n");
-            }
-         }
-      });
-        
-        submitButton.addClickHandler(new ClickHandler() {    
-            @Override
-            public void onClick(ClickEvent event) {
-                form.submit();
-            }
-        });
-        
-        form.addSubmitHandler(new FormPanel.SubmitHandler() {
-            public void onSubmit(SubmitEvent event) {
-              if (uploadField.getFilename().length() == 0) {
-                event.cancel();
-              }
-            }
-          });
+    public final native int length() /*-{ return this.length; }-*/;
 
-          form.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
-            public void onSubmitComplete(SubmitCompleteEvent event) {
-              if (event.getResults().contains("ERROR")) {
-                  
-                String err = event.getResults();
-                Window.alert(err);
-              } else {
-                
-                uploadLog.setText(event.getResults());
-              }
-            }
-          });
+    public final native String get(int i) /*-{ return this[i].name;     }-*/;
+  }
+
+  @UiField
+  FileUpload uploadField;
+
+  @UiField
+  FormPanel form;
+
+  @UiField
+  SubmitButton submitButton;
+
+  @UiField
+  TextArea uploadLog;
+
+  @UiTemplate("FinancialReportFilesImporter.ui.xml")
+  interface Binder extends UiBinder<Widget, FinancialReportFilesImporter> {
+  }
+
+  public FinancialReportFilesImporter() {
+    initWidget(uiBinder.createAndBindUi(this));
+    uploadField.getElement().setPropertyBoolean("multiple", true);
+    form.setAction(UPLOAD_ACTION_URL);
+
+    form.setEncoding(FormPanel.ENCODING_MULTIPART);
+    form.setMethod(FormPanel.METHOD_POST);
+    uploadField.addChangeHandler(new ChangeHandler() {
+
+      @Override
+      public void onChange(ChangeEvent event) {
+        JsArray fileNameArray = (JsArray) uploadField.getElement().getPropertyJSO("files");
+        uploadLog.setText(" Files selected :\n");
+        for (int i = 0; i < fileNameArray.length(); i++) {
+          uploadLog.setText(uploadLog.getText() + fileNameArray.get(i) + "\n");
+        }
+      }
+    });
+
+    submitButton.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        form.submit();
+      }
+    });
+
+    form.addSubmitHandler(new FormPanel.SubmitHandler() {
+      public void onSubmit(SubmitEvent event) {
+        if (uploadField.getFilename().length() == 0) {
+          event.cancel();
+        }
+      }
+    });
+
+    form.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
+      public void onSubmitComplete(SubmitCompleteEvent event) {
+        if (event.getResults().contains("ERROR")) {
+
+          String err = event.getResults();
+          Window.alert(err);
+        } else {
+
+          uploadLog.setText(event.getResults());
+        }
+      }
+    });
 
   }
-    
-   
-    @Override
-    public boolean isEditing() {
-        // TODO Auto-generated method stub
-        return false;
-    }
+
+  @Override
+  public boolean isEditing() {
+    // TODO Auto-generated method stub
+    return false;
+  }
 
 }

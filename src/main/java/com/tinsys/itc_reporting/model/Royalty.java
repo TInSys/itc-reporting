@@ -6,51 +6,63 @@ import java.util.List;
 
 public class Royalty implements Serializable {
 
-    /**
+  /**
      * 
      */
-    private static final long serialVersionUID = 1L;
-    private Long id;
-    private BigDecimal shareRate;
-    private String shareRateCalculationField;
-    private Company company;
-    private Application application;
-    private List<Zone> zones;
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public BigDecimal getShareRate() {
-        return shareRate;
-    }
-    public void setShareRate(BigDecimal shareRate) {
-        this.shareRate = shareRate;
-    }
-    public void setShareRateCalculationField(String shareRateCalculationField) {
-      this.shareRateCalculationField = shareRateCalculationField;
-   }
-   public String getShareRateCalculationField() {
-      return shareRateCalculationField;
-   }
-   public Company getCompany() {
-        return company;
-    }
-    public void setCompany(Company company) {
-        this.company = company;
-    }
-    public Application getApplication() {
-        return application;
-    }
-    public void setApplication(Application application) {
-        this.application = application;
-    }
-    public List<Zone> getZones() {
-        return zones;
-    }
-    public void setZones(List<Zone> zones) {
-        this.zones = zones;
-    }
-    
+  private static final long serialVersionUID = 1L;
+  private Long id;
+  private BigDecimal shareRate;
+  private String shareRateCalculationField;
+  private Company company;
+  private Application application;
+  private List<Zone> zones;
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public BigDecimal getShareRate() {
+    return shareRate;
+  }
+
+  public void setShareRate(BigDecimal shareRate) {
+    this.shareRate = shareRate;
+  }
+
+  public void setShareRateCalculationField(String shareRateCalculationField) {
+    this.shareRateCalculationField = shareRateCalculationField;
+  }
+
+  public String getShareRateCalculationField() {
+    return shareRateCalculationField;
+  }
+
+  public Company getCompany() {
+    return company;
+  }
+
+  public void setCompany(Company company) {
+    this.company = company;
+  }
+
+  public Application getApplication() {
+    return application;
+  }
+
+  public void setApplication(Application application) {
+    this.application = application;
+  }
+
+  public List<Zone> getZones() {
+    return zones;
+  }
+
+  public void setZones(List<Zone> zones) {
+    this.zones = zones;
+  }
+
 }

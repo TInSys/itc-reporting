@@ -9,13 +9,13 @@ import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 @RemoteServiceRelativePath("springGwtServices/zoneService")
 public interface ZoneService extends RemoteService {
 
-    public ArrayList<ZoneDTO> getAllZones();
+  public ArrayList<ZoneDTO> getAllZones();
 
-    public ZoneDTO findZone(Long id);
+  public ZoneDTO findZone(Long id);
 
-    public ZoneDTO createZone(ZoneDTO aZone);
+  public ZoneDTO createZone(ZoneDTO aZone);
 
-    public ZoneDTO updateZone(ZoneDTO aZone);
+  public ZoneDTO updateZone(ZoneDTO aZone);
 
-    public void deleteZone(ZoneDTO aZone);
+  public void deleteZone(ZoneDTO aZone);
 }

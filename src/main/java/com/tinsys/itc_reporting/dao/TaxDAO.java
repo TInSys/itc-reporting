@@ -10,17 +10,17 @@ import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
 public interface TaxDAO {
 
-    public ArrayList<TaxDTO> getAllTaxs(ZoneDTO zoneDTO);
+  public ArrayList<TaxDTO> getAllTaxs(ZoneDTO zoneDTO);
 
-    public TaxDTO findTax(Long id);
+  public TaxDTO findTax(Long id);
 
-    public TaxDTO createTax(TaxDTO aTax);
+  public TaxDTO createTax(TaxDTO aTax);
 
-    public TaxDTO updateTax(TaxDTO aTax);
+  public TaxDTO updateTax(TaxDTO aTax);
 
-    public void deleteTax(TaxDTO aTax);
+  public void deleteTax(TaxDTO aTax);
 
-    public List<Tax> getTaxesForPeriod(FiscalPeriodDTO period);
+  public List<Tax> getTaxesForPeriod(FiscalPeriodDTO period);
 
-    public List<Tax> getAllTaxs();
+  public List<Tax> getAllTaxs();
 }

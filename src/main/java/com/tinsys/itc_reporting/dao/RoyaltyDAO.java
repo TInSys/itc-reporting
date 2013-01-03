@@ -8,16 +8,16 @@ import com.tinsys.itc_reporting.shared.dto.RoyaltyDTO;
 
 public interface RoyaltyDAO {
 
-    public ArrayList<RoyaltyDTO> getAllRoyalties();
+  public ArrayList<RoyaltyDTO> getAllRoyalties();
 
-    public List<RoyaltyDTO> getAllRoyalty(CompanyDTO aCompanyDTO);
-    
-    public RoyaltyDTO findRoyalty(Long id);
-    
-    public RoyaltyDTO createRoyalty(RoyaltyDTO aRoyalty);
+  public List<RoyaltyDTO> getAllRoyalty(CompanyDTO aCompanyDTO);
 
-    public RoyaltyDTO updateRoyalty(RoyaltyDTO aRoyalty);
+  public RoyaltyDTO findRoyalty(Long id);
 
-    public void deleteRoyalty(RoyaltyDTO aRoyalty);
+  public RoyaltyDTO createRoyalty(RoyaltyDTO aRoyalty);
+
+  public RoyaltyDTO updateRoyalty(RoyaltyDTO aRoyalty);
+
+  public void deleteRoyalty(RoyaltyDTO aRoyalty);
 
 }

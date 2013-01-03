@@ -16,14 +16,13 @@ import com.google.gwt.text.shared.SafeHtmlRenderer;
 /**
  * An {@link AbstractCell} used to render a text input.
  */
-public class CustomTextInputCell extends
-    AbstractInputCell<String, CustomTextInputCell.ViewData> {
-   
-   private String maxLength;
+public class CustomTextInputCell extends AbstractInputCell<String, CustomTextInputCell.ViewData> {
+
+  private String maxLength;
 
   interface Template extends SafeHtmlTemplates {
     @Template("<input type=\"text\" value=\"{0}\" maxlength=\"{1}\" size=\"{1}\" ></input>")
-    SafeHtml input(String value,String maxLength);
+    SafeHtml input(String value, String maxLength);
   }
 
   /**
@@ -42,8 +41,9 @@ public class CustomTextInputCell extends
 
     /**
      * Construct a ViewData instance containing a given value.
-     *
-     * @param value a String value
+     * 
+     * @param value
+     *          a String value
      */
     public ViewData(String value) {
       this.lastValue = value;
@@ -51,8 +51,8 @@ public class CustomTextInputCell extends
     }
 
     /**
-     * Return true if the last and current values of this ViewData object
-     * are equal to those of the other object.
+     * Return true if the last and current values of this ViewData object are
+     * equal to those of the other object.
      */
     @Override
     public boolean equals(Object other) {
@@ -60,8 +60,7 @@ public class CustomTextInputCell extends
         return false;
       }
       ViewData vd = (ViewData) other;
-      return equalsOrNull(lastValue, vd.lastValue)
-          && equalsOrNull(curValue, vd.curValue);
+      return equalsOrNull(lastValue, vd.lastValue) && equalsOrNull(curValue, vd.curValue);
     }
 
     /**
@@ -95,7 +94,8 @@ public class CustomTextInputCell extends
     /**
      * Set the current value.
      * 
-     * @param curValue the current value
+     * @param curValue
+     *          the current value
      * @see #getCurrentValue()
      */
     protected void setCurrentValue(String curValue) {
@@ -105,7 +105,8 @@ public class CustomTextInputCell extends
     /**
      * Set the last value.
      * 
-     * @param lastValue the last value
+     * @param lastValue
+     *          the last value
      * @see #getLastValue()
      */
     protected void setLastValue(String lastValue) {
@@ -120,14 +121,14 @@ public class CustomTextInputCell extends
   private static Template template;
 
   public void setMaxLength(String maxLength) {
-   this.maxLength = maxLength;
-}
+    this.maxLength = maxLength;
+  }
 
-public String getMaxLength() {
-   return maxLength;
-}
+  public String getMaxLength() {
+    return maxLength;
+  }
 
-/**
+  /**
    * Constructs a TextInputCell that renders its text without HTML markup.
    */
   public CustomTextInputCell() {
@@ -140,8 +141,9 @@ public String getMaxLength() {
   /**
    * Constructs a TextInputCell that renders its text using the given
    * {@link SafeHtmlRenderer}.
-   *
-   * @param renderer parameter is ignored
+   * 
+   * @param renderer
+   *          parameter is ignored
    * @deprecated the value of a text input is never treated as html
    */
   @Deprecated
@@ -150,8 +152,7 @@ public String getMaxLength() {
   }
 
   @Override
-  public void onBrowserEvent(Context context, Element parent, String value,
-      NativeEvent event, ValueUpdater<String> valueUpdater) {
+  public void onBrowserEvent(Context context, Element parent, String value, NativeEvent event, ValueUpdater<String> valueUpdater) {
     super.onBrowserEvent(context, parent, value, event, valueUpdater);
 
     // Ignore events that don't target the input.
@@ -168,8 +169,8 @@ public String getMaxLength() {
     } else if (BrowserEvents.KEYUP.equals(eventType)) {
       // Record keys as they are typed.
       ViewData vd = getViewData(key);
-      if (vd!=null && value.length()>3){
-         return;
+      if (vd != null && value.length() > 3) {
+        return;
       }
       if (vd == null) {
         vd = new ViewData(value);
@@ -191,15 +192,14 @@ public String getMaxLength() {
 
     String s = (viewData != null) ? viewData.getCurrentValue() : value;
     if (s != null) {
-           sb.append(template.input(s,maxLength));
+      sb.append(template.input(s, maxLength));
     } else {
       sb.appendHtmlConstant("<input type=\"text\" ></input>");
     }
   }
 
   @Override
-  protected void finishEditing(Element parent, String value, Object key,
-      ValueUpdater<String> valueUpdater) {
+  protected void finishEditing(Element parent, String value, Object key, ValueUpdater<String> valueUpdater) {
     String newValue = getInputElement(parent).getValue();
 
     // Get the view data.

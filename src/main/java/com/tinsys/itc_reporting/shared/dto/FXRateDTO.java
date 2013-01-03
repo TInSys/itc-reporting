@@ -3,63 +3,63 @@ package com.tinsys.itc_reporting.shared.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class FXRateDTO implements Serializable,Comparable<FXRateDTO> {
+public class FXRateDTO implements Serializable, Comparable<FXRateDTO> {
 
-    /**
+  /**
      * 
      */
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private Long id;
-    private BigDecimal rate;
-    private ZoneDTO zone;
-    private FiscalPeriodDTO period;
-    private String currencyIso;
-    
-    public Long getId() {
-        return id;
-    }
+  private Long id;
+  private BigDecimal rate;
+  private ZoneDTO zone;
+  private FiscalPeriodDTO period;
+  private String currencyIso;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public BigDecimal getRate() {
-        return rate;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public void setRate(BigDecimal rate) {
-        this.rate = rate;
-    }
+  public BigDecimal getRate() {
+    return rate;
+  }
 
-    public ZoneDTO getZone() {
-        return zone;
-    }
+  public void setRate(BigDecimal rate) {
+    this.rate = rate;
+  }
 
-    public void setZone(ZoneDTO zone) {
-        this.zone = zone;
-    }
+  public ZoneDTO getZone() {
+    return zone;
+  }
 
-    public FiscalPeriodDTO getPeriod() {
-        return period;
-    }
+  public void setZone(ZoneDTO zone) {
+    this.zone = zone;
+  }
 
-    public void setPeriod(FiscalPeriodDTO period) {
-        this.period = period;
-    }
+  public FiscalPeriodDTO getPeriod() {
+    return period;
+  }
 
-    public void setCurrencyIso(String currencyIso) {
-      this.currencyIso = currencyIso;
-   }
+  public void setPeriod(FiscalPeriodDTO period) {
+    this.period = period;
+  }
 
-   public String getCurrencyIso() {
-      return currencyIso;
-   }
+  public void setCurrencyIso(String currencyIso) {
+    this.currencyIso = currencyIso;
+  }
 
-   @Override
-    public int compareTo(FXRateDTO fxRateDTO) {
-        String zoneCode = fxRateDTO.getZone().getCode();
-        return this.getZone().getCode().compareTo(zoneCode);
-    }
+  public String getCurrencyIso() {
+    return currencyIso;
+  }
+
+  @Override
+  public int compareTo(FXRateDTO fxRateDTO) {
+    String zoneCode = fxRateDTO.getZone().getCode();
+    return this.getZone().getCode().compareTo(zoneCode);
+  }
 
 }

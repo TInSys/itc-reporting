@@ -40,308 +40,291 @@ import com.tinsys.itc_reporting.shared.dto.PreferencesDTO;
  */
 public class ITCReporting implements EntryPoint {
 
-   private PreferencesDTO preferences;
-   private PreferencesServiceAsync preferencesService = GWT
-         .create(PreferencesService.class);
+  private PreferencesDTO preferences;
+  private PreferencesServiceAsync preferencesService = GWT.create(PreferencesService.class);
 
-   @UiField
-   SimplePanel mainPanel;
+  @UiField
+  SimplePanel mainPanel;
 
-   @UiField
-   PushButton preferencesPushButton;
+  @UiField
+  PushButton preferencesPushButton;
 
-   @UiField
-   PushButton zoneManagementPushButton;
+  @UiField
+  PushButton zoneManagementPushButton;
 
-   @UiField
-   PushButton taxManagementPushButton;
+  @UiField
+  PushButton taxManagementPushButton;
 
-   @UiField
-   PushButton FXRateManagementByZonePushButton;
+  @UiField
+  PushButton FXRateManagementByZonePushButton;
 
-   @UiField
-   PushButton FXRateManagementByMonthPushButton;
+  @UiField
+  PushButton FXRateManagementByMonthPushButton;
 
-   @UiField
-   PushButton ApplicationManagementPushButton;
+  @UiField
+  PushButton ApplicationManagementPushButton;
 
-   @UiField
-   PushButton CompanyManagementPushButton;
+  @UiField
+  PushButton CompanyManagementPushButton;
 
-   @UiField
-   PushButton RoyaltyManagementPushButton;
+  @UiField
+  PushButton RoyaltyManagementPushButton;
 
-   @UiField
-   PushButton importFinancialFilesPushButton;
+  @UiField
+  PushButton importFinancialFilesPushButton;
 
-   @UiField
-   PushButton byPeriodReport;
+  @UiField
+  PushButton byPeriodReport;
 
-   @UiField
-   PushButton royaltiesReport;
+  @UiField
+  PushButton royaltiesReport;
 
-   interface MainPageStyle extends CssResource {
-      String stackButtonNotSelected();
+  interface MainPageStyle extends CssResource {
+    String stackButtonNotSelected();
 
-      String pageHeader();
+    String pageHeader();
 
-      String stackButtonSelected();
-   }
+    String stackButtonSelected();
+  }
 
-   @UiField
-   MainPageStyle style;
-   private PushButton currentButton;
+  @UiField
+  MainPageStyle style;
+  private PushButton currentButton;
 
-   private static final Binder binder = GWT.create(Binder.class);
+  private static final Binder binder = GWT.create(Binder.class);
 
-   @UiTemplate("ITCReporting.ui.xml")
-   interface Binder extends UiBinder<Widget, ITCReporting> {
-   }
+  @UiTemplate("ITCReporting.ui.xml")
+  interface Binder extends UiBinder<Widget, ITCReporting> {
+  }
 
-   /**
-    * This is the entry point method.
-    */
-   public void onModuleLoad() {
-      RootLayoutPanel.get().add(binder.createAndBindUi(this));
-      preferences = new PreferencesDTO();
-      preferencesService.findPreference(preferences,
-            new AsyncCallback<PreferencesDTO>() {
+  /**
+   * This is the entry point method.
+   */
+  public void onModuleLoad() {
+    RootLayoutPanel.get().add(binder.createAndBindUi(this));
+    preferences = new PreferencesDTO();
+    preferencesService.findPreference(preferences, new AsyncCallback<PreferencesDTO>() {
 
-               @Override
-               public void onSuccess(PreferencesDTO result) {
-                  preferences = result;
+      @Override
+      public void onSuccess(PreferencesDTO result) {
+        preferences = result;
 
-               }
+      }
 
-               @Override
-               public void onFailure(Throwable caught) {
-                  Window.alert("Error fetching preferences :  "
-                        + caught.getMessage());
-               }
-            });
-   }
+      @Override
+      public void onFailure(Throwable caught) {
+        Window.alert("Error fetching preferences :  " + caught.getMessage());
+      }
+    });
+  }
 
-   @UiHandler("preferencesPushButton")
-   void handleClickPreferencesPushButton(ClickEvent e) {
-      managePushButtonAppearance(preferencesPushButton);
-      PreferencesManagement preferencesWidget = new PreferencesManagement(
-            preferences);
-      if (mainPanel.getWidget() != null) {
-         WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel
-               .getWidget();
-         if (!widgetStatus.isEditing()) {
-            mainPanel.remove(mainPanel.getWidget());
-            mainPanel.add(preferencesWidget);
-         } else {
-            showSaveAlert();
-         }
+  @UiHandler("preferencesPushButton")
+  void handleClickPreferencesPushButton(ClickEvent e) {
+    managePushButtonAppearance(preferencesPushButton);
+    PreferencesManagement preferencesWidget = new PreferencesManagement(preferences);
+    if (mainPanel.getWidget() != null) {
+      WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel.getWidget();
+      if (!widgetStatus.isEditing()) {
+        mainPanel.remove(mainPanel.getWidget());
+        mainPanel.add(preferencesWidget);
       } else {
-         mainPanel.add(preferencesWidget);
+        showSaveAlert();
       }
+    } else {
+      mainPanel.add(preferencesWidget);
+    }
 
-   }
+  }
 
-   @UiHandler("zoneManagementPushButton")
-   void handleClickZoneManagementPushButton(ClickEvent e) {
-      managePushButtonAppearance(zoneManagementPushButton);
-      if (mainPanel.getWidget() != null) {
-         WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel
-               .getWidget();
-         if (!widgetStatus.isEditing()) {
-            mainPanel.remove(mainPanel.getWidget());
-            mainPanel.add(new ZoneManagement());
-         } else {
-            showSaveAlert();
-         }
+  @UiHandler("zoneManagementPushButton")
+  void handleClickZoneManagementPushButton(ClickEvent e) {
+    managePushButtonAppearance(zoneManagementPushButton);
+    if (mainPanel.getWidget() != null) {
+      WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel.getWidget();
+      if (!widgetStatus.isEditing()) {
+        mainPanel.remove(mainPanel.getWidget());
+        mainPanel.add(new ZoneManagement());
       } else {
-         mainPanel.add(new ZoneManagement());
+        showSaveAlert();
       }
-   }
+    } else {
+      mainPanel.add(new ZoneManagement());
+    }
+  }
 
-   @UiHandler("taxManagementPushButton")
-   void handleClickTaxManagementPushButton(ClickEvent e) {
-      managePushButtonAppearance(taxManagementPushButton);
-      if (mainPanel.getWidget() != null) {
-         WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel
-               .getWidget();
-         if (!widgetStatus.isEditing()) {
-            mainPanel.remove(mainPanel.getWidget());
-            mainPanel.add(new TaxManagement());
-         } else {
-            showSaveAlert();
-         }
+  @UiHandler("taxManagementPushButton")
+  void handleClickTaxManagementPushButton(ClickEvent e) {
+    managePushButtonAppearance(taxManagementPushButton);
+    if (mainPanel.getWidget() != null) {
+      WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel.getWidget();
+      if (!widgetStatus.isEditing()) {
+        mainPanel.remove(mainPanel.getWidget());
+        mainPanel.add(new TaxManagement());
       } else {
-         mainPanel.add(new TaxManagement());
+        showSaveAlert();
       }
-   }
+    } else {
+      mainPanel.add(new TaxManagement());
+    }
+  }
 
-   @UiHandler("FXRateManagementByZonePushButton")
-   void handleClickFXRateManagementByZonePushButton(ClickEvent e) {
-      managePushButtonAppearance(FXRateManagementByZonePushButton);
-      FXRateManagementByZone fXRateManagementByZone = new FXRateManagementByZone();
-      fXRateManagementByZone.setPrefs(preferences);
-      if (mainPanel.getWidget() != null) {
-         WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel
-               .getWidget();
-         if (!widgetStatus.isEditing()) {
+  @UiHandler("FXRateManagementByZonePushButton")
+  void handleClickFXRateManagementByZonePushButton(ClickEvent e) {
+    managePushButtonAppearance(FXRateManagementByZonePushButton);
+    FXRateManagementByZone fXRateManagementByZone = new FXRateManagementByZone();
+    fXRateManagementByZone.setPrefs(preferences);
+    if (mainPanel.getWidget() != null) {
+      WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel.getWidget();
+      if (!widgetStatus.isEditing()) {
 
-            mainPanel.remove(mainPanel.getWidget());
-            mainPanel.add(fXRateManagementByZone);
-         } else {
-            showSaveAlert();
-         }
+        mainPanel.remove(mainPanel.getWidget());
+        mainPanel.add(fXRateManagementByZone);
       } else {
-         mainPanel.add(fXRateManagementByZone);
+        showSaveAlert();
       }
-   }
+    } else {
+      mainPanel.add(fXRateManagementByZone);
+    }
+  }
 
-   @UiHandler("FXRateManagementByMonthPushButton")
-   void handleClickFXRateManagementByMonthPushButton(ClickEvent e) {
-      managePushButtonAppearance(FXRateManagementByMonthPushButton);
-      FXRateManagementByMonth fXRateManagementByMonth = new FXRateManagementByMonth();
-      fXRateManagementByMonth.setPrefs(preferences);
-      if (mainPanel.getWidget() != null) {
-         WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel
-               .getWidget();
-         if (!widgetStatus.isEditing()) {
-            mainPanel.remove(mainPanel.getWidget());
-            mainPanel.add(fXRateManagementByMonth);
-         } else {
-            showSaveAlert();
-         }
+  @UiHandler("FXRateManagementByMonthPushButton")
+  void handleClickFXRateManagementByMonthPushButton(ClickEvent e) {
+    managePushButtonAppearance(FXRateManagementByMonthPushButton);
+    FXRateManagementByMonth fXRateManagementByMonth = new FXRateManagementByMonth();
+    fXRateManagementByMonth.setPrefs(preferences);
+    if (mainPanel.getWidget() != null) {
+      WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel.getWidget();
+      if (!widgetStatus.isEditing()) {
+        mainPanel.remove(mainPanel.getWidget());
+        mainPanel.add(fXRateManagementByMonth);
       } else {
-         mainPanel.add(fXRateManagementByMonth);
+        showSaveAlert();
       }
-   }
+    } else {
+      mainPanel.add(fXRateManagementByMonth);
+    }
+  }
 
-   @UiHandler("ApplicationManagementPushButton")
-   void handleClickApplicationManagementPushButton(ClickEvent e) {
-      managePushButtonAppearance(ApplicationManagementPushButton);
-      if (mainPanel.getWidget() != null) {
-         WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel
-               .getWidget();
-         if (!widgetStatus.isEditing()) {
-            mainPanel.remove(mainPanel.getWidget());
-            mainPanel.add(new ApplicationManagement());
-         } else {
-            showSaveAlert();
-         }
+  @UiHandler("ApplicationManagementPushButton")
+  void handleClickApplicationManagementPushButton(ClickEvent e) {
+    managePushButtonAppearance(ApplicationManagementPushButton);
+    if (mainPanel.getWidget() != null) {
+      WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel.getWidget();
+      if (!widgetStatus.isEditing()) {
+        mainPanel.remove(mainPanel.getWidget());
+        mainPanel.add(new ApplicationManagement());
       } else {
-         mainPanel.add(new ApplicationManagement());
+        showSaveAlert();
       }
-   }
+    } else {
+      mainPanel.add(new ApplicationManagement());
+    }
+  }
 
-   @UiHandler("CompanyManagementPushButton")
-   void handleClickCompanyManagementPushButton(ClickEvent e) {
-      managePushButtonAppearance(CompanyManagementPushButton);
-     if (mainPanel.getWidget() != null) {
-         WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel
-               .getWidget();
-         if (!widgetStatus.isEditing()) {
-            mainPanel.remove(mainPanel.getWidget());
-            mainPanel.add(new CompanyManagement());
-         } else {
-            showSaveAlert();
-         }
+  @UiHandler("CompanyManagementPushButton")
+  void handleClickCompanyManagementPushButton(ClickEvent e) {
+    managePushButtonAppearance(CompanyManagementPushButton);
+    if (mainPanel.getWidget() != null) {
+      WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel.getWidget();
+      if (!widgetStatus.isEditing()) {
+        mainPanel.remove(mainPanel.getWidget());
+        mainPanel.add(new CompanyManagement());
       } else {
-         mainPanel.add(new CompanyManagement());
+        showSaveAlert();
       }
-   }
+    } else {
+      mainPanel.add(new CompanyManagement());
+    }
+  }
 
-   @UiHandler("RoyaltyManagementPushButton")
-   void handleClickRoyaltyManagementPushButton(ClickEvent e) {
-      managePushButtonAppearance(RoyaltyManagementPushButton);
-      if (mainPanel.getWidget() != null) {
-         WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel
-               .getWidget();
-         if (!widgetStatus.isEditing()) {
-            mainPanel.remove(mainPanel.getWidget());
-            mainPanel.add(new RoyaltyManagement());
-         } else {
-            showSaveAlert();
-         }
+  @UiHandler("RoyaltyManagementPushButton")
+  void handleClickRoyaltyManagementPushButton(ClickEvent e) {
+    managePushButtonAppearance(RoyaltyManagementPushButton);
+    if (mainPanel.getWidget() != null) {
+      WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel.getWidget();
+      if (!widgetStatus.isEditing()) {
+        mainPanel.remove(mainPanel.getWidget());
+        mainPanel.add(new RoyaltyManagement());
       } else {
-         mainPanel.add(new RoyaltyManagement());
+        showSaveAlert();
       }
-   }
+    } else {
+      mainPanel.add(new RoyaltyManagement());
+    }
+  }
 
-   @UiHandler("importFinancialFilesPushButton")
-   void handleClickImportFinancialFilesPushButton(ClickEvent e) {
-      managePushButtonAppearance(importFinancialFilesPushButton);
-      if (mainPanel.getWidget() != null) {
-         WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel
-               .getWidget();
-         if (!widgetStatus.isEditing()) {
-            mainPanel.remove(mainPanel.getWidget());
-            mainPanel.add(new FinancialReportFilesImporter());
-         } else {
-            showSaveAlert();
-         }
+  @UiHandler("importFinancialFilesPushButton")
+  void handleClickImportFinancialFilesPushButton(ClickEvent e) {
+    managePushButtonAppearance(importFinancialFilesPushButton);
+    if (mainPanel.getWidget() != null) {
+      WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel.getWidget();
+      if (!widgetStatus.isEditing()) {
+        mainPanel.remove(mainPanel.getWidget());
+        mainPanel.add(new FinancialReportFilesImporter());
       } else {
-         mainPanel.add(new FinancialReportFilesImporter());
+        showSaveAlert();
       }
-   }
+    } else {
+      mainPanel.add(new FinancialReportFilesImporter());
+    }
+  }
 
-   @UiHandler("byPeriodReport")
-   void handleClickByPeriodReportPushButton(ClickEvent e) {
-      managePushButtonAppearance(byPeriodReport);
-      if (mainPanel.getWidget() != null) {
-         WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel
-               .getWidget();
-         if (!widgetStatus.isEditing()) {
-            mainPanel.remove(mainPanel.getWidget());
-            mainPanel.add(new MonthlySalesReport());
-         } else {
-            showSaveAlert();
-         }
+  @UiHandler("byPeriodReport")
+  void handleClickByPeriodReportPushButton(ClickEvent e) {
+    managePushButtonAppearance(byPeriodReport);
+    if (mainPanel.getWidget() != null) {
+      WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel.getWidget();
+      if (!widgetStatus.isEditing()) {
+        mainPanel.remove(mainPanel.getWidget());
+        mainPanel.add(new MonthlySalesReport());
       } else {
-         mainPanel.add(new MonthlySalesReport());
+        showSaveAlert();
       }
-   }
+    } else {
+      mainPanel.add(new MonthlySalesReport());
+    }
+  }
 
-   @UiHandler("royaltiesReport")
-   void handleClickRoyaltiesReportPushButton(ClickEvent e) {
-      managePushButtonAppearance(royaltiesReport);
-      if (mainPanel.getWidget() != null) {
-         WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel
-               .getWidget();
-         if (!widgetStatus.isEditing()) {
-            mainPanel.remove(mainPanel.getWidget());
-            mainPanel.add(new RoyaltiesReport());
-         } else {
-            showSaveAlert();
-         }
+  @UiHandler("royaltiesReport")
+  void handleClickRoyaltiesReportPushButton(ClickEvent e) {
+    managePushButtonAppearance(royaltiesReport);
+    if (mainPanel.getWidget() != null) {
+      WidgetSwitchManagement widgetStatus = (WidgetSwitchManagement) mainPanel.getWidget();
+      if (!widgetStatus.isEditing()) {
+        mainPanel.remove(mainPanel.getWidget());
+        mainPanel.add(new RoyaltiesReport());
       } else {
-         mainPanel.add(new RoyaltiesReport());
+        showSaveAlert();
       }
-   }
+    } else {
+      mainPanel.add(new RoyaltiesReport());
+    }
+  }
 
-   private void showSaveAlert() {
-      final DialogBox simplePopup = new DialogBox(true);
-      simplePopup.setWidth("500px");
-      simplePopup.setText("!");
-      VerticalPanel dialogContent = new VerticalPanel();
-      dialogContent
-            .add(new HTML(
-                  "Please save or cancel your changes before switching to another screen"));
-      simplePopup.center();
-      simplePopup.show();
-      simplePopup.setAutoHideEnabled(true);
-      Button closeButton = new Button("Close", new ClickHandler() {
-         public void onClick(ClickEvent arg0) {
-            simplePopup.hide();
-         }
-      });
-      dialogContent.add(closeButton);
-      simplePopup.add(dialogContent);
-   }
-
-   private void managePushButtonAppearance(PushButton pushButton) {
-      if (currentButton!=null) {
-         currentButton.getElement().removeClassName(style.stackButtonSelected());
+  private void showSaveAlert() {
+    final DialogBox simplePopup = new DialogBox(true);
+    simplePopup.setWidth("500px");
+    simplePopup.setText("!");
+    VerticalPanel dialogContent = new VerticalPanel();
+    dialogContent.add(new HTML("Please save or cancel your changes before switching to another screen"));
+    simplePopup.center();
+    simplePopup.show();
+    simplePopup.setAutoHideEnabled(true);
+    Button closeButton = new Button("Close", new ClickHandler() {
+      public void onClick(ClickEvent arg0) {
+        simplePopup.hide();
       }
-      currentButton = pushButton;
-      currentButton.getElement().addClassName(style.stackButtonSelected());
-   }
+    });
+    dialogContent.add(closeButton);
+    simplePopup.add(dialogContent);
+  }
+
+  private void managePushButtonAppearance(PushButton pushButton) {
+    if (currentButton != null) {
+      currentButton.getElement().removeClassName(style.stackButtonSelected());
+    }
+    currentButton = pushButton;
+    currentButton.getElement().addClassName(style.stackButtonSelected());
+  }
 
 }

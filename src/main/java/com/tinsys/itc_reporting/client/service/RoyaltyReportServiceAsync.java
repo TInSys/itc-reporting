@@ -9,8 +9,6 @@ import com.tinsys.itc_reporting.shared.dto.RoyaltyReportLine;
 
 public interface RoyaltyReportServiceAsync {
 
-   void getCompanyReport(CompanyDTO company, FiscalPeriodDTO startPeriod,
-         FiscalPeriodDTO endPeriod,
-         AsyncCallback<List<RoyaltyReportLine>> callback);
+  void getCompanyReport(CompanyDTO company, FiscalPeriodDTO startPeriod, FiscalPeriodDTO endPeriod, AsyncCallback<List<RoyaltyReportLine>> callback);
 
 }
