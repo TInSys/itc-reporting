@@ -30,6 +30,10 @@ public class SalesReportServiceImpl implements SalesReportService {
 
   private static final Logger logger = Logger.getLogger(SalesReportServiceImpl.class);
   private final static String ZONE_TOTAL_COLUMN = "Total by Zone";
+  private BigDecimal referenceCurrencyAmountGrandTotal = new BigDecimal(0);
+  private BigDecimal referenceCurrencyProceedsAmountGrandTotal = new BigDecimal(0);
+  private BigDecimal referenceCurrencyProceedsAfterTaxGrandTotal = new BigDecimal(0);
+  
   @Autowired
   @Qualifier("salesDAO")
   private SalesDAO salesDAO;
@@ -45,6 +49,9 @@ public class SalesReportServiceImpl implements SalesReportService {
   @Override
   public List<ZoneReportSummary> getMonthlyReport(FiscalPeriodDTO period) {
     logger.debug("Preparing report");
+    referenceCurrencyAmountGrandTotal = new BigDecimal(0);
+    referenceCurrencyProceedsAmountGrandTotal = new BigDecimal(0);
+    referenceCurrencyProceedsAfterTaxGrandTotal = new BigDecimal(0);
     List<Sales> sales = salesDAO.getAllSales(period);
     // get tax rates for period
     List<Tax> taxes = taxDAO.getTaxesForPeriod(period);
@@ -255,6 +262,16 @@ public class SalesReportServiceImpl implements SalesReportService {
         }
       }
     }
+    if (monthReportLine == monthReportLineTotal){ // grand total 
+        total.setReferenceCurrencyAmount(referenceCurrencyAmountGrandTotal);
+        total.setReferenceCurrencyProceeds(referenceCurrencyProceedsAmountGrandTotal);
+        total.setReferenceCurrencyProceedsAfterTax(referenceCurrencyProceedsAfterTaxGrandTotal);
+    } else {
+        referenceCurrencyAmountGrandTotal = referenceCurrencyAmountGrandTotal.add(total.getReferenceCurrencyAmount().setScale(2,RoundingMode.HALF_UP));
+        referenceCurrencyProceedsAmountGrandTotal = referenceCurrencyProceedsAmountGrandTotal.add(total.getReferenceCurrencyProceeds().setScale(2,RoundingMode.HALF_UP));
+        referenceCurrencyProceedsAfterTaxGrandTotal = referenceCurrencyProceedsAfterTaxGrandTotal.add(total.getReferenceCurrencyProceedsAfterTax().setScale(2,RoundingMode.HALF_UP));    
+    }
+    
     monthReportLine.getApplications().add(total);
     return monthReportLineTotal;
   }
