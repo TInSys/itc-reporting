@@ -192,7 +192,11 @@ public class RoyaltiesReport extends Composite implements WidgetSwitchManagement
           BigDecimal periodRoyalty = new BigDecimal(0);
           BigDecimal totalRoyalty = new BigDecimal(0);
 
+          String referenceCurrency = null;
           for (RoyaltyReportLine sales : result) {
+            if (referenceCurrency == null){
+              referenceCurrency = sales.getReferenceCurrency();
+            }
             if (lineIdx == 0) {
               currentPeriod = sales.getPeriod();
               royaltyReport.getCellFormatter().setAlignment(lineIdx, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE);
@@ -251,10 +255,10 @@ public class RoyaltiesReport extends Composite implements WidgetSwitchManagement
           totalRoyalty = totalRoyalty.add(periodRoyalty);
           royaltyReport.setText(lineIdx, 0, "");
           royaltyReport.getCellFormatter().setHeight(lineIdx, 0, "5px");
-          royaltyReport.setText(lineIdx, 0, "Total Royalties for period " + currentPeriod + " = " + periodRoyalty.setScale(2, RoundingMode.HALF_UP));
+          royaltyReport.setText(lineIdx, 0, "Total Royalties for period " + currentPeriod + " = " + periodRoyalty.setScale(2, RoundingMode.HALF_UP) + " " + referenceCurrency);
           lineIdx += 1;
           royaltyReport.setText(lineIdx, 0, "");
-          royaltyReport.setText(lineIdx, 0, "Grand Total Royalties  = " + totalRoyalty.setScale(2, RoundingMode.HALF_UP));
+          royaltyReport.setText(lineIdx, 0, "Grand Total Royalties  = " + totalRoyalty.setScale(2, RoundingMode.HALF_UP) + " " + referenceCurrency);
           royaltyReport.getCellFormatter().setHeight(lineIdx, 0, "10px");
 
           lineIdx += 1;
