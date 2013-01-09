@@ -194,7 +194,7 @@ public class RoyaltiesReport extends Composite implements WidgetSwitchManagement
 
           String referenceCurrency = null;
           for (RoyaltyReportLine sales : result) {
-            if (referenceCurrency == null){
+            if (referenceCurrency == null) {
               referenceCurrency = sales.getReferenceCurrency();
             }
             if (lineIdx == 0) {
