@@ -87,4 +87,6 @@
    <bean id="royaltyDAO" class="com.tinsys.itc_reporting.dao.RoyaltyDAOImpl">
       <property name="factory" ref="sessionFactory" />
    </bean>
+   
+   <bean id="royaltyReport" class="com.tinsys.itc_reporting.server.service.RoyaltyReportImpl"/>
 </beans>

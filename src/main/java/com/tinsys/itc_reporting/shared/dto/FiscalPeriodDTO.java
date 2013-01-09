@@ -38,6 +38,20 @@ public class FiscalPeriodDTO implements Serializable {
   }
 
   @Override
+  public boolean equals(Object obj) {
+    if (obj != null && (obj.getClass().equals(this.getClass()))) {
+      FiscalPeriodDTO fiscalPeriodDTO = (FiscalPeriodDTO) obj;
+      return this.id == fiscalPeriodDTO.getId();
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Long.valueOf(this.id).hashCode();
+  }
+  
+  @Override
   public String toString() {
     return month + "/" + year;
   }

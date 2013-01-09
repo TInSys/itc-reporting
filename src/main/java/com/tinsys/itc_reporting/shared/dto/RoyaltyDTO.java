@@ -65,4 +65,8 @@ public class RoyaltyDTO implements Serializable {
     this.zones = zones;
   }
 
+  public boolean isOnSale() {
+    return this.getShareRateCalculationField().equals("S");
+  }
+
 }
