@@ -39,8 +39,6 @@ public class RoyaltyReportImpl implements RoyaltyReport {
   @Qualifier("royaltyDAO")
   private RoyaltyDAO royaltyDAO;
 
-  private boolean firstLine;
-
   private RoyaltyReportLine reportLine;
   private List<RoyaltyReportLine> report;
 
@@ -84,14 +82,6 @@ public class RoyaltyReportImpl implements RoyaltyReport {
     this.royaltyDAO = royaltyDAO;
   }
 
-  public boolean isFirstLine() {
-    return firstLine;
-  }
-
-  public void setFirstLine(boolean firstLine) {
-    this.firstLine = firstLine;
-  }
-
   public RoyaltyReportLine getReportLine() {
     return reportLine;
   }
@@ -110,7 +100,6 @@ public class RoyaltyReportImpl implements RoyaltyReport {
 
   @Override
   public void init(CompanyDTO company) {
-    this.firstLine = true;
     this.report = new ArrayList<RoyaltyReportLine>();
     this.currentPeriod = null;
     this.currentPrice = null;
@@ -123,17 +112,25 @@ public class RoyaltyReportImpl implements RoyaltyReport {
 
   @Override
   public boolean isNewLine() {
-    boolean result = this.firstLine || this.currentPeriod.equals(salesDTO.getPeriod()) || this.currentZone.equals(salesDTO.getZone()) || this.currentApplication.equals(salesDTO.getApplication()) || this.currentPrice.equals(salesDTO.getIndividualPrice());
-    this.firstLine = false;
+    boolean result = false;
+    if (this.currentPeriod == null || !this.currentPeriod.equals(salesDTO.getPeriod()) || !this.currentZone.equals(salesDTO.getZone())
+        || !this.currentApplication.equals(salesDTO.getApplication()) || !this.currentPrice.equals(salesDTO.getIndividualPrice())) {
+      result = true;
+    }
     return result;
   }
 
   @Override
   public void addLine() {
     if (currentPeriod != null && this.reportLine != null) {
-      this.reportLine.setReferenceCurrencyCompanyRoyaltiesTotalAmount(reportLine.getReferenceCurrencyCompanyRoyaltiesTotalAmount().multiply(changeRate));
-      this.reportLine.setReferenceCurrencyProceedsAfterTaxTotalAmount(reportLine.getReferenceCurrencyProceedsAfterTaxTotalAmount().multiply(changeRate));
+      BigDecimal proceedsAfterTax = reportLine.getReferenceCurrencyProceedsAfterTaxTotalAmount();
+      this.reportLine.setReferenceCurrencyProceedsAfterTaxTotalAmount(reportLine.getReferenceCurrencyProceedsAfterTaxTotalAmount()
+          .multiply(changeRate));
+      BigDecimal totalAmount = (reportLine.getReferenceCurrencyTotalAmount());
       this.reportLine.setReferenceCurrencyTotalAmount(reportLine.getReferenceCurrencyTotalAmount().multiply(changeRate));
+      this.reportLine.setReferenceCurrencyCompanyRoyaltiesTotalAmount(this.computeRoyalty(proceedsAfterTax, totalAmount).multiply(
+          changeRate));
+
       this.report.add(reportLine);
     }
   }
@@ -150,18 +147,19 @@ public class RoyaltyReportImpl implements RoyaltyReport {
 
   @Override
   public void setCurrentData() {
-    if (this.isNewLine()){
-    this.checkNewPeriod(salesDTO.getPeriod());
-    this.checkNewZone(salesDTO.getZone());
-    this.checkNewApplication(salesDTO.getApplication());
-    this.currentPrice = salesDTO.getIndividualPrice();
-    this.reportLine.setPeriod(this.currentPeriod);
-    currentApplication = salesDTO.getApplication();
-    this.reportLine.setApplication(currentApplication);
-    this.reportLine.setZone(currentZone);
-    this.changeRate = this.getFXRateAndSetCurrency();
-    this.taxRate = this.getTaxRate();
-    this.royalty = this.getRoyalty();}
+    if (this.isNewLine()) {
+      this.checkNewPeriod(salesDTO.getPeriod());
+      this.checkNewZone(salesDTO.getZone());
+      this.checkNewApplication(salesDTO.getApplication());
+      this.currentPrice = salesDTO.getIndividualPrice();
+      this.reportLine.setPeriod(this.currentPeriod);
+      currentApplication = salesDTO.getApplication();
+      this.reportLine.setApplication(currentApplication);
+      this.reportLine.setZone(currentZone);
+      this.changeRate = this.getFXRateAndSetCurrency();
+      this.taxRate = this.getTaxRate();
+      this.royalty = this.getRoyalty();
+    }
     reportLine.setSalesNumber(reportLine.getSalesNumber() + salesDTO.getSoldUnits());
     this.reportLine.setOriginalCurrencyAmount(currentPrice);
     this.reportLine.setOriginalCurrency(currentZone.getCurrencyISO());
@@ -174,12 +172,13 @@ public class RoyaltyReportImpl implements RoyaltyReport {
     this.reportLine.setReferenceCurrencyTotalAmount(reportLine.getReferenceCurrencyTotalAmount().add(totalAmount));
     if (royalty.getShareRate().compareTo(new BigDecimal(0)) != 0 && proceedsAfterTax.compareTo(new BigDecimal(0)) != 0) {
       reportLine.setReferenceCurrencyCompanyRoyaltiesTotalAmount(reportLine.getReferenceCurrencyCompanyRoyaltiesTotalAmount().add(
-          this.computeRoyalty(proceedsAfterTax, totalAmount, salesDTO.getTotalPrice())));
+          this.computeRoyalty(proceedsAfterTax, totalAmount)));
     }
   }
 
-  private BigDecimal computeRoyalty(BigDecimal proceedsAfterTax, BigDecimal totalAmount, BigDecimal totalPrice) {
+  private BigDecimal computeRoyalty(BigDecimal proceedsAfterTax, BigDecimal totalAmount) {
 
+    BigDecimal result = new BigDecimal(0);
     BigDecimal vatFactor = new BigDecimal(0);
     if (changeRate.equals(new BigDecimal(0))) {
       throw new RuntimeException("Change Rate not found for " + currentZone.getName() + " for period " + currentPeriod);
@@ -187,15 +186,15 @@ public class RoyaltyReportImpl implements RoyaltyReport {
     try {
       if (royalty.isOnSale()) {
         vatFactor = (totalAmount.multiply(new BigDecimal(0.7))).divide((proceedsAfterTax), 2, RoundingMode.HALF_UP);
-        return reportLine.getReferenceCurrencyCompanyRoyaltiesTotalAmount().add(
-            ((totalPrice.divide(vatFactor, 5, RoundingMode.HALF_UP)).multiply(royalty.getShareRate().divide(new BigDecimal(100), 5, RoundingMode.HALF_UP))));
+        result = totalAmount.divide(vatFactor, 5, RoundingMode.HALF_UP).multiply(
+            royalty.getShareRate().divide(new BigDecimal(100), 5, RoundingMode.HALF_UP));
       } else {
-        return reportLine.getReferenceCurrencyCompanyRoyaltiesTotalAmount().add(
-            (proceedsAfterTax.multiply(royalty.getShareRate()).divide(new BigDecimal(100), 5, RoundingMode.HALF_UP)));
+        result = proceedsAfterTax.multiply(royalty.getShareRate().divide(new BigDecimal(100), 5, RoundingMode.HALF_UP));
       }
     } catch (Exception e) {
       throw new RuntimeException(e.getMessage());
     }
+    return result;
   }
 
   private BigDecimal getProceedsAfterTax(BigDecimal totalProceeds) {
@@ -235,12 +234,7 @@ public class RoyaltyReportImpl implements RoyaltyReport {
   }
 
   private void checkNewZone(ZoneDTO zone) {
-  /*  if (this.currentZone == null || !this.currentZone.equals(zone)) {
-      if (this.currentZone != null) {
-        this.newZone = true;
-      } else {
-        this.newZone = false;
-      }
+    if (this.currentZone == null || !this.currentZone.equals(zone)) {
       this.currentZone = zone;
       for (Tax tax : taxes) {
         if (tax.getZone().equals(currentZone)) {
@@ -248,42 +242,26 @@ public class RoyaltyReportImpl implements RoyaltyReport {
           break;
         }
       }
-    } else {
-      this.newZone = false;
-    }*/
+    }
   }
 
   private void checkNewPeriod(FiscalPeriodDTO period) {
-  /*  if (this.currentPeriod == null || !this.currentPeriod.equals(period)) {
-      if (this.currentPeriod != null) {
-        this.newPeriod = true;
-      } else {
-        this.newPeriod = false;
-      }
+    if (this.currentPeriod == null || !this.currentPeriod.equals(period)) {
       this.currentPeriod = period;
       taxes = taxDAO.getTaxesForPeriod(this.currentPeriod);
       fxRates = fxRateDAO.getAllFXRatesForPeriod(this.currentPeriod);
-    } else {
-      this.newPeriod = false;
-    }*/
+    }
   }
-  
+
   private void checkNewApplication(ApplicationDTO application) {
-  /*  if (this.currentApplication == null || !this.currentApplication.equals(application)) {
-      if (this.currentApplication != null) {
-        this.newApplication = true;
-      } else {
-        this.newApplication = false;
-      }
+    if (this.currentApplication == null || !this.currentApplication.equals(application)) {
       this.currentApplication = application;
-    } else {
-      this.newApplication = false;
-    }*/
+    }
   }
 
   public void setSalesDTO(SalesDTO salesDTO) {
     this.salesDTO = salesDTO;
-    
+
   }
 
 }
