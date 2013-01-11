@@ -25,7 +25,7 @@ import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
 @Service("royaltyReport")
 @Transactional
-public class RoyaltyReportImpl implements RoyaltyReport {
+public class RoyaltyReportBuilderImpl implements RoyaltyReportBuilder {
 
   @Autowired
   @Qualifier("fxRateDAO")
@@ -177,24 +177,11 @@ public class RoyaltyReportImpl implements RoyaltyReport {
   }
 
   private BigDecimal computeRoyalty(BigDecimal proceedsAfterTax, BigDecimal totalAmount) {
-
-    BigDecimal result = new BigDecimal(0);
-    BigDecimal vatFactor = new BigDecimal(0);
     if (changeRate.equals(new BigDecimal(0))) {
       throw new RuntimeException("Change Rate not found for " + currentZone.getName() + " for period " + currentPeriod);
+    } else {
+      return RoyaltyComputer.compute(royalty, proceedsAfterTax, totalAmount);
     }
-    try {
-      if (royalty.isOnSale()) {
-        vatFactor = (totalAmount.multiply(new BigDecimal(0.7))).divide((proceedsAfterTax), 2, RoundingMode.HALF_UP);
-        result = totalAmount.divide(vatFactor, 5, RoundingMode.HALF_UP).multiply(
-            royalty.getShareRate().divide(new BigDecimal(100), 5, RoundingMode.HALF_UP));
-      } else {
-        result = proceedsAfterTax.multiply(royalty.getShareRate().divide(new BigDecimal(100), 5, RoundingMode.HALF_UP));
-      }
-    } catch (Exception e) {
-      throw new RuntimeException(e.getMessage());
-    }
-    return result;
   }
 
   private BigDecimal getProceedsAfterTax(BigDecimal totalProceeds) {
@@ -261,7 +248,6 @@ public class RoyaltyReportImpl implements RoyaltyReport {
 
   public void setSalesDTO(SalesDTO salesDTO) {
     this.salesDTO = salesDTO;
-
   }
 
 }

@@ -2,7 +2,7 @@ package com.tinsys.itc_reporting.server.service;
 
 import com.tinsys.itc_reporting.shared.dto.CompanyDTO;
 
-public interface RoyaltyReport {
+public interface RoyaltyReportBuilder {
   
   public void init(CompanyDTO company);
   

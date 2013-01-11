@@ -1,13 +1,42 @@
 package com.tinsys.itc_reporting.dao;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.tinsys.itc_reporting.shared.dto.ApplicationDTO;
 import com.tinsys.itc_reporting.shared.dto.CompanyDTO;
 import com.tinsys.itc_reporting.shared.dto.RoyaltyDTO;
 
 public class RoyaltyDAOTest implements RoyaltyDAO {
 
+  private ArrayList<RoyaltyDTO> royaltyDTOList = new ArrayList<RoyaltyDTO>();
+  private ApplicationDAOTest applicationDAOTest = new ApplicationDAOTest();
+  
+  public void init() {
+    RoyaltyDTO newRoyaltyDTO = new RoyaltyDTO();
+    CompanyDTO companyDTO = new CompanyDTO();
+    companyDTO.setId(0L);
+    companyDTO.setName("Company with 15% royalty on sales");
+    for (ApplicationDTO applicationDTO : applicationDAOTest.getAllApplications()) {
+      newRoyaltyDTO.setApplication(applicationDTO);
+      newRoyaltyDTO.setCompany(companyDTO);
+      newRoyaltyDTO.setShareRate(new BigDecimal(15));
+      newRoyaltyDTO.setShareRateCalculationField("S");
+      royaltyDTOList.add(newRoyaltyDTO);
+    }
+    companyDTO = new CompanyDTO();
+    companyDTO.setId(1L);
+    companyDTO.setName("Company with 10% royalty on proceeds");
+    for (ApplicationDTO applicationDTO : applicationDAOTest.getAllApplications()) {
+      newRoyaltyDTO.setApplication(applicationDTO);
+      newRoyaltyDTO.setCompany(companyDTO);
+      newRoyaltyDTO.setShareRate(new BigDecimal(15));
+      newRoyaltyDTO.setShareRateCalculationField("S");
+      royaltyDTOList.add(newRoyaltyDTO);
+    }
+  }
+  
   @Override
   public ArrayList<RoyaltyDTO> getAllRoyalties() {
     // TODO Auto-generated method stub
@@ -16,8 +45,13 @@ public class RoyaltyDAOTest implements RoyaltyDAO {
 
   @Override
   public List<RoyaltyDTO> getAllRoyalty(CompanyDTO aCompanyDTO) {
-    // TODO Auto-generated method stub
-    return null;
+    List<RoyaltyDTO> result = new ArrayList<RoyaltyDTO>();
+    for (RoyaltyDTO royaltyDTO : this.royaltyDTOList) {
+      if (royaltyDTO.getCompany().equals(aCompanyDTO)){
+        result.add(royaltyDTO);
+      }
+    }
+    return result;
   }
 
   @Override

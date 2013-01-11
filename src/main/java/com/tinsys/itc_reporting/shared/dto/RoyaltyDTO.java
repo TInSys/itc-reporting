@@ -69,4 +69,8 @@ public class RoyaltyDTO implements Serializable {
     return this.getShareRateCalculationField().equals("S");
   }
 
+  public boolean isOnProceeds() {
+    return this.getShareRateCalculationField().equals("P");
+  }
+  
 }

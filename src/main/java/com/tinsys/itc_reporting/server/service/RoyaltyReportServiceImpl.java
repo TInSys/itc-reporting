@@ -27,73 +27,68 @@ import com.tinsys.itc_reporting.shared.dto.SalesDTO;
 @Transactional
 public class RoyaltyReportServiceImpl implements RoyaltyReportService {
 
-    private static final Logger logger = Logger
-            .getLogger(RoyaltyReportServiceImpl.class);
+  private static final Logger logger = Logger.getLogger(RoyaltyReportServiceImpl.class);
 
-    @Autowired
-    @Qualifier("salesDAO")
-    private SalesDAO salesDAO;
+  @Autowired
+  @Qualifier("salesDAO")
+  private SalesDAO salesDAO;
 
-    @Autowired
-    @Qualifier("royaltyDAO")
-    private RoyaltyDAO royaltyDAO;
+  @Autowired
+  @Qualifier("royaltyDAO")
+  private RoyaltyDAO royaltyDAO;
 
-    @Autowired
-    @Qualifier("royaltyReport")
-    private RoyaltyReportImpl royaltyReport;
-    private Comparator<Sales> compareSales = new Comparator<Sales>() {
+  @Autowired
+  @Qualifier("royaltyReport")
+  private RoyaltyReportBuilderImpl royaltyReportBuilder;
 
-        @Override
-        public int compare(Sales o1, Sales o2) {
-            int c;
-            c = Integer.valueOf(o1.getPeriod().getYear()).compareTo(
-                    Integer.valueOf(o2.getPeriod().getYear()));
-            if (c == 0) {
-                c = Integer.valueOf(o1.getPeriod().getMonth()).compareTo(
-                        Integer.valueOf(o2.getPeriod().getMonth()));
-            }
-            if (c == 0) {
-                c = o1.getApplication().getVendorID()
-                        .compareTo(o2.getApplication().getVendorID());
-            }
-            if (c == 0) {
-                c = o1.getZone().getCode().compareTo(o2.getZone().getCode());
-            }
-
-            return c;
-        }
-    };
+  private Comparator<Sales> compareSales = new Comparator<Sales>() {
 
     @Override
-    public List<RoyaltyReportLine> getCompanyReport(CompanyDTO company,
-            FiscalPeriodDTO startPeriod, FiscalPeriodDTO endPeriod) {
-        logger.debug("Preparing report");
-        List<RoyaltyDTO> royalties = royaltyDAO.getAllRoyalty(company);
-        List<Sales> sales = salesDAO.getAllSales(startPeriod, endPeriod,
-                royalties);
-        if (sales != null) {
-            Collections.sort(sales, compareSales);
-            List<SalesDTO> salesDTOList = new ArrayList<SalesDTO>();
+    public int compare(Sales o1, Sales o2) {
+      int c;
+      c = Integer.valueOf(o1.getPeriod().getYear()).compareTo(Integer.valueOf(o2.getPeriod().getYear()));
+      if (c == 0) {
+        c = Integer.valueOf(o1.getPeriod().getMonth()).compareTo(Integer.valueOf(o2.getPeriod().getMonth()));
+      }
+      if (c == 0) {
+        c = o1.getApplication().getVendorID().compareTo(o2.getApplication().getVendorID());
+      }
+      if (c == 0) {
+        c = o1.getZone().getCode().compareTo(o2.getZone().getCode());
+      }
 
-            for (Sales sale : sales) {
-                salesDTOList.add(DTOUtils.salesToSalesDTO(sale));
-            }
-
-            royaltyReport.init(company);
-            for (SalesDTO salesDTO : salesDTOList) {
-                if (salesDTO.getTotalPrice().compareTo(new BigDecimal(0)) != 0) {
-                    royaltyReport.setSalesDTO(salesDTO);
-                    if (royaltyReport.isNewLine()) {
-                        royaltyReport.addLine();
-                        royaltyReport.resetLine();
-                    }
-                    royaltyReport.setCurrentData();
-                }
-            }
-            royaltyReport.addLine();
-            return royaltyReport.getReport();
-        }
-        return null;
+      return c;
     }
+  };
+
+  @Override
+  public List<RoyaltyReportLine> getCompanyReport(CompanyDTO company, FiscalPeriodDTO startPeriod, FiscalPeriodDTO endPeriod) {
+    logger.debug("Preparing report");
+    List<RoyaltyDTO> royalties = royaltyDAO.getAllRoyalty(company);
+    List<Sales> sales = salesDAO.getAllSales(startPeriod, endPeriod, royalties);
+    if (sales != null) {
+      Collections.sort(sales, compareSales);
+      List<SalesDTO> salesDTOList = new ArrayList<SalesDTO>();
+
+      for (Sales sale : sales) {
+        salesDTOList.add(DTOUtils.salesToSalesDTO(sale));
+      }
+
+      royaltyReportBuilder.init(company);
+      for (SalesDTO salesDTO : salesDTOList) {
+        if (salesDTO.getTotalPrice().compareTo(new BigDecimal(0)) != 0) {
+          royaltyReportBuilder.setSalesDTO(salesDTO);
+          if (royaltyReportBuilder.isNewLine()) {
+            royaltyReportBuilder.addLine();
+            royaltyReportBuilder.resetLine();
+          }
+          royaltyReportBuilder.setCurrentData();
+        }
+      }
+      royaltyReportBuilder.addLine();
+      return royaltyReportBuilder.getReport();
+    }
+    return null;
+  }
 
 }

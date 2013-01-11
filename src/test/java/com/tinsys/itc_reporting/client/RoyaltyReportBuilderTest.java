@@ -10,51 +10,38 @@ import com.tinsys.itc_reporting.dao.FXrateDAOTest;
 import com.tinsys.itc_reporting.dao.RoyaltyDAOTest;
 import com.tinsys.itc_reporting.dao.SalesDAOTest;
 import com.tinsys.itc_reporting.dao.TaxDAOTest;
-import com.tinsys.itc_reporting.server.service.RoyaltyReportImpl;
+import com.tinsys.itc_reporting.server.service.RoyaltyReportBuilderImpl;
+import com.tinsys.itc_reporting.shared.dto.CompanyDTO;
 
-public class RoyaltyReportTest {
+public class RoyaltyReportBuilderTest {
 
-  RoyaltyReportImpl royaltyReport;
+  RoyaltyReportBuilderImpl royaltyReport;
 
-  @Test(expected = NullPointerException.class)
-  public void testInit() {
+  @Test
+  public void testInitWithCompany() {
     this.init();
-    royaltyReport.init(null);
+    CompanyDTO company = new CompanyDTO();
+    company.setId(0L);
+    company.setName("Company 1");
+    company.setCurrencyISO("EUR");
+    royaltyReport.init(company);
   }
 
   @Test
-  public void testIsNewLine() {
+  public void testIsNewLineOKWithOneCall() {
     this.init();
     assertTrue(royaltyReport.isNewLine());
-    }
-
-  @Ignore
-  @Test
-  public void testAddLine() {
-    this.init();
-    royaltyReport.addLine();
-  }
-
-  @Ignore
-  @Test
-  public void testResetLine() {
-    fail("Not yet implemented");
-  }
-
-  @Ignore
-  @Test
-  public void testSetCurrentData() {
-    fail("Not yet implemented");
   }
 
   private void init() {
-    royaltyReport = new RoyaltyReportImpl();
+    royaltyReport = new RoyaltyReportBuilderImpl();
     SalesDAOTest salesDAO = new SalesDAOTest();
     FXrateDAOTest fxRateDAOTest = new FXrateDAOTest();
     TaxDAOTest taxDAOTest = new TaxDAOTest();
     RoyaltyDAOTest royaltyDAOTest = new RoyaltyDAOTest();
     royaltyReport.setFxRateDAO(fxRateDAOTest);
-
+    royaltyReport.setRoyaltyDAO(royaltyDAOTest);
+    royaltyReport.setTaxDAO(taxDAOTest);
   }
 
 }
