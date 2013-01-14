@@ -2,7 +2,7 @@ package com.tinsys.itc_reporting.model;
 
 import java.io.Serializable;
 
-public class FiscalPeriod implements Serializable {
+public class FiscalPeriod implements Serializable, Comparable<FiscalPeriod> {
 
   /**
      * 
@@ -39,8 +39,28 @@ public class FiscalPeriod implements Serializable {
 
   @Override
   public String toString() {
-    // TODO Auto-generated method stub
     return this.month + "/" + this.year;
   }
 
+  @Override
+  public int compareTo(FiscalPeriod o) {
+    int result = this.getYear()-o.getYear();
+    if (result != 0){
+      if (result > 0){
+        return -1;
+      } else {
+        return 1;
+      }
+    }
+
+    result = this.getMonth()-o.getMonth();
+    if (result > 0) {
+      return -1;
+    } else if (result < 0) {
+      return 1;
+    } else {
+      return 0;
+    } 
+  }
+  
 }

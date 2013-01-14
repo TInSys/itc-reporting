@@ -61,9 +61,22 @@ public class RoyaltyReportServiceImpl implements RoyaltyReportService {
     }
   };
 
+  public void setSalesDAO(SalesDAO salesDAO) {
+    this.salesDAO = salesDAO;
+  }
+
+  public void setRoyaltyDAO(RoyaltyDAO royaltyDAO) {
+    this.royaltyDAO = royaltyDAO;
+  }
+
+  public void setRoyaltyReportBuilder(RoyaltyReportBuilderImpl royaltyReportBuilder) {
+    this.royaltyReportBuilder = royaltyReportBuilder;
+  }
+
   @Override
   public List<RoyaltyReportLine> getCompanyReport(CompanyDTO company, FiscalPeriodDTO startPeriod, FiscalPeriodDTO endPeriod) {
     logger.debug("Preparing report");
+    if (company != null) {
     List<RoyaltyDTO> royalties = royaltyDAO.getAllRoyalty(company);
     List<Sales> sales = salesDAO.getAllSales(startPeriod, endPeriod, royalties);
     if (sales != null) {
@@ -87,6 +100,7 @@ public class RoyaltyReportServiceImpl implements RoyaltyReportService {
       }
       royaltyReportBuilder.addLine();
       return royaltyReportBuilder.getReport();
+    }
     }
     return null;
   }

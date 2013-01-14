@@ -72,12 +72,6 @@ public class TaxDAOImpl implements TaxDAO {
   }
 
   @Override
-  public TaxDTO findTax(Long id) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
   public TaxDTO createTax(TaxDTO aTax) {
 
     Tax tax = new Tax();
@@ -167,12 +161,6 @@ public class TaxDAOImpl implements TaxDAO {
     query.setParameter("sStopDate", endDate);
     return (ArrayList<Tax>) query.list();
 
-  }
-
-  @SuppressWarnings("unchecked")
-  @Override
-  public List<Tax> getAllTaxs() {
-    return factory.getCurrentSession().createCriteria(Tax.class).list();
   }
 
 }

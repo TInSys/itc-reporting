@@ -19,7 +19,7 @@ public class RoyaltyComputer {
       } else if (royalty.isOnProceeds()) {
         result = proceedsAfterTax.multiply(royalty.getShareRate().divide(new BigDecimal(100), 5, RoundingMode.HALF_UP));
       } else {
-        throw new Exception("Could not find instructions for "+royalty.getShareRateCalculationField()+" calculation method");
+        throw new RuntimeException("Could not find instructions for "+royalty.getShareRateCalculationField()+" calculation method");
       }
     } catch (Exception e) {
       throw new RuntimeException(e.getMessage());

@@ -193,14 +193,14 @@ public class RoyaltiesReport extends Composite implements WidgetSwitchManagement
           BigDecimal totalRoyalty = new BigDecimal(0);
 
           String referenceCurrency = null;
-          for (RoyaltyReportLine sales : result) {
+          for (RoyaltyReportLine reportLineData : result) {
             if (referenceCurrency == null) {
-              referenceCurrency = sales.getReferenceCurrency();
+              referenceCurrency = reportLineData.getReferenceCurrency();
             }
             if (lineIdx == 0) {
-              currentPeriod = sales.getPeriod();
+              currentPeriod = reportLineData.getPeriod();
               royaltyReport.getCellFormatter().setAlignment(lineIdx, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE);
-              royaltyReport.setText(lineIdx, 0, months[sales.getPeriod().getMonth() - 1] + " " + sales.getPeriod().getYear());
+              royaltyReport.setText(lineIdx, 0, months[reportLineData.getPeriod().getMonth() - 1] + " " + reportLineData.getPeriod().getYear());
               lineIdx += 1;
               royaltyReport.setText(lineIdx, 0, "");
               royaltyReport.getCellFormatter().setHeight(lineIdx, 0, "10px");
@@ -209,14 +209,14 @@ public class RoyaltiesReport extends Composite implements WidgetSwitchManagement
               lineIdx += 1;
             }
             // period total
-            if (currentPeriod.getId() != sales.getPeriod().getId()) {
+            if (!currentPeriod.equals(reportLineData.getPeriod())) {
               // print period total and show new total header
               lineIdx += 1;
               royaltyReport.setText(lineIdx, 0, "");
               royaltyReport.getCellFormatter().setHeight(lineIdx, 0, "5px");
               lineIdx += 1;
-              royaltyReport.setText(lineIdx, 0, "Total Royalties for period " + currentPeriod + " = " + periodRoyalty + " " + sales.getReferenceCurrency());
-              currentPeriod = sales.getPeriod();
+              royaltyReport.setText(lineIdx, 0, "Total Royalties for period " + currentPeriod + " = " + periodRoyalty + " " + reportLineData.getReferenceCurrency());
+              currentPeriod = reportLineData.getPeriod();
               royaltyReport.getCellFormatter().setHeight(lineIdx, 0, "10px");
               lineIdx += 1;
               royaltyReport.setText(lineIdx, 0, "");
@@ -224,7 +224,7 @@ public class RoyaltiesReport extends Composite implements WidgetSwitchManagement
               totalRoyalty = totalRoyalty.add(periodRoyalty.setScale(2, RoundingMode.HALF_EVEN));
               periodRoyalty = new BigDecimal(0);
               lineIdx += 1;
-              royaltyReport.setText(lineIdx, 0, months[sales.getPeriod().getMonth() - 1] + " " + sales.getPeriod().getYear());
+              royaltyReport.setText(lineIdx, 0, months[reportLineData.getPeriod().getMonth() - 1] + " " + reportLineData.getPeriod().getYear());
               lineIdx += 1;
               royaltyReport.setText(lineIdx, 0, "");
               royaltyReport.getCellFormatter().setHeight(lineIdx, 0, "10px");
@@ -234,21 +234,21 @@ public class RoyaltiesReport extends Composite implements WidgetSwitchManagement
             }
             lineIdx += 1;
 
-            royaltyReport.setText(lineIdx, 0, sales.getApplication().getName());
-            royaltyReport.setText(lineIdx, 1, sales.getZone().getName());
-            royaltyReport.setText(lineIdx, 2, String.valueOf(sales.getSalesNumber()));
+            royaltyReport.setText(lineIdx, 0, reportLineData.getApplication().getName());
+            royaltyReport.setText(lineIdx, 1, reportLineData.getZone().getName());
+            royaltyReport.setText(lineIdx, 2, String.valueOf(reportLineData.getSalesNumber()));
             royaltyReport.getCellFormatter().setAlignment(lineIdx, 2, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE);
-            royaltyReport.setText(lineIdx, 3, (sales.getOriginalCurrencyAmount().setScale(2, RoundingMode.HALF_UP).toString() + " " + sales.getOriginalCurrency()));
+            royaltyReport.setText(lineIdx, 3, (reportLineData.getOriginalCurrencyAmount().setScale(2, RoundingMode.HALF_UP).toString() + " " + reportLineData.getOriginalCurrency()));
             royaltyReport.getCellFormatter().setAlignment(lineIdx, 3, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE);
-            royaltyReport.setText(lineIdx, 4, (sales.getOriginalCurrencyTotalAmount().setScale(2, RoundingMode.HALF_UP).toString() + " " + sales.getOriginalCurrency()));
+            royaltyReport.setText(lineIdx, 4, (reportLineData.getOriginalCurrencyTotalAmount().setScale(2, RoundingMode.HALF_UP).toString() + " " + reportLineData.getOriginalCurrency()));
             royaltyReport.getCellFormatter().setAlignment(lineIdx, 4, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE);
             royaltyReport.setText(lineIdx, 5,
-                (sales.getReferenceCurrencyProceedsAfterTaxTotalAmount().setScale(2, RoundingMode.HALF_UP).toString() + " " + sales.getReferenceCurrency()));
+                (reportLineData.getReferenceCurrencyProceedsAfterTaxTotalAmount().setScale(2, RoundingMode.HALF_UP).toString() + " " + reportLineData.getReferenceCurrency()));
             royaltyReport.getCellFormatter().setAlignment(lineIdx, 5, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE);
             royaltyReport.setText(lineIdx, 6,
-                (sales.getReferenceCurrencyCompanyRoyaltiesTotalAmount().setScale(2, RoundingMode.HALF_UP).toString() + " " + sales.getReferenceCurrency()));
+                (reportLineData.getReferenceCurrencyCompanyRoyaltiesTotalAmount().setScale(2, RoundingMode.HALF_UP).toString() + " " + reportLineData.getReferenceCurrency()));
             royaltyReport.getCellFormatter().setAlignment(lineIdx, 6, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE);
-            periodRoyalty = periodRoyalty.add(sales.getReferenceCurrencyCompanyRoyaltiesTotalAmount().setScale(2, RoundingMode.HALF_UP));
+            periodRoyalty = periodRoyalty.add(reportLineData.getReferenceCurrencyCompanyRoyaltiesTotalAmount().setScale(2, RoundingMode.HALF_UP));
 
             lineIdx += 1;
           }

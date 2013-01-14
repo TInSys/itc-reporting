@@ -140,7 +140,6 @@ public class ShuttleBox extends Composite implements HasChangeHandlers {
 
   @Override
   public HandlerRegistration addChangeHandler(ChangeHandler handler) {
-    // TODO Auto-generated method stub
     return addHandler(handler, ChangeEvent.getType());
   }
 

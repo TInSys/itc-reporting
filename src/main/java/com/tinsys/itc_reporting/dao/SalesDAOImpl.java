@@ -19,7 +19,6 @@ import com.tinsys.itc_reporting.model.Zone;
 import com.tinsys.itc_reporting.server.utils.DTOUtils;
 import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
 import com.tinsys.itc_reporting.shared.dto.RoyaltyDTO;
-import com.tinsys.itc_reporting.shared.dto.SalesDTO;
 import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
 @Repository
@@ -38,24 +37,6 @@ public class SalesDAOImpl implements SalesDAO {
   }
 
   @Override
-  public ArrayList<SalesDTO> getAllSales() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public SalesDTO findSale(Long id) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public void deleteSale(SalesDTO aSale) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
   public Sales findSale(Sales aSale) {
     Sales sales;
     if (aSale.getPromoCode() == null) {
@@ -69,18 +50,6 @@ public class SalesDAOImpl implements SalesDAO {
     }
 
     return sales;
-  }
-
-  @Override
-  public Sales createSale(Sales aSale) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public Sales updateSale(Sales aSale) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   @Override
@@ -148,7 +117,7 @@ public class SalesDAOImpl implements SalesDAO {
       }
       if (royaltyFilter != null) {
         sales = (List<Sales>) criteria.add(Restrictions.in("period", periods)).add(royaltyFilter).list();
-        logger.debug("   sales lines  " + sales.size());
+        logger.debug(" # sales lines : " + sales.size());
       }
       return sales;
     }

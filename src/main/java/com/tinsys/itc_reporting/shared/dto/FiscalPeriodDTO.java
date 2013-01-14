@@ -2,7 +2,7 @@ package com.tinsys.itc_reporting.shared.dto;
 
 import java.io.Serializable;
 
-public class FiscalPeriodDTO implements Serializable {
+public class FiscalPeriodDTO implements Serializable,Comparable<FiscalPeriodDTO> {
 
   /**
      * 
@@ -54,6 +54,27 @@ public class FiscalPeriodDTO implements Serializable {
   @Override
   public String toString() {
     return month + "/" + year;
+  }
+
+  @Override
+  public int compareTo(FiscalPeriodDTO o) {
+    int result = this.getYear()-o.getYear();
+    if (result != 0){
+      if (result > 0){
+        return 1;
+      } else {
+        return -1;
+      }
+    }
+
+    result = this.getMonth()-o.getMonth();
+    if (result > 0) {
+      return 1;
+    } else if (result < 0) {
+      return -1;
+    } else {
+      return 0;
+    } 
   }
 
 }

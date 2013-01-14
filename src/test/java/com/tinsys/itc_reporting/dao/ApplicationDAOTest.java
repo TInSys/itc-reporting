@@ -8,18 +8,42 @@ import com.tinsys.itc_reporting.shared.dto.ApplicationDTO;
 public class ApplicationDAOTest implements ApplicationDAO {
 
   private ArrayList<ApplicationDTO> applicationDTOList = new ArrayList<ApplicationDTO>();
-  
+
+  public ApplicationDAOTest() {
+    ApplicationDTO newApplication = new ApplicationDTO();
+    newApplication.setId(0L);
+    newApplication.setName("Application 1");
+    newApplication.setVendorID("VD1");
+
+    applicationDTOList.add(newApplication);
+
+    newApplication = new ApplicationDTO();
+    newApplication.setId(0L);
+    newApplication.setName("Application 2");
+    newApplication.setVendorID("VD2");
+
+    applicationDTOList.add(newApplication);
+
+    newApplication = new ApplicationDTO();
+    newApplication.setId(0L);
+    newApplication.setName("Application 3");
+    newApplication.setVendorID("VD3");
+
+    applicationDTOList.add(newApplication);
+  }
+
   @Override
   public ArrayList<ApplicationDTO> getAllApplications() {
-    if (applicationDTOList == null || applicationDTOList.size()==0) {
-      this.init();
-    }
-    return null;
+    return applicationDTOList;
   }
 
   @Override
   public ApplicationDTO findApplication(Long id) {
-    // TODO Auto-generated method stub
+    for (ApplicationDTO app : applicationDTOList) {
+      if (app.getId() == id) {
+        return app;
+      }
+    }
     return null;
   }
 
@@ -45,29 +69,6 @@ public class ApplicationDAOTest implements ApplicationDAO {
   public Application findApplicationByVendorID(String vendorID) {
     // TODO Auto-generated method stub
     return null;
-  }
-  
-  private void init() {
-    ApplicationDTO newApplication = new ApplicationDTO();
-    newApplication.setId(0L);
-    newApplication.setName("Application 1");
-    newApplication.setVendorID("VD1");
-    
-    applicationDTOList.add(newApplication);
-    
-    newApplication = new ApplicationDTO();
-    newApplication.setId(0L);
-    newApplication.setName("Application 2");
-    newApplication.setVendorID("VD2");
-    
-    applicationDTOList.add(newApplication);
-    
-    newApplication = new ApplicationDTO();
-    newApplication.setId(0L);
-    newApplication.setName("Application 3");
-    newApplication.setVendorID("VD3");
-    
-    applicationDTOList.add(newApplication);
   }
 
 }

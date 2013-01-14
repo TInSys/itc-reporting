@@ -9,7 +9,5 @@ public interface FiscalPeriodDAO {
 
   public FiscalPeriodDTO updatePeriod(FiscalPeriodDTO aPeriod);
 
-  public void deletePeriod(FiscalPeriodDTO aPeriod);
-
   public FiscalPeriod findPeriod(FiscalPeriod aPeriod);
 }

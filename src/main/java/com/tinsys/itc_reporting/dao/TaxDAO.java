@@ -12,8 +12,6 @@ public interface TaxDAO {
 
   public ArrayList<TaxDTO> getAllTaxs(ZoneDTO zoneDTO);
 
-  public TaxDTO findTax(Long id);
-
   public TaxDTO createTax(TaxDTO aTax);
 
   public TaxDTO updateTax(TaxDTO aTax);
@@ -22,5 +20,4 @@ public interface TaxDAO {
 
   public List<Tax> getTaxesForPeriod(FiscalPeriodDTO period);
 
-  public List<Tax> getAllTaxs();
 }

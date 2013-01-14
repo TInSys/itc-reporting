@@ -7,13 +7,16 @@ import java.util.List;
 import com.tinsys.itc_reporting.shared.dto.ApplicationDTO;
 import com.tinsys.itc_reporting.shared.dto.CompanyDTO;
 import com.tinsys.itc_reporting.shared.dto.RoyaltyDTO;
+import com.tinsys.itc_reporting.shared.dto.ZoneDTO;
 
 public class RoyaltyDAOTest implements RoyaltyDAO {
 
-  private ArrayList<RoyaltyDTO> royaltyDTOList = new ArrayList<RoyaltyDTO>();
-  private ApplicationDAOTest applicationDAOTest = new ApplicationDAOTest();
+  private ArrayList<RoyaltyDTO> royaltyDTOList;
+  private ApplicationDAOTest applicationDAOTest;
   
-  public void init() {
+  public RoyaltyDAOTest() {
+    royaltyDTOList = new ArrayList<RoyaltyDTO>();
+    applicationDAOTest = new ApplicationDAOTest();
     RoyaltyDTO newRoyaltyDTO = new RoyaltyDTO();
     CompanyDTO companyDTO = new CompanyDTO();
     companyDTO.setId(0L);
@@ -23,8 +26,16 @@ public class RoyaltyDAOTest implements RoyaltyDAO {
       newRoyaltyDTO.setCompany(companyDTO);
       newRoyaltyDTO.setShareRate(new BigDecimal(15));
       newRoyaltyDTO.setShareRateCalculationField("S");
+      ZoneDTO zone = new ZoneDTO();
+      zone.setId(0L);
+      zone.setCode("ZONE0");
+      zone.setName("ZONE0");
+      List<ZoneDTO> zoneList = new ArrayList<ZoneDTO>();
+      zoneList.add(zone);
+      newRoyaltyDTO.setZones(zoneList);
       royaltyDTOList.add(newRoyaltyDTO);
     }
+    newRoyaltyDTO = new RoyaltyDTO();
     companyDTO = new CompanyDTO();
     companyDTO.setId(1L);
     companyDTO.setName("Company with 10% royalty on proceeds");

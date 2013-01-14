@@ -66,12 +66,6 @@ public class FXRateDAOImpl implements FXRateDAO {
   }
 
   @Override
-  public FXRateDTO findFXRate(Long id) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
   public FXRateDTO createFXRate(FXRateDTO aFXRate) {
 
     FXRate fxRate = new FXRate();

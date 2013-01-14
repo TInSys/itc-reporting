@@ -11,8 +11,6 @@ public interface FXRateDAO {
 
   public ArrayList<FXRateDTO> getAllFXRates(ZoneDTO zoneDTO);
 
-  public FXRateDTO findFXRate(Long id);
-
   public FXRateDTO createFXRate(FXRateDTO aFXRate);
 
   public FXRateDTO updateFXRate(FXRateDTO aFXRate);

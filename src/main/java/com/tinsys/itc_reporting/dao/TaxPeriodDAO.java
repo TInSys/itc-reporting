@@ -1,6 +1,5 @@
 package com.tinsys.itc_reporting.dao;
 
-import com.tinsys.itc_reporting.model.TaxPeriod;
 import com.tinsys.itc_reporting.shared.dto.TaxPeriodDTO;
 
 public interface TaxPeriodDAO {
@@ -11,5 +10,4 @@ public interface TaxPeriodDAO {
 
   public void deletePeriod(TaxPeriodDTO aPeriod);
 
-  public TaxPeriod findPeriod(TaxPeriod aPeriod);
 }

@@ -1,5 +1,6 @@
 package com.tinsys.itc_reporting.dao;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,12 +12,6 @@ public class FXrateDAOTest implements FXRateDAO {
 
   @Override
   public ArrayList<FXRateDTO> getAllFXRates(ZoneDTO zoneDTO) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public FXRateDTO findFXRate(Long id) {
     // TODO Auto-generated method stub
     return null;
   }
@@ -41,8 +36,22 @@ public class FXrateDAOTest implements FXRateDAO {
 
   @Override
   public ArrayList<FXRateDTO> getAllFXRatesForPeriod(FiscalPeriodDTO monthYearToPeriod) {
-    // TODO Auto-generated method stub
-    return null;
+    
+    ArrayList<FXRateDTO> fxRateList = new ArrayList<FXRateDTO>();
+    
+    if (monthYearToPeriod.getYear()==2013){
+      FXRateDTO fxRateDTO = new FXRateDTO();
+      fxRateDTO.setId(0L);
+      fxRateDTO.setPeriod(monthYearToPeriod);
+      ZoneDTO zone = new ZoneDTO();
+      zone.setId(0L);
+      zone.setCode("ZONE0");
+      zone.setName("ZONE0");
+      fxRateDTO.setZone(zone);
+      fxRateDTO.setRate(new BigDecimal(0.12453));
+      fxRateList.add(fxRateDTO);
+    }
+    return fxRateList;
   }
 
   @Override

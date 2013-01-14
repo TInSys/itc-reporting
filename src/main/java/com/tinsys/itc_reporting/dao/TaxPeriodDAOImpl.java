@@ -1,7 +1,6 @@
 package com.tinsys.itc_reporting.dao;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tinsys.itc_reporting.model.TaxPeriod;
@@ -52,13 +51,6 @@ public class TaxPeriodDAOImpl implements TaxPeriodDAO {
     period.setStopDate(aPeriod.getStopDate());
     factory.getCurrentSession().delete(period);
 
-  }
-
-  @Override
-  public TaxPeriod findPeriod(TaxPeriod aPeriod) {
-    TaxPeriod period = (TaxPeriod) factory.getCurrentSession().createCriteria(TaxPeriod.class).add(Restrictions.eq("startDate", aPeriod.getStartDate()))
-        .add(Restrictions.eq("stopDate", aPeriod.getStopDate())).uniqueResult();
-    return period;
   }
 
 }

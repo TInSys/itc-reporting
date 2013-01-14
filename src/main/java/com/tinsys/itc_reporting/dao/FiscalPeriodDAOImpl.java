@@ -50,19 +50,6 @@ public class FiscalPeriodDAOImpl implements FiscalPeriodDAO {
   }
 
   @Override
-  public void deletePeriod(FiscalPeriodDTO aPeriod) {
-    FiscalPeriod period = (FiscalPeriod) factory.getCurrentSession().get(FiscalPeriod.class, aPeriod.getId());
-    try {
-      period.setMonth(aPeriod.getMonth());
-      period.setYear(aPeriod.getYear());
-      factory.getCurrentSession().delete(period);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-
-  }
-
-  @Override
   public FiscalPeriod findPeriod(FiscalPeriod aPeriod) {
     FiscalPeriod period = (FiscalPeriod) factory.getCurrentSession().createCriteria(FiscalPeriod.class).add(Restrictions.eq("year", aPeriod.getYear()))
         .add(Restrictions.eq("month", aPeriod.getMonth())).uniqueResult();

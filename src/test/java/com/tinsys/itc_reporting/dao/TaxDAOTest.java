@@ -17,12 +17,6 @@ public class TaxDAOTest implements TaxDAO {
   }
 
   @Override
-  public TaxDTO findTax(Long id) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
   public TaxDTO createTax(TaxDTO aTax) {
     // TODO Auto-generated method stub
     return null;
@@ -43,13 +37,7 @@ public class TaxDAOTest implements TaxDAO {
   @Override
   public List<Tax> getTaxesForPeriod(FiscalPeriodDTO period) {
     // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public List<Tax> getAllTaxs() {
-    // TODO Auto-generated method stub
-    return null;
+    return new ArrayList<Tax>();
   }
 
 }
