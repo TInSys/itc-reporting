@@ -39,7 +39,7 @@ public class FXrateDAOTest implements FXRateDAO {
     
     ArrayList<FXRateDTO> fxRateList = new ArrayList<FXRateDTO>();
     
-    if (monthYearToPeriod.getYear()==2013){
+    if (monthYearToPeriod.getYear()==2013 && (monthYearToPeriod.getMonth()==1 || monthYearToPeriod.getMonth()==4)){
       FXRateDTO fxRateDTO = new FXRateDTO();
       fxRateDTO.setId(0L);
       fxRateDTO.setPeriod(monthYearToPeriod);

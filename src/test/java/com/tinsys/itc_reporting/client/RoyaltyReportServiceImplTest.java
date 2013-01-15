@@ -1,5 +1,7 @@
 package com.tinsys.itc_reporting.client;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -61,10 +63,69 @@ public class RoyaltyReportServiceImplTest {
 
     FiscalPeriodDTO endPeriod = new FiscalPeriodDTO();
     endPeriod.setId(1L);
-    endPeriod.setMonth(3);
+    endPeriod.setMonth(2);
     endPeriod.setYear(2013);
     List<RoyaltyReportLine> test = royaltyReportService.getCompanyReport(company, startPeriod, endPeriod);
     Assert.assertNotNull(test);
   }
 
+  @Test(expected = RuntimeException.class)
+  public void testGetCompanyReportReturnsExceptionIfChangeRateNull() {
+    
+    CompanyDTO company = new CompanyDTO();
+    company.setId(0L);
+    company.setCurrencyISO("EUR");
+    company.setName("Company 1");
+
+    FiscalPeriodDTO startPeriod = new FiscalPeriodDTO();
+    startPeriod.setId(0L);
+    startPeriod.setMonth(3);
+    startPeriod.setYear(2013);
+
+    FiscalPeriodDTO endPeriod = new FiscalPeriodDTO();
+    endPeriod.setId(1L);
+    endPeriod.setMonth(3);
+    endPeriod.setYear(2013);
+    royaltyReportService.getCompanyReport(company, startPeriod, endPeriod);
+  }
+  
+  @Test
+  public void testGetCompanyReportReturnsNullIfNoRoyaltiesDefined() {
+    CompanyDTO company = new CompanyDTO();
+    company.setId(3L);
+    company.setCurrencyISO("EUR");
+    company.setName("Company 2");
+
+    FiscalPeriodDTO startPeriod = new FiscalPeriodDTO();
+    startPeriod.setId(0L);
+    startPeriod.setMonth(4);
+    startPeriod.setYear(2013);
+
+    FiscalPeriodDTO endPeriod = new FiscalPeriodDTO();
+    endPeriod.setId(1L);
+    endPeriod.setMonth(4);
+    endPeriod.setYear(2013);
+    Assert.assertNull(royaltyReportService.getCompanyReport(company, startPeriod, endPeriod));
+  }
+  
+  @Test
+  public void testGetCompanyReportTaxCalculation() {
+    CompanyDTO company = new CompanyDTO();
+    company.setId(0L);
+    company.setCurrencyISO("EUR");
+    company.setName("Company 1");
+
+    FiscalPeriodDTO startPeriod = new FiscalPeriodDTO();
+    startPeriod.setId(0L);
+    startPeriod.setMonth(4);
+    startPeriod.setYear(2013);
+
+    FiscalPeriodDTO endPeriod = new FiscalPeriodDTO();
+    endPeriod.setId(1L);
+    endPeriod.setMonth(4);
+    endPeriod.setYear(2013);
+    BigDecimal expected = new BigDecimal(17.93).setScale(2, RoundingMode.HALF_UP);
+    Assert.assertEquals(expected, royaltyReportService.getCompanyReport(company, startPeriod, endPeriod).get(0).getReferenceCurrencyProceedsAfterTaxTotalAmount().setScale(2, RoundingMode.HALF_UP));
+  }
+  
 }
