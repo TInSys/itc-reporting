@@ -14,15 +14,13 @@ public interface FXRateService extends RemoteService {
 
   public ArrayList<FXRateDTO> getAllFXRates(ZoneDTO zoneDTO) throws RuntimeException;
 
-  public FXRateDTO findFXRate(Long id);
-
   public FXRateDTO createFXRate(FXRateDTO aFXRate) throws RuntimeException;
 
   public FXRateDTO updateFXRate(FXRateDTO aFXRate);
 
   public void deleteFXRate(FXRateDTO aFXRate);
 
-  ArrayList<FXRateDTO> getAllFXRatesForPeriod(FiscalPeriodDTO fiscalPeriodDto);
+  ArrayList<FXRateDTO> getAllFXRatesForPeriod(FiscalPeriodDTO fiscalPeriodDto)  throws RuntimeException;
 
   void saveOrUpdate(List<FXRateDTO> fxRateList);
 }

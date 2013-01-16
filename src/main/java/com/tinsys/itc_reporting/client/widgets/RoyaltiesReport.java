@@ -159,7 +159,6 @@ public class RoyaltiesReport extends Composite implements WidgetSwitchManagement
             currentCompany = event.getValue();
           }
         });
-
       }
 
       @Override

@@ -189,14 +189,12 @@ public class RoyaltyManagement extends Composite implements WidgetSwitchManageme
               @Override
               public void onFailure(Throwable caught) {
                 Window.alert("Error fetching Application list :  " + caught.getMessage());
-
               }
 
               @Override
               public void onSuccess(ArrayList<ApplicationDTO> result) {
                 availableApplications = result;
                 allAvailableApplications = (ArrayList<ApplicationDTO>) result.clone();
-
               }
             });
           }
@@ -266,7 +264,6 @@ public class RoyaltyManagement extends Composite implements WidgetSwitchManageme
         oldShareRateCalculationField = CALCULATION_ON_SALES;
         currentCompany = event.getValue();
         getRoyaltyList();
-
       }
     });
     applicationListBox.addChangeHandler(new ChangeHandler() {
@@ -306,7 +303,6 @@ public class RoyaltyManagement extends Composite implements WidgetSwitchManageme
         royaltyList = result;
         royaltyCellTable.setRowCount(result.size());
         pager.setPage(currentPage);
-
       }
 
       @Override
@@ -370,7 +366,6 @@ public class RoyaltyManagement extends Composite implements WidgetSwitchManageme
 
             applicationListBoxPanel.setVisible(false);
             royaltyDetailsPanel.setVisible(true);
-
           }
         }
       }
@@ -412,7 +407,6 @@ public class RoyaltyManagement extends Composite implements WidgetSwitchManageme
           @Override
           public void onSuccess(RoyaltyDTO result) {
             resetUpdateStatus();
-
           }
         });
       } else {
@@ -535,7 +529,6 @@ public class RoyaltyManagement extends Composite implements WidgetSwitchManageme
       @Override
       public void onFailure(Throwable caught) {
         Window.alert("Error deleting Royalty :  " + caught.getMessage());
-
       }
 
       @Override
@@ -567,7 +560,6 @@ public class RoyaltyManagement extends Composite implements WidgetSwitchManageme
 
         public void onClick(ClickEvent arg0) {
           simplePopup.hide();
-
         }
       });
       dialogContent.add(closeButton);

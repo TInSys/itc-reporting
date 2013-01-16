@@ -13,8 +13,6 @@ public interface TaxServiceAsync {
 
   void deleteTax(TaxDTO aTax, AsyncCallback<Void> callback);
 
-  void findTax(Long id, AsyncCallback<TaxDTO> callback);
-
   void updateTax(TaxDTO aTax, AsyncCallback<TaxDTO> callback);
 
   void getAllTaxs(ZoneDTO zoneDTO, AsyncCallback<ArrayList<TaxDTO>> callback);

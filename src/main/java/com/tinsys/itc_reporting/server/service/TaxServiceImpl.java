@@ -31,12 +31,6 @@ public class TaxServiceImpl implements TaxService {
   }
 
   @Override
-  public TaxDTO findTax(Long id) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
   public TaxDTO createTax(TaxDTO aTax, TaxPeriodDTO aPeriod) {
     if (aPeriod != null) {
       periodDAO.updatePeriod(aPeriod);

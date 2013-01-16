@@ -63,12 +63,6 @@ public class RoyaltyDAOTest implements RoyaltyDAO {
       royaltyDTOList.add(newRoyaltyDTO);}
     }
   }
-  
-  @Override
-  public ArrayList<RoyaltyDTO> getAllRoyalties() {
-    // TODO Auto-generated method stub
-    return null;
-  }
 
   @Override
   public List<RoyaltyDTO> getAllRoyalty(CompanyDTO aCompanyDTO) {

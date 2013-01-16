@@ -75,7 +75,6 @@ public class PreferencesManagement extends Composite implements WidgetSwitchMana
     if (referenceCurrencyTextBox.getText().length() > 0) {
       {
         preferences.setReferenceCurrency(referenceCurrencyTextBox.getText());
-
         preferencesService.updatePreference(preferences, new AsyncCallback<PreferencesDTO>() {
 
           @Override

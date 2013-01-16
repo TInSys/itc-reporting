@@ -1,6 +1,5 @@
 package com.tinsys.itc_reporting.client.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -10,8 +9,6 @@ import com.tinsys.itc_reporting.shared.dto.RoyaltyDTO;
 
 @RemoteServiceRelativePath("springGwtServices/royaltyService")
 public interface RoyaltyService extends RemoteService {
-
-  public ArrayList<RoyaltyDTO> getAllRoyalties();
 
   public List<RoyaltyDTO> getAllRoyalty(CompanyDTO aCompanyDTO);
 

@@ -1,6 +1,5 @@
 package com.tinsys.itc_reporting.client.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -14,8 +13,6 @@ public interface RoyaltyServiceAsync {
   void deleteRoyalty(RoyaltyDTO aRoyalty, AsyncCallback<Void> callback);
 
   void findRoyalty(Long id, AsyncCallback<RoyaltyDTO> callback);
-
-  void getAllRoyalties(AsyncCallback<ArrayList<RoyaltyDTO>> callback);
 
   void getAllRoyalty(CompanyDTO aCompanyDTO, AsyncCallback<List<RoyaltyDTO>> callback);
 

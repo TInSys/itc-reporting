@@ -26,12 +26,6 @@ public class RoyaltyDAOImpl implements RoyaltyDAO {
     this.factory = factory;
   }
 
-  @Override
-  public ArrayList<RoyaltyDTO> getAllRoyalties() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
   @SuppressWarnings("unchecked")
   @Override
   public List<RoyaltyDTO> getAllRoyalty(CompanyDTO aCompanyDTO) {

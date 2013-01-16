@@ -13,8 +13,6 @@ public interface TaxService extends RemoteService {
 
   public ArrayList<TaxDTO> getAllTaxs(ZoneDTO zoneDTO) throws RuntimeException;
 
-  public TaxDTO findTax(Long id);
-
   public TaxDTO createTax(TaxDTO aTax, TaxPeriodDTO aPeriod) throws RuntimeException;
 
   public TaxDTO updateTax(TaxDTO aTax);

@@ -100,7 +100,6 @@ public class FinancialReportFilesImporter extends Composite implements WidgetSwi
 
   @Override
   public boolean isEditing() {
-    // TODO Auto-generated method stub
     return false;
   }
 

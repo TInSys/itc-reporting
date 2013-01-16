@@ -57,6 +57,7 @@ public class MonthlySalesReport extends Composite implements WidgetSwitchManagem
   private final static String PROCEEDS_REPORT = "Proceeds";
   private final static String SALES_REPORT = "Sales";
   private final static String PROCEEDS_AFTER_TAX_REPORT = "Proceeds after taxes";
+  private final static String STYLE_DESCRIPTION = "border-bottom: 2px solid #6f7277;padding: 3px 15px;text-align: left;color: #4b4a4a;text-shadow: #ddf 1px 1px 0;overflow: hidden;height: 60px;";
   private String currentReport;
 
   private static Binder uiBinder = GWT.create(Binder.class);
@@ -348,11 +349,7 @@ public class MonthlySalesReport extends Composite implements WidgetSwitchManagem
     protected boolean buildHeaderOrFooterImpl() {
       if (headers.size() > 0) {
         TableRowBuilder tr = startRow();
-        /*
-         * tr.startTH().colSpan(1).rowSpan(1); tr.endTH();
-         */
-
-        String styleDescription = "border-bottom: 2px solid #6f7277;padding: 3px 15px;text-align: left;color: #4b4a4a;text-shadow: #ddf 1px 1px 0;overflow: hidden;height: 60px;";
+        String styleDescription = STYLE_DESCRIPTION;
         TableCellBuilder th = tr.startTH().colSpan(3).attribute("style", styleDescription);
         for (int i = 0; i < headers.size(); i++) {
           th.text(headers.get(i)).endTH();
@@ -472,7 +469,7 @@ public class MonthlySalesReport extends Composite implements WidgetSwitchManagem
     protected boolean buildHeaderOrFooterImpl() {
       if (salesFixedColumn.getColumnCount() > 0) {
         TableRowBuilder tr = startRow();
-        String styleDescription = "border-bottom: 2px solid #6f7277;padding: 3px 15px;text-align: left;color: #4b4a4a;text-shadow: #ddf 1px 1px 0;overflow: hidden;height: 60px;";
+        String styleDescription = STYLE_DESCRIPTION;
         TableCellBuilder th = tr.startTH().attribute("style", styleDescription);
 
         th.text(" ").endTH();

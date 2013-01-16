@@ -137,7 +137,6 @@ public class ZoneManagement extends Composite implements WidgetSwitchManagement 
         oldZoneCodeTextBoxContent = zoneCodeTextBox.getText();
       }
     });
-
     zoneNameTextBox.addKeyUpHandler(new KeyUpHandler() {
       public void onKeyUp(KeyUpEvent arg0) {
         editionInProgress = true;
@@ -145,7 +144,6 @@ public class ZoneManagement extends Composite implements WidgetSwitchManagement 
         oldZoneNameTextBoxContent = zoneNameTextBox.getText();
       }
     });
-
     zoneCurrencyISOTextBox.addKeyUpHandler(new KeyUpHandler() {
       public void onKeyUp(KeyUpEvent arg0) {
         editionInProgress = true;
@@ -206,7 +204,6 @@ public class ZoneManagement extends Composite implements WidgetSwitchManagement 
             deleteZone.setVisible(true);
             saveZone.setText("Update");
           }
-
         }
       }
     };
@@ -231,7 +228,6 @@ public class ZoneManagement extends Composite implements WidgetSwitchManagement 
             zoneNameTextBox.setText("");
             zoneCurrencyISOTextBox.setText("");
             resetUpdateStatus();
-
           }
 
           @Override
@@ -294,7 +290,6 @@ public class ZoneManagement extends Composite implements WidgetSwitchManagement 
       @Override
       public void onFailure(Throwable caught) {
         Window.alert("Error deleting zone :" + caught.getMessage());
-
       }
 
       @Override
@@ -338,7 +333,6 @@ public class ZoneManagement extends Composite implements WidgetSwitchManagement 
 
       public void onClick(ClickEvent arg0) {
         simplePopup.hide();
-
       }
     });
     dialogContent.add(closeButton);

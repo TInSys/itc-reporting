@@ -1,6 +1,6 @@
 package com.tinsys.itc_reporting.client.service;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -11,5 +11,5 @@ import com.tinsys.itc_reporting.shared.dto.RoyaltyReportLine;
 @RemoteServiceRelativePath("springGwtServices/royaltyReportService")
 public interface RoyaltyReportService extends RemoteService {
 
-  public List<RoyaltyReportLine> getCompanyReport(CompanyDTO company, FiscalPeriodDTO startPeriod, FiscalPeriodDTO endPeriod) throws RuntimeException;
+  public ArrayList<RoyaltyReportLine> getCompanyReport(CompanyDTO company, FiscalPeriodDTO startPeriod, FiscalPeriodDTO endPeriod) throws RuntimeException;
 }

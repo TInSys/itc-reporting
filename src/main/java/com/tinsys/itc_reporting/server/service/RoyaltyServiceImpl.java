@@ -1,6 +1,5 @@
 package com.tinsys.itc_reporting.server.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +19,6 @@ public class RoyaltyServiceImpl implements RoyaltyService {
   @Autowired
   @Qualifier("royaltyDAO")
   private RoyaltyDAO royaltyDAO;
-
-  @Override
-  public ArrayList<RoyaltyDTO> getAllRoyalties() {
-    return royaltyDAO.getAllRoyalties();
-  }
 
   @Override
   public List<RoyaltyDTO> getAllRoyalty(CompanyDTO aCompanyDTO) {

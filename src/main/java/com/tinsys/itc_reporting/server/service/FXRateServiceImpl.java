@@ -24,6 +24,7 @@ public class FXRateServiceImpl implements FXRateService {
   @Autowired
   @Qualifier("fxRateDAO")
   private FXRateDAO fxRateDAO;
+  
   @Autowired
   @Qualifier("fiscalPeriodDAO")
   private FiscalPeriodDAO periodDAO;
@@ -31,12 +32,6 @@ public class FXRateServiceImpl implements FXRateService {
   @Override
   public ArrayList<FXRateDTO> getAllFXRates(ZoneDTO zoneDTO) {
     return fxRateDAO.getAllFXRates(zoneDTO);
-  }
-
-  @Override
-  public FXRateDTO findFXRate(Long id) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   @Override
@@ -79,7 +74,6 @@ public class FXRateServiceImpl implements FXRateService {
   @Override
   public void saveOrUpdate(List<FXRateDTO> fxRateList) {
     fxRateDAO.saveOrUpdate(fxRateList);
-
   }
 
 }

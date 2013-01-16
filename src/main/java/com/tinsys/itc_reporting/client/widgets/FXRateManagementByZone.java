@@ -135,6 +135,7 @@ public class FXRateManagementByZone extends Composite implements WidgetSwitchMan
 
   @UiField
   TextBox currencyISOTextBox = new TextBox();
+  
   @UiField
   Button saveFXRate = new Button();
 
@@ -304,7 +305,6 @@ public class FXRateManagementByZone extends Composite implements WidgetSwitchMan
 
   @UiHandler("saveFXRate")
   void handleClickSave(ClickEvent e) {
-
     if (fxRateIsValid()) {
       if (selectedFXRate == null) {
         selectedFXRate = new FXRateDTO();

@@ -66,7 +66,7 @@ public class SalesReportServiceImpl implements SalesReportService {
     ZoneReportSummary monthReportLineTotal = new ZoneReportSummary();
     monthReportLineTotal.setApplications(new ArrayList<ApplicationReportSummary>());
     BigDecimal taxRate = new BigDecimal(0);
-    
+
     if (sales != null && sales.size() > 0) {
       logger.debug("Processing  " + sales.size() + " lines");
       for (Sales sale : sales) {
@@ -82,11 +82,12 @@ public class SalesReportServiceImpl implements SalesReportService {
           monthReportLineTotal = appsTotal(monthReportLineTotal, monthReportLine);
           monthReportLine = new ZoneReportSummary();
           monthReportLine.setApplications(new ArrayList<ApplicationReportSummary>());
-          changeRate = this.getChangeRate(fxRates,zone);
-          taxRate = this.getTaxRate(taxes,zone);
+          changeRate = this.getChangeRate(fxRates, zone);
+          taxRate = this.getTaxRate(taxes, zone);
         } else {
-          if (currentZone == null) { // first pass, fetch change rate and taxRate
-            changeRate = this.getChangeRate(fxRates,zone);
+          if (currentZone == null) { // first pass, fetch change rate and
+                                     // taxRate
+            changeRate = this.getChangeRate(fxRates, zone);
             taxRate = this.getTaxRate(taxes, zone);
           }
         }
@@ -95,13 +96,14 @@ public class SalesReportServiceImpl implements SalesReportService {
           monthReportLine.getApplications().add(applicationSumary);
           applicationSumary = new ApplicationReportSummary();
           applicationSumary.init();
-          } else {
-          if (applicationSumary == null) {//first pass
+        } else {
+          if (applicationSumary == null) {// first pass
             applicationSumary = new ApplicationReportSummary();
             applicationSumary.init();
           }
         }
         // add sales data to current application in current zone
+        monthReportLine.setZoneName(zone.getName());
         applicationSumary.setApplicationName(application.getName());
         applicationSumary.setSalesNumber(applicationSumary.getSalesNumber() + sale.getSoldUnits());
         applicationSumary.setOriginalCurrency(sale.getZone().getCurrencyISO());
@@ -109,20 +111,16 @@ public class SalesReportServiceImpl implements SalesReportService {
 
         applicationSumary.setOriginalCurrencyProceeds(applicationSumary.getOriginalCurrencyProceeds().add(
             (sale.getTotalProceeds() != null) ? sale.getTotalProceeds() : new BigDecimal(0)));
-
         applicationSumary.setOriginalCurrencyProceedsAfterTax(applicationSumary.getOriginalCurrencyProceedsAfterTax().add(
             (sale.getTotalProceeds() != null) ? (sale.getTotalProceeds().multiply((new BigDecimal(1).subtract(taxRate)))) : new BigDecimal(0)));
-        applicationSumary.setReferenceCurrency(referenceCurrency);
 
+        applicationSumary.setReferenceCurrency(referenceCurrency);
         applicationSumary.setReferenceCurrencyAmount(applicationSumary.getReferenceCurrencyAmount().add(
             ((sale.getTotalPrice() != null) ? sale.getTotalPrice() : new BigDecimal(0)).multiply(changeRate)));
-
         applicationSumary.setReferenceCurrencyProceeds(applicationSumary.getReferenceCurrencyProceeds().add(
             ((sale.getTotalProceeds() != null) ? sale.getTotalProceeds() : new BigDecimal(0)).multiply(changeRate)));
-
         applicationSumary.setReferenceCurrencyProceedsAfterTax(applicationSumary.getReferenceCurrencyProceedsAfterTax().add(
             ((sale.getTotalProceeds() != null) ? (sale.getTotalProceeds().multiply((new BigDecimal(1).subtract(taxRate)))) : new BigDecimal(0)).multiply(changeRate)));
-        monthReportLine.setZoneName(zone.getName());
         currentApplication = application;
         currentZone = zone;
 
@@ -190,7 +188,7 @@ public class SalesReportServiceImpl implements SalesReportService {
             reportSummaryTotal.setReferenceCurrency(reportSummary.getReferenceCurrency());
           }
         }
-        if (!appFound) { // application not yet in grandTotal line
+        if (!appFound) { // application not yet in Grand Total line
           ApplicationReportSummary reportSummaryTotal = new ApplicationReportSummary();
           reportSummaryTotal.setApplicationName(reportSummary.getApplicationName());
           reportSummaryTotal.setSalesNumber(reportSummary.getSalesNumber());
@@ -202,20 +200,20 @@ public class SalesReportServiceImpl implements SalesReportService {
         }
       }
     }
-    
-    if (monthReportLine == monthReportLineTotal){ // grand total is sum of rounded zone subtotal 
-        total.setOriginalCurrencyAmount(null);
-        total.setOriginalCurrencyProceeds(null);
-        total.setOriginalCurrencyProceedsAfterTax(null);
-        total.setReferenceCurrencyAmount(referenceCurrencyAmountGrandTotal);
-        total.setReferenceCurrencyProceeds(referenceCurrencyProceedsAmountGrandTotal);
-        total.setReferenceCurrencyProceedsAfterTax(referenceCurrencyProceedsAfterTaxGrandTotal);
-    } else {   
-        referenceCurrencyAmountGrandTotal = referenceCurrencyAmountGrandTotal.add(total.getReferenceCurrencyAmount().setScale(2,RoundingMode.HALF_UP));
-        referenceCurrencyProceedsAmountGrandTotal = referenceCurrencyProceedsAmountGrandTotal.add(total.getReferenceCurrencyProceeds().setScale(2,RoundingMode.HALF_UP));
-        referenceCurrencyProceedsAfterTaxGrandTotal = referenceCurrencyProceedsAfterTaxGrandTotal.add(total.getReferenceCurrencyProceedsAfterTax().setScale(2,RoundingMode.HALF_UP));    
+
+    if (monthReportLine == monthReportLineTotal) { // grand total is sum of rounded zone subtotal
+      total.setOriginalCurrencyAmount(null);
+      total.setOriginalCurrencyProceeds(null);
+      total.setOriginalCurrencyProceedsAfterTax(null);
+      total.setReferenceCurrencyAmount(referenceCurrencyAmountGrandTotal);
+      total.setReferenceCurrencyProceeds(referenceCurrencyProceedsAmountGrandTotal);
+      total.setReferenceCurrencyProceedsAfterTax(referenceCurrencyProceedsAfterTaxGrandTotal);
+    } else {
+      referenceCurrencyAmountGrandTotal = referenceCurrencyAmountGrandTotal.add(total.getReferenceCurrencyAmount().setScale(2, RoundingMode.HALF_UP));
+      referenceCurrencyProceedsAmountGrandTotal = referenceCurrencyProceedsAmountGrandTotal.add(total.getReferenceCurrencyProceeds().setScale(2, RoundingMode.HALF_UP));
+      referenceCurrencyProceedsAfterTaxGrandTotal = referenceCurrencyProceedsAfterTaxGrandTotal.add(total.getReferenceCurrencyProceedsAfterTax().setScale(2, RoundingMode.HALF_UP));
     }
-    
+
     monthReportLine.getApplications().add(total);
     return monthReportLineTotal;
   }
@@ -227,7 +225,7 @@ public class SalesReportServiceImpl implements SalesReportService {
         taxRate = tax.getRate();
         break;
       }
-    }    
+    }
     return taxRate;
   }
 
@@ -241,11 +239,16 @@ public class SalesReportServiceImpl implements SalesReportService {
         break;
       }
     }
-    if (tmpCurrency == null) {
-      throw new RuntimeException("No Reference currency found for Zone "+zone.getCode()+" - "+zone.getName());
+    if (changeRate == null) {
+      throw new RuntimeException("No Change Rate found for Zone " + zone.getCode() + " - " + zone.getName() + " for choosen Month");
     }
-    if (referenceCurrency != null && !referenceCurrency.equals(tmpCurrency) ) {
-      throw new RuntimeException("Multiple reference currency not allowed. Zone : "+zone.getCode()+" - "+zone.getName()+" will change current currency : "+referenceCurrency+" to : "+tmpCurrency);
+
+    if (tmpCurrency == null) {
+      throw new RuntimeException("No Reference currency found for Zone " + zone.getCode() + " - " + zone.getName() + " for choosen Month");
+    }
+    if (referenceCurrency != null && !referenceCurrency.equals(tmpCurrency)) {
+      throw new RuntimeException("Multiple reference currency not allowed. Zone : " + zone.getCode() + " - " + zone.getName() + " will change current currency : "
+          + referenceCurrency + " to : " + tmpCurrency);
     }
     referenceCurrency = tmpCurrency;
     return changeRate;

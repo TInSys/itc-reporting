@@ -14,8 +14,6 @@ public interface FXRateServiceAsync {
 
   void deleteFXRate(FXRateDTO aFXRate, AsyncCallback<Void> callback);
 
-  void findFXRate(Long id, AsyncCallback<FXRateDTO> callback);
-
   void getAllFXRates(ZoneDTO zoneDTO, AsyncCallback<ArrayList<FXRateDTO>> callback);
 
   void updateFXRate(FXRateDTO aFXRate, AsyncCallback<FXRateDTO> callback);

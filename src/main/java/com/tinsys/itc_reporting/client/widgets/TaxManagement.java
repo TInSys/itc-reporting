@@ -79,7 +79,6 @@ public class TaxManagement extends Composite implements WidgetSwitchManagement {
     public void render(ZoneDTO object, Appendable appendable) throws IOException {
       String s = render(object);
       appendable.append(s);
-
     }
   });
 
@@ -189,7 +188,6 @@ public class TaxManagement extends Composite implements WidgetSwitchManagement {
           currentZone = event.getValue();
           getTaxList();
         }
-
       }
     });
   }
@@ -238,7 +236,6 @@ public class TaxManagement extends Composite implements WidgetSwitchManagement {
           selectedTax = selectionModel.getSelectedObject();
           if (selectedTax != null) {
             taxRateTextBox.setText(selectedTax.getRate().toPlainString());
-
             taxPeriodStartDateDateBox.setValue(selectedTax.getPeriod().getStartDate());
             taxPeriodStopDateDateBox.setValue(selectedTax.getPeriod().getStopDate());
             cancelUpdateTax.setVisible(true);
@@ -302,7 +299,6 @@ public class TaxManagement extends Composite implements WidgetSwitchManagement {
         taxPeriodStartDateDateBox.setValue(null);
         taxPeriodStopDateDateBox.setValue(null);
         resetUpdateStatus();
-
       }
 
       @Override
@@ -432,7 +428,6 @@ public class TaxManagement extends Composite implements WidgetSwitchManagement {
       @Override
       public void onFailure(Throwable caught) {
         Window.alert("Error deleting tax :" + caught.getMessage());
-
       }
 
       @Override
@@ -477,7 +472,6 @@ public class TaxManagement extends Composite implements WidgetSwitchManagement {
 
         public void onClick(ClickEvent arg0) {
           simplePopup.hide();
-
         }
       });
       dialogContent.add(closeButton);
