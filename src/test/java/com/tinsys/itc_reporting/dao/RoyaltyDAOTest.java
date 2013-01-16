@@ -20,8 +20,10 @@ public class RoyaltyDAOTest implements RoyaltyDAO {
     RoyaltyDTO newRoyaltyDTO = new RoyaltyDTO();
     CompanyDTO companyDTO = new CompanyDTO();
     companyDTO.setId(0L);
-    companyDTO.setName("Company with 15% royalty on sales");
+    companyDTO.setName("Company 0");
     for (ApplicationDTO applicationDTO : applicationDAOTest.getAllApplications()) {
+      if (applicationDTO.getId()==0){
+      newRoyaltyDTO.setId(0L);
       newRoyaltyDTO.setApplication(applicationDTO);
       newRoyaltyDTO.setCompany(companyDTO);
       newRoyaltyDTO.setShareRate(new BigDecimal(15));
@@ -32,19 +34,33 @@ public class RoyaltyDAOTest implements RoyaltyDAO {
       zone.setName("ZONE0");
       List<ZoneDTO> zoneList = new ArrayList<ZoneDTO>();
       zoneList.add(zone);
+      zone = new ZoneDTO();
+      zone.setId(1L);
+      zone.setCode("ZONE1");
+      zone.setName("ZONE1");
+      zoneList.add(zone);
       newRoyaltyDTO.setZones(zoneList);
       royaltyDTOList.add(newRoyaltyDTO);
-    }
+    }}
     newRoyaltyDTO = new RoyaltyDTO();
     companyDTO = new CompanyDTO();
     companyDTO.setId(1L);
-    companyDTO.setName("Company with 10% royalty on proceeds");
+    companyDTO.setName("Company 1");
     for (ApplicationDTO applicationDTO : applicationDAOTest.getAllApplications()) {
+      if (applicationDTO.getId()==1){
+      newRoyaltyDTO.setId(1L);
       newRoyaltyDTO.setApplication(applicationDTO);
       newRoyaltyDTO.setCompany(companyDTO);
-      newRoyaltyDTO.setShareRate(new BigDecimal(15));
-      newRoyaltyDTO.setShareRateCalculationField("S");
-      royaltyDTOList.add(newRoyaltyDTO);
+      newRoyaltyDTO.setShareRate(new BigDecimal(10));
+      newRoyaltyDTO.setShareRateCalculationField("P");
+      ZoneDTO zone = new ZoneDTO();
+      zone.setId(0L);
+      zone.setCode("ZONE0");
+      zone.setName("ZONE0");
+      List<ZoneDTO> zoneList = new ArrayList<ZoneDTO>();
+      zoneList.add(zone);
+      newRoyaltyDTO.setZones(zoneList);
+      royaltyDTOList.add(newRoyaltyDTO);}
     }
   }
   

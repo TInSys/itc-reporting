@@ -57,7 +57,7 @@ public class FileDownloadServlet extends HttpServlet {
   }
 
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, RuntimeException {
 
     FiscalPeriodDTO period = new FiscalPeriodDTO();
     int month = Integer.parseInt(req.getParameter("month"));

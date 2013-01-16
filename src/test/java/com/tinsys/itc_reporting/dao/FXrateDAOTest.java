@@ -39,7 +39,7 @@ public class FXrateDAOTest implements FXRateDAO {
     
     ArrayList<FXRateDTO> fxRateList = new ArrayList<FXRateDTO>();
     
-    if (monthYearToPeriod.getYear()==2013 && (monthYearToPeriod.getMonth()==1 || monthYearToPeriod.getMonth()==4)){
+    if (monthYearToPeriod.getYear()==2013 && monthYearToPeriod.getMonth()!=3){
       FXRateDTO fxRateDTO = new FXRateDTO();
       fxRateDTO.setId(0L);
       fxRateDTO.setPeriod(monthYearToPeriod);
@@ -49,6 +49,17 @@ public class FXrateDAOTest implements FXRateDAO {
       zone.setName("ZONE0");
       fxRateDTO.setZone(zone);
       fxRateDTO.setRate(new BigDecimal(0.12453));
+      fxRateList.add(fxRateDTO);
+
+      fxRateDTO = new FXRateDTO();
+      fxRateDTO.setId(1L);
+      fxRateDTO.setPeriod(monthYearToPeriod);
+      zone = new ZoneDTO();
+      zone.setId(1L);
+      zone.setCode("ZONE1");
+      zone.setName("ZONE1");
+      fxRateDTO.setZone(zone);
+      fxRateDTO.setRate(new BigDecimal(0.99999));
       fxRateList.add(fxRateDTO);
     }
     return fxRateList;

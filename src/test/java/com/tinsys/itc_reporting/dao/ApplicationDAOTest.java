@@ -18,14 +18,14 @@ public class ApplicationDAOTest implements ApplicationDAO {
     applicationDTOList.add(newApplication);
 
     newApplication = new ApplicationDTO();
-    newApplication.setId(0L);
+    newApplication.setId(1L);
     newApplication.setName("Application 2");
     newApplication.setVendorID("VD2");
 
     applicationDTOList.add(newApplication);
 
     newApplication = new ApplicationDTO();
-    newApplication.setId(0L);
+    newApplication.setId(2L);
     newApplication.setName("Application 3");
     newApplication.setVendorID("VD3");
 

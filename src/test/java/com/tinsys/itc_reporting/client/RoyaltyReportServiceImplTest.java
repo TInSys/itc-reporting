@@ -124,8 +124,47 @@ public class RoyaltyReportServiceImplTest {
     endPeriod.setId(1L);
     endPeriod.setMonth(4);
     endPeriod.setYear(2013);
-    BigDecimal expected = new BigDecimal(17.93).setScale(2, RoundingMode.HALF_UP);
-    Assert.assertEquals(expected, royaltyReportService.getCompanyReport(company, startPeriod, endPeriod).get(0).getReferenceCurrencyProceedsAfterTaxTotalAmount().setScale(2, RoundingMode.HALF_UP));
+    BigDecimal expected = new BigDecimal(0.64).setScale(2, RoundingMode.HALF_UP);
+    Assert.assertEquals(expected, royaltyReportService.getCompanyReport(company, startPeriod, endPeriod).get(0).getReferenceCurrencyCompanyRoyaltiesTotalAmount().setScale(2, RoundingMode.HALF_UP));
   }
   
-}
+  @Test
+  public void testGetCompanyReportDistinctLinesForDistinctZones() {
+    CompanyDTO company = new CompanyDTO();
+    company.setId(0L);
+    company.setCurrencyISO("EUR");
+    company.setName("Company 1");
+
+    FiscalPeriodDTO startPeriod = new FiscalPeriodDTO();
+    startPeriod.setId(0L);
+    startPeriod.setMonth(6);
+    startPeriod.setYear(2013);
+
+    FiscalPeriodDTO endPeriod = new FiscalPeriodDTO();
+    endPeriod.setId(1L);
+    endPeriod.setMonth(6);
+    endPeriod.setYear(2013);
+    int expected = 2;
+    Assert.assertEquals(expected, royaltyReportService.getCompanyReport(company, startPeriod, endPeriod).size());
+  }
+  
+  @Test
+  public void testGetCompanyReportDistinctLinesForDistinctPeriods() {
+    CompanyDTO company = new CompanyDTO();
+    company.setId(0L);
+    company.setCurrencyISO("EUR");
+    company.setName("Company 1");
+
+    FiscalPeriodDTO startPeriod = new FiscalPeriodDTO();
+    startPeriod.setId(0L);
+    startPeriod.setMonth(7);
+    startPeriod.setYear(2013);
+
+    FiscalPeriodDTO endPeriod = new FiscalPeriodDTO();
+    endPeriod.setId(1L);
+    endPeriod.setMonth(8);
+    endPeriod.setYear(2013);
+    int expected = 2;
+    Assert.assertEquals(expected, royaltyReportService.getCompanyReport(company, startPeriod, endPeriod).size());
+  }
+ }

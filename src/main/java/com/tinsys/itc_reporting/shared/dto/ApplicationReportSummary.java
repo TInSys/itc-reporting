@@ -101,4 +101,13 @@ public class ApplicationReportSummary implements Serializable {
     this.referenceCurrencyProceedsAfterTax = referenceCurrencyProceedsAfterTax;
   }
 
+  public void init() {
+    this.setOriginalCurrencyAmount(new BigDecimal(0));
+    this.setOriginalCurrencyProceeds(new BigDecimal(0));
+    this.setOriginalCurrencyProceedsAfterTax(new BigDecimal(0));
+    this.setReferenceCurrencyAmount(new BigDecimal(0));
+    this.setReferenceCurrencyProceedsAfterTax(new BigDecimal(0));
+    this.setReferenceCurrencyProceeds(new BigDecimal(0));
+  }
+
 }
