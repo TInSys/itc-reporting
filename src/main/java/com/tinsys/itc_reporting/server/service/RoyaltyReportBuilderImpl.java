@@ -39,7 +39,7 @@ public class RoyaltyReportBuilderImpl implements RoyaltyReportBuilder {
   private RoyaltyDAO royaltyDAO;
 
   private RoyaltyReportLine reportLine;
-  private List<RoyaltyReportLine> report;
+  private ArrayList<RoyaltyReportLine> report;
 
   private FiscalPeriodDTO currentPeriod = null;
   private ApplicationDTO currentApplication = null;
@@ -89,11 +89,11 @@ public class RoyaltyReportBuilderImpl implements RoyaltyReportBuilder {
     this.reportLine = reportLine;
   }
 
-  public List<RoyaltyReportLine> getReport() {
+  public ArrayList<RoyaltyReportLine> getReport() {
     return report;
   }
 
-  public void setReport(List<RoyaltyReportLine> report) {
+  public void setReport(ArrayList<RoyaltyReportLine> report) {
     this.report = report;
   }
 

@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -180,10 +179,10 @@ public class RoyaltiesReport extends Composite implements WidgetSwitchManagement
     endMonthPeriodDto.setMonth(endMonthPeriodListBox.getSelectedIndex() + 1);
     endMonthPeriodDto.setYear(endYearPeriodListBox.getSelectedIndex() + STARTING_YEAR);
 
-    royaltyReportService.getCompanyReport(currentCompany, startMonthPeriodDto, endMonthPeriodDto, new AsyncCallback<List<RoyaltyReportLine>>() {
+    royaltyReportService.getCompanyReport(currentCompany, startMonthPeriodDto, endMonthPeriodDto, new AsyncCallback<ArrayList<RoyaltyReportLine>>() {
 
       @Override
-      public void onSuccess(List<RoyaltyReportLine> result) {
+      public void onSuccess(ArrayList<RoyaltyReportLine> result) {
         if (result != null && result.size() > 0) {
           String[] months = LocaleInfo.getCurrentLocale().getDateTimeFormatInfo().monthsFull();
           int lineIdx = 0;

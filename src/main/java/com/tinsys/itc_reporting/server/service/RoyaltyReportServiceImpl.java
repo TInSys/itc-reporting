@@ -74,7 +74,7 @@ public class RoyaltyReportServiceImpl implements RoyaltyReportService {
   }
 
   @Override
-  public List<RoyaltyReportLine> getCompanyReport(CompanyDTO company, FiscalPeriodDTO startPeriod, FiscalPeriodDTO endPeriod) {
+  public ArrayList<RoyaltyReportLine> getCompanyReport(CompanyDTO company, FiscalPeriodDTO startPeriod, FiscalPeriodDTO endPeriod) {
     logger.debug("Preparing report");
     if (company != null) {
     List<RoyaltyDTO> royalties = royaltyDAO.getAllRoyalty(company);
