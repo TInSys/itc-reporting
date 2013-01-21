@@ -53,12 +53,6 @@
 
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-jdbc</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
@@ -126,13 +120,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-			<version>1.0.0.GA</version>
-			<classifier>sources</classifier>
-		</dependency>
-
-		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<version>4.2.0.Final</version>
@@ -145,13 +132,13 @@
 		</dependency>
 
 		<dependency>
-			<groupId>aspectj</groupId>
+			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>
 			<version>1.5.4</version>
 		</dependency>
 
 		<dependency>
-			<groupId>aspectj</groupId>
+			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
 			<version>1.5.4</version>
 			<scope>compile</scope>
@@ -169,13 +156,6 @@
 			<artifactId>hibernate</artifactId>
 			<version>3.5.4-Final</version>
 			<type>pom</type>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-			<version>1.0.0.GA</version>
-			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 
