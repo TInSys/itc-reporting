@@ -41,6 +41,7 @@ public class FileUploadServlet extends HttpServlet {
   private List<String> duplicateFileCheck = new ArrayList<String>();
   private List<String> processedFiles = new ArrayList<String>();
   private List<String> notProcessedFiles = new ArrayList<String>();
+  private FinancialReportFileParser fileParser;
 
   @Override
   public void init(ServletConfig config) throws ServletException {
@@ -71,7 +72,20 @@ public class FileUploadServlet extends HttpServlet {
         processedFiles.clear();
         notProcessedFiles.clear();
         for (FileItem item : items) {
-          parseFile(item);
+          fileParser = new FinancialReportFileParserImpl(item);
+          if (fileParser.getErrorList() != null) {
+            this.errorList.addAll(fileParser.getErrorList());
+            notProcessedFiles.add(item.getName());
+          } else {
+            if (!duplicateFileCheck.contains(fileParser.getFileName())) {
+              duplicateFileCheck.add(fileParser.getFileName());
+              fileParser.parseContent();              
+            } else { 
+              this.errorList.add("There's already a file with name " + fileParser.getFileName() + " in this batch");
+              notProcessedFiles.add(item.getName());
+            }
+          }
+          
         }
         resp.getOutputStream().print(processLog());
 
@@ -83,7 +97,6 @@ public class FileUploadServlet extends HttpServlet {
         resp.getOutputStream().print("error parsing file : " + e.getMessage());
         resp.flushBuffer();
         e.printStackTrace();
-
       }
 
     } else {
@@ -114,39 +127,10 @@ public class FileUploadServlet extends HttpServlet {
 
   private void parseFile(FileItem item) throws IOException {
     List<String> tmpErrorList = new ArrayList<String>();
-
-    if (item.isFormField()) {
-      return;
-    }
-    logger.debug("Started Parsing File " + item.getName());
-
-    int periodIndex = item.getName().indexOf("_");
-    int zoneIndex = item.getName().indexOf("_", periodIndex + 1);
-    if (periodIndex == -1 || zoneIndex == -1) {
-      tmpErrorList.add("Unknow file name format for file " + item.getName());
-      notProcessedFiles.add(item.getName());
-      logger.error("Unknow file name format for file " + item.getName());
-      notProcessedFiles.add(item.getName());
-      errorList.addAll(tmpErrorList);
-      return;
-    }
-    String code = item.getName().substring(zoneIndex + 1, zoneIndex + 3);
-    String fileMonth = item.getName().substring(periodIndex + 1, periodIndex + 3);
-    String fileYear = item.getName().substring(periodIndex + 3, periodIndex + 5);
-    if ((!fileMonth.matches("[0-9]+") || Integer.parseInt(fileMonth) < 1 || Integer.parseInt(fileMonth) > 12) || !fileYear.matches("[0-9]+")) {
-      tmpErrorList.add("Period can't be parsed in the file name :" + item.getName());
-      notProcessedFiles.add(item.getName());
-      logger.error("Period can't be parsed in the file name :" + item.getName());
-      errorList.addAll(tmpErrorList);
-      return;
-    }
-    String fileName = item.getName().substring(0, item.getName().indexOf('.'));
-    FiscalPeriod period = new FiscalPeriod();
-    period.setMonth(Integer.parseInt(fileMonth));
-    period.setYear(Integer.parseInt("20" + fileYear));
-    if (!duplicateFileCheck.contains(fileName)) {
-      duplicateFileCheck.add(fileName);
-      Zone zone = saleService.findZone(code);
+    
+    
+    // si pas doublon traiter le fichier
+/*      Zone zone = saleService.findZone(code);
       period = saleService.findOrCreatePeriod(period);
       if (zone == null) {
         tmpErrorList.add("No corresponding Zone found in database for :" + code + " . File " + item.getName() + " won't be processed");
@@ -195,13 +179,8 @@ public class FileUploadServlet extends HttpServlet {
       }
       processedFiles.add(item.getName());
       errorList.addAll(tmpErrorList);
-      logger.debug("Finished Parsing File " + item.getName());
-    } else {
-      tmpErrorList.add("There's already a file with name " + fileName + " in this batch");
-      notProcessedFiles.add(item.getName());
-      logger.debug("There's already a file with name " + fileName + " in this batch");
-      errorList.addAll(tmpErrorList);
-    }
+      logger.debug("Finished Parsing File " + item.getName());*/
+    
 
   }
 }
