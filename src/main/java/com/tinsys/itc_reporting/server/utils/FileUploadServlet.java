@@ -1,11 +1,8 @@
 package com.tinsys.itc_reporting.server.utils;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.GZIPInputStream;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -17,16 +14,9 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.Ostermiller.util.CSVParser;
-import com.Ostermiller.util.LabeledCSVParser;
-import com.tinsys.itc_reporting.model.Application;
-import com.tinsys.itc_reporting.model.FiscalPeriod;
-import com.tinsys.itc_reporting.model.Sales;
-import com.tinsys.itc_reporting.model.Zone;
 import com.tinsys.itc_reporting.server.service.SaleService;
 
 public class FileUploadServlet extends HttpServlet {
@@ -34,7 +24,6 @@ public class FileUploadServlet extends HttpServlet {
   /**
      * 
      */
-  private static final Logger logger = Logger.getLogger(FileUploadServlet.class);
   private static final long serialVersionUID = 1L;
   private SaleService saleService;
   private List<String> errorList = new ArrayList<String>();
@@ -73,13 +62,19 @@ public class FileUploadServlet extends HttpServlet {
         notProcessedFiles.clear();
         for (FileItem item : items) {
           fileParser = new FinancialReportFileParserImpl(item);
-          if (fileParser.getErrorList() != null) {
+          fileParser.setSaleService(saleService);
+          if (fileParser.getErrorList().size() > 0) {
             this.errorList.addAll(fileParser.getErrorList());
             notProcessedFiles.add(item.getName());
           } else {
             if (!duplicateFileCheck.contains(fileParser.getFileName())) {
               duplicateFileCheck.add(fileParser.getFileName());
-              fileParser.parseContent();              
+              if (!fileParser.parseContent() || fileParser.getErrorList().size( )> 0) {// file not processed
+                notProcessedFiles.add(item.getName());
+                this.errorList.addAll(fileParser.getErrorList());
+              } else {
+                processedFiles.add(item.getName());
+              }
             } else { 
               this.errorList.add("There's already a file with name " + fileParser.getFileName() + " in this batch");
               notProcessedFiles.add(item.getName());
@@ -123,64 +118,5 @@ public class FileUploadServlet extends HttpServlet {
       processLog += error + ls;
     }
     return processLog;
-  }
-
-  private void parseFile(FileItem item) throws IOException {
-    List<String> tmpErrorList = new ArrayList<String>();
-    
-    
-    // si pas doublon traiter le fichier
-/*      Zone zone = saleService.findZone(code);
-      period = saleService.findOrCreatePeriod(period);
-      if (zone == null) {
-        tmpErrorList.add("No corresponding Zone found in database for :" + code + " . File " + item.getName() + " won't be processed");
-        notProcessedFiles.add(item.getName());
-        errorList.addAll(tmpErrorList);
-        return;
-      }
-      InputStream fis;
-      GZIPInputStream gfis;
-      LabeledCSVParser lcsvp;
-      if (item.getContentType().equalsIgnoreCase("application/x-gzip")) {
-        gfis = new GZIPInputStream(item.getInputStream());
-        lcsvp = new LabeledCSVParser(new CSVParser(gfis));
-      } else {
-        fis = item.getInputStream();
-        lcsvp = new LabeledCSVParser(new CSVParser(fis));
-      }
-      fis = item.getInputStream();
-      lcsvp.changeDelimiter('\t');
-      while (lcsvp.getLine() != null && lcsvp.getValueByLabel("Quantity") != null) {
-        Sales tmpSale = new Sales();
-        String fileApp = lcsvp.getValueByLabel("Vendor Identifier");
-        Application application = saleService.findApplication(fileApp);
-        if (application == null) {
-          tmpErrorList.add("No corresponding Application found in database for :" + fileApp + " . File " + item.getName() + " won't be processed");
-          notProcessedFiles.add(item.getName());
-          continue;
-        }
-        tmpSale.setPeriod(period);
-        tmpSale.setZone(zone);
-        tmpSale.setApplication(application);
-        tmpSale.setCountryCode(lcsvp.getValueByLabel("Country Of Sale"));
-        tmpSale.setPromoCode(lcsvp.getValueByLabel("Promo Code"));
-        if (tmpSale.getPromoCode().length() == 0) {
-          tmpSale.setPromoCode(null);
-        }
-        tmpSale.setIndividualPrice(new BigDecimal(lcsvp.getValueByLabel("Customer Price")));
-        tmpSale.setIndividualProceeds(new BigDecimal(lcsvp.getValueByLabel("Partner Share")));
-        tmpSale.setSoldUnits(Integer.parseInt(lcsvp.getValueByLabel("Quantity")));
-        tmpSale.setTotalPrice(tmpSale.getIndividualPrice().multiply(new BigDecimal(tmpSale.getSoldUnits())));
-        tmpSale.setTotalProceeds(tmpSale.getIndividualProceeds().multiply(new BigDecimal(tmpSale.getSoldUnits())));
-        if (tmpErrorList.size() == 0) {
-          logger.debug(" Adding sale : " + tmpSale.toString());
-          saleService.summarizeSale(tmpSale);
-        }
-      }
-      processedFiles.add(item.getName());
-      errorList.addAll(tmpErrorList);
-      logger.debug("Finished Parsing File " + item.getName());*/
-    
-
   }
 }
