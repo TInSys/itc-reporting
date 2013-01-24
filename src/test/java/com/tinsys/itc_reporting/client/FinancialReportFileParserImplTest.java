@@ -30,29 +30,47 @@ public class FinancialReportFileParserImplTest {
 
   @Test
   public void testParsePeriodNotOk() {
-    FileItem fileItem = getFileItem("/financialFiles/unparsablePeriod.txt");
-    FinancialReportFileParserImpl fileParser = new FinancialReportFileParserImpl(fileItem);
-    Assert.assertEquals(fileParser.getErrorList().size(),1);
-    Assert.assertThat(fileParser.getErrorList().get(0), JUnitMatchers.containsString("could not retrieve period in file name"));
-  }
-
-  /*
-  @Test
-  public void testParseZone() {
-    FileItem fileItem = getFileItem("/financialFiles/unparsableZone_0102_.txt");
+    FileItem fileItem = getFileItem("unparsablePeriod.txt");
     FinancialReportFileParserImpl fileParser = new FinancialReportFileParserImpl(fileItem);
     Assert.assertEquals(fileParser.getErrorList().size(),1);
     Assert.assertThat(fileParser.getErrorList().get(0), JUnitMatchers.containsString("could not retrieve period in file name"));
   }
 
   @Test
-  public void testParseContent() {
-    fail("Not yet implemented");
+  public void testParsePeriodOkButNotNumeric() {
+    FileItem fileItem = getFileItem("parsableperiod_0a0b.txt");
+    FinancialReportFileParserImpl fileParser = new FinancialReportFileParserImpl(fileItem);
+    Assert.assertEquals(fileParser.getErrorList().size(),1);
+    Assert.assertThat(fileParser.getErrorList().get(0), JUnitMatchers.containsString("Period can't be parsed in the file name"));
   }
-  */
 
-  private FileItem getFileItem(String string) {
-    URL filePath = getClass().getResource(string);
+  @Test
+  public void testParsePeriodOkButNotAPeriod() {
+    FileItem fileItem = getFileItem("parsableperiod_1322.txt");
+    FinancialReportFileParserImpl fileParser = new FinancialReportFileParserImpl(fileItem);
+    Assert.assertEquals(fileParser.getErrorList().size(),1);
+    Assert.assertThat(fileParser.getErrorList().get(0), JUnitMatchers.containsString("Period can't be parsed in the file name"));
+  }
+
+  @Test
+  public void testParsePeriodOKButZoneNotOk() {
+    FileItem fileItem = getFileItem("unparsableZone_0102.txt");
+    FinancialReportFileParserImpl fileParser = new FinancialReportFileParserImpl(fileItem);
+    Assert.assertEquals(fileParser.getErrorList().size(),1);
+    Assert.assertThat(fileParser.getErrorList().get(0), JUnitMatchers.containsString("zone code can't be parsed in the file name"));
+  }
+
+  @Test
+  public void testParseFileNameWithoutExtension() {
+    FileItem fileItem = getFileItem("unparsableZone_0102_XX");
+    FinancialReportFileParserImpl fileParser = new FinancialReportFileParserImpl(fileItem);
+    Assert.assertEquals(fileParser.getErrorList().size(),1);
+    Assert.assertThat(fileParser.getErrorList().get(0), JUnitMatchers.containsString("should have an extension"));
+  }
+  
+
+  private FileItem getFileItem(String fileName) {
+    URL filePath = getClass().getResource("/financialFiles/"+fileName);
     InputStream inputStream = null;
     try {
       inputStream = new FileInputStream(filePath.getPath());
@@ -66,7 +84,7 @@ public class FinancialReportFileParserImplTest {
       e1.printStackTrace();
     }
     File outFile = new File(filePath.getPath());
-    FileItem fileItem = new DiskFileItem("fileUpload", "plain/text", false, filePath.getFile(), availableBytes, outFile);   
+    FileItem fileItem = new DiskFileItem("fileUpload", "plain/text", false, fileName, availableBytes, outFile);   
     return fileItem;
   }
   
