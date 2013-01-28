@@ -3,19 +3,27 @@ package com.tinsys.itc_reporting.client;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
+import java.net.URLConnection;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
 
+import com.tinsys.itc_reporting.dao.FiscalPeriodDAOTest;
+import com.tinsys.itc_reporting.dao.ZoneDAOTest;
+import com.tinsys.itc_reporting.server.service.SaleService;
 import com.tinsys.itc_reporting.server.utils.FinancialReportFileParserImpl;
+import com.tinsys.itc_reporting.utils.MockFileItem;
 
 public class FinancialReportFileParserImplTest {
 
@@ -29,63 +37,94 @@ public class FinancialReportFileParserImplTest {
   }
 
   @Test
-  public void testParsePeriodNotOk() {
+  public void testParsePeriodNotOkGivesError() {
     FileItem fileItem = getFileItem("unparsablePeriod.txt");
     FinancialReportFileParserImpl fileParser = new FinancialReportFileParserImpl(fileItem);
-    Assert.assertEquals(fileParser.getErrorList().size(),1);
+    Assert.assertEquals(fileParser.getErrorList().size(), 1);
     Assert.assertThat(fileParser.getErrorList().get(0), JUnitMatchers.containsString("could not retrieve period in file name"));
   }
 
   @Test
-  public void testParsePeriodOkButNotNumeric() {
+  public void testParsePeriodOkButNotNumericGivesError() {
     FileItem fileItem = getFileItem("parsableperiod_0a0b.txt");
     FinancialReportFileParserImpl fileParser = new FinancialReportFileParserImpl(fileItem);
-    Assert.assertEquals(fileParser.getErrorList().size(),1);
+    Assert.assertEquals(fileParser.getErrorList().size(), 1);
     Assert.assertThat(fileParser.getErrorList().get(0), JUnitMatchers.containsString("Period can't be parsed in the file name"));
   }
 
   @Test
-  public void testParsePeriodOkButNotAPeriod() {
+  public void testParsePeriodOkButNotBeeingAPeriodGivesError() {
     FileItem fileItem = getFileItem("parsableperiod_1322.txt");
     FinancialReportFileParserImpl fileParser = new FinancialReportFileParserImpl(fileItem);
-    Assert.assertEquals(fileParser.getErrorList().size(),1);
+    Assert.assertEquals(fileParser.getErrorList().size(), 1);
     Assert.assertThat(fileParser.getErrorList().get(0), JUnitMatchers.containsString("Period can't be parsed in the file name"));
   }
 
   @Test
-  public void testParsePeriodOKButZoneNotOk() {
+  public void testParsePeriodOKButZoneGivesError() {
     FileItem fileItem = getFileItem("unparsableZone_0102.txt");
     FinancialReportFileParserImpl fileParser = new FinancialReportFileParserImpl(fileItem);
-    Assert.assertEquals(fileParser.getErrorList().size(),1);
+    Assert.assertEquals(fileParser.getErrorList().size(), 1);
     Assert.assertThat(fileParser.getErrorList().get(0), JUnitMatchers.containsString("zone code can't be parsed in the file name"));
   }
 
   @Test
-  public void testParseFileNameWithoutExtension() {
+  public void testParseFileNameWithoutExtensionGivesError() {
     FileItem fileItem = getFileItem("unparsableZone_0102_XX");
     FinancialReportFileParserImpl fileParser = new FinancialReportFileParserImpl(fileItem);
-    Assert.assertEquals(fileParser.getErrorList().size(),1);
+    Assert.assertEquals(fileParser.getErrorList().size(), 1);
     Assert.assertThat(fileParser.getErrorList().get(0), JUnitMatchers.containsString("should have an extension"));
   }
-  
+
+  @Test
+  public void testUnsupportedMimetypeGivesError() throws IOException {
+    FileItem fileItem = getFileItem("unsupportedMIMEType_0102_EU.png");
+    FinancialReportFileParserImpl fileParser = new FinancialReportFileParserImpl(fileItem);
+    SaleService saleService = new SaleService();
+    saleService.setPeriodDAO(new FiscalPeriodDAOTest());
+    saleService.setZoneDAO(new ZoneDAOTest());
+    fileParser.setSaleService(saleService);
+    fileParser.parseContent();
+    Assert.assertEquals(1, fileParser.getErrorList().size());
+    Assert.assertThat(fileParser.getErrorList().get(0), JUnitMatchers.containsString("file MIME type"));
+  }
+
+  @Test
+  public void testUnKnownZoneGivesError() throws IOException {
+    FileItem fileItem = getFileItem("unknownZone_0102_XX.txt");
+    FinancialReportFileParserImpl fileParser = new FinancialReportFileParserImpl(fileItem);
+    SaleService saleService = new SaleService();
+    saleService.setPeriodDAO(new FiscalPeriodDAOTest());
+    saleService.setZoneDAO(new ZoneDAOTest());
+    fileParser.setSaleService(saleService);
+    fileParser.parseContent();
+    Assert.assertEquals(1, fileParser.getErrorList().size());
+    Assert.assertThat(fileParser.getErrorList().get(0), JUnitMatchers.containsString("No corresponding Zone found in database"));
+  }
+
+  @Test
+  public void testEmptyFile() throws IOException {
+    FileItem fileItem = getFileItem("emptyFile_0212_EU.txt");
+    FinancialReportFileParserImpl fileParser = new FinancialReportFileParserImpl(fileItem);
+    SaleService saleService = new SaleService();
+    saleService.setPeriodDAO(new FiscalPeriodDAOTest());
+    saleService.setZoneDAO(new ZoneDAOTest());
+    fileParser.setSaleService(saleService);
+    Assert.assertEquals(true, fileParser.parseContent());
+    Assert.assertEquals(0, fileParser.getErrorList().size());
+  }
 
   private FileItem getFileItem(String fileName) {
-    URL filePath = getClass().getResource("/financialFiles/"+fileName);
-    InputStream inputStream = null;
+    URL filePath = getClass().getResource("/financialFiles/" + fileName);
+    MockFileItem fileItem = null;
     try {
-      inputStream = new FileInputStream(filePath.getPath());
-    } catch (FileNotFoundException e1) {
-      e1.printStackTrace();
+      fileItem =  new MockFileItem(filePath,fileName);
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
-    int availableBytes = 0;
-    try {
-      availableBytes = inputStream.available();
-    } catch (IOException e1) {
-      e1.printStackTrace();
-    }
-    File outFile = new File(filePath.getPath());
-    FileItem fileItem = new DiskFileItem("fileUpload", "plain/text", false, fileName, availableBytes, outFile);   
+
     return fileItem;
   }
-  
+
 }

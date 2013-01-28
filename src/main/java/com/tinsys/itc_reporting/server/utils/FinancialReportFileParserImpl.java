@@ -119,10 +119,11 @@ public class FinancialReportFileParserImpl implements FinancialReportFileParser 
   @Override
   public boolean parseContent() throws IOException {
     
+    String tempCode = this.zone.getCode();
     this.zone = saleService.findZone(this.zone.getCode());
     period = saleService.findOrCreatePeriod(period);
     if (zone == null) {
-      this.errorList.add("No corresponding Zone found in database for :" + this.zone.getCode() + " . File " + this.fileItem.getName() + " won't be processed");
+      this.errorList.add("No corresponding Zone found in database for :" + tempCode + " . File " + this.fileItem.getName() + " won't be processed");
       return false;
     }
     InputStream fis;
@@ -131,9 +132,12 @@ public class FinancialReportFileParserImpl implements FinancialReportFileParser 
     if (this.fileItem.getContentType().equalsIgnoreCase("application/x-gzip")) {
       gfis = new GZIPInputStream(this.fileItem.getInputStream());
       lcsvp = new LabeledCSVParser(new CSVParser(gfis));
-    } else {
+    } else if (this.fileItem.getContentType().equalsIgnoreCase("text/plain")){
       fis = this.fileItem.getInputStream();
       lcsvp = new LabeledCSVParser(new CSVParser(fis));
+    } else {
+      this.errorList.add("file MIME type : " + this.fileItem.getContentType() + " for File " + this.fileItem.getName() + " is not supported; the file won't be processed");
+      return false;
     }
     lcsvp.changeDelimiter('\t');
     while (lcsvp.getLine() != null && lcsvp.getValueByLabel("Quantity") != null) {

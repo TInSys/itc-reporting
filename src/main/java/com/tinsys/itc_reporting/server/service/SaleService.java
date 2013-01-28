@@ -41,6 +41,22 @@ public class SaleService {
 
   private List<Sales> summarizedSales;
 
+  public void setApplicationDAO(ApplicationDAO applicationDAO) {
+    this.applicationDAO = applicationDAO;
+  }
+
+  public void setPeriodDAO(FiscalPeriodDAO periodDAO) {
+    this.periodDAO = periodDAO;
+  }
+
+  public void setZoneDAO(ZoneDAO zoneDAO) {
+    this.zoneDAO = zoneDAO;
+  }
+
+  public void setSaleDAO(SalesDAO saleDAO) {
+    this.saleDAO = saleDAO;
+  }
+
   public FiscalPeriod findOrCreatePeriod(FiscalPeriod period) {
     FiscalPeriod result = periodDAO.findPeriod(period);
     if (result == null) {
