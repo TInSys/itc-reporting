@@ -1,18 +1,9 @@
 package com.tinsys.itc_reporting.client;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
-import java.net.URLConnection;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItem;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -113,6 +104,19 @@ public class FinancialReportFileParserImplTest {
     Assert.assertEquals(true, fileParser.parseContent());
     Assert.assertEquals(0, fileParser.getErrorList().size());
   }
+  
+  @Test
+  public void testMissingVendorIdentifierHeaderInFileGivesError() throws IOException {
+    FileItem fileItem = getFileItem("missingVendorIdentifier_0212_EU.txt");
+    FinancialReportFileParserImpl fileParser = new FinancialReportFileParserImpl(fileItem);
+    SaleService saleService = new SaleService();
+    saleService.setPeriodDAO(new FiscalPeriodDAOTest());
+    saleService.setZoneDAO(new ZoneDAOTest());
+    fileParser.setSaleService(saleService);
+    Assert.assertEquals(true, fileParser.parseContent());
+    Assert.assertEquals(1, fileParser.getErrorList().size());
+    Assert.assertThat(fileParser.getErrorList().get(0), JUnitMatchers.containsString("No 'Vendor Identifier' header found"));
+  }
 
   private FileItem getFileItem(String fileName) {
     URL filePath = getClass().getResource("/financialFiles/" + fileName);
@@ -120,7 +124,6 @@ public class FinancialReportFileParserImplTest {
     try {
       fileItem =  new MockFileItem(filePath,fileName);
     } catch (Exception e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
 

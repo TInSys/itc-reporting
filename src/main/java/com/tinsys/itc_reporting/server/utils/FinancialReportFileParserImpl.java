@@ -19,17 +19,17 @@ import com.tinsys.itc_reporting.server.service.SaleService;
 
 public class FinancialReportFileParserImpl implements FinancialReportFileParser {
 
-  private SaleService saleService; 
+  private SaleService saleService;
   private FileItem fileItem;
   private Zone zone;
   private FiscalPeriod period;
   private String fileName;
-  
+
   private List<String> errorList = new ArrayList<String>();
-  
+
   public FinancialReportFileParserImpl() {
   }
-  
+
   public SaleService getSaleService() {
     return saleService;
   }
@@ -60,7 +60,7 @@ public class FinancialReportFileParserImpl implements FinancialReportFileParser 
     this.fileItem = item;
     this.init();
   }
-  
+
   private void init() {
     if (fileItem.isFormField()) {
       return;
@@ -69,17 +69,16 @@ public class FinancialReportFileParserImpl implements FinancialReportFileParser 
     if (this.period != null) {
       this.zone = this.parseZone();
       if (this.zone != null) {
-        this.fileName = this.parseFileName(); 
+        this.fileName = this.parseFileName();
       }
     }
   }
-
 
   @Override
   public FiscalPeriod parsePeriod() {
     int periodIndex = this.fileItem.getName().indexOf("_");
     if (periodIndex == -1 || this.fileItem.getName().length() < periodIndex + 5) {
-      this.errorList.add("For file "+this.fileItem.getName()+" ,could not retrieve period in file name ");
+      this.errorList.add("For file " + this.fileItem.getName() + " ,could not retrieve period in file name ");
       return null;
     }
     String fileMonth = fileItem.getName().substring(periodIndex + 1, periodIndex + 3);
@@ -93,12 +92,12 @@ public class FinancialReportFileParserImpl implements FinancialReportFileParser 
     period.setYear(Integer.parseInt("20" + fileYear));
     return period;
   }
-  
+
   @Override
   public Zone parseZone() {
     int periodIndex = this.fileItem.getName().indexOf("_");
-    int zoneIndex = this.fileItem.getName().indexOf("_", periodIndex+1);
-    if (zoneIndex == -1 || this.fileItem.getName().length() < zoneIndex + 2 ) {
+    int zoneIndex = this.fileItem.getName().indexOf("_", periodIndex + 1);
+    if (zoneIndex == -1 || this.fileItem.getName().length() < zoneIndex + 2) {
       this.errorList.add("zone code can't be parsed in the file name :" + fileItem.getName());
       return null;
     }
@@ -106,19 +105,19 @@ public class FinancialReportFileParserImpl implements FinancialReportFileParser 
     zone.setCode(this.fileItem.getName().substring(zoneIndex + 1, zoneIndex + 3));
     return zone;
   }
-  
+
   private String parseFileName() {
     int fileNameIndex = fileItem.getName().indexOf(".");
     if (fileNameIndex == -1) {
-      this.errorList.add("file "+fileItem.getName()+" should have an extension :");
+      this.errorList.add("file " + fileItem.getName() + " should have an extension :");
       return null;
     }
-    return fileItem.getName().substring(0,fileNameIndex);
+    return fileItem.getName().substring(0, fileNameIndex);
   }
 
   @Override
   public boolean parseContent() throws IOException {
-    
+
     String tempCode = this.zone.getCode();
     this.zone = saleService.findZone(this.zone.getCode());
     period = saleService.findOrCreatePeriod(period);
@@ -132,7 +131,7 @@ public class FinancialReportFileParserImpl implements FinancialReportFileParser 
     if (this.fileItem.getContentType().equalsIgnoreCase("application/x-gzip")) {
       gfis = new GZIPInputStream(this.fileItem.getInputStream());
       lcsvp = new LabeledCSVParser(new CSVParser(gfis));
-    } else if (this.fileItem.getContentType().equalsIgnoreCase("text/plain")){
+    } else if (this.fileItem.getContentType().equalsIgnoreCase("text/plain")) {
       fis = this.fileItem.getInputStream();
       lcsvp = new LabeledCSVParser(new CSVParser(fis));
     } else {
@@ -142,11 +141,17 @@ public class FinancialReportFileParserImpl implements FinancialReportFileParser 
     lcsvp.changeDelimiter('\t');
     while (lcsvp.getLine() != null && lcsvp.getValueByLabel("Quantity") != null) {
       Sales tmpSale = new Sales();
+      Application application = null;
       String fileApp = lcsvp.getValueByLabel("Vendor Identifier");
-      Application application = saleService.findApplication(fileApp);
-      if (application == null) {
-        this.errorList.add("No corresponding Application found in database for :" + fileApp + " . File " + this.fileItem.getName() + " won't be processed");
-        continue;
+      if (fileApp == null) {
+        this.errorList.add("No 'Vendor Identifier' header found for :" + fileApp + " . File " + this.fileItem.getName() + " won't be processed");
+        break;
+      } else {
+        application = saleService.findApplication(fileApp);
+        if (application == null) {
+          this.errorList.add("No corresponding Application found in database for :" + fileApp + " . File " + this.fileItem.getName() + " won't be processed");
+          continue;
+        }
       }
       tmpSale.setPeriod(period);
       tmpSale.setZone(zone);
