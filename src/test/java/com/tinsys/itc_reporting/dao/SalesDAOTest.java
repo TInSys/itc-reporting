@@ -23,8 +23,13 @@ public class SalesDAOTest implements SalesDAO {
   
   @Override
   public List<Sales> getAllSales(FiscalPeriodDTO aFiscalPeriodDTO) {
-    // TODO Auto-generated method stub
-    return null;
+    List<Sales> tmpSales = new ArrayList<Sales>();
+    for (Sales sales : this.salesList) {
+      if (sales.getPeriod().getMonth() == DTOUtils.periodDTOtoPeriod(aFiscalPeriodDTO).getMonth() && sales.getPeriod().getYear() == DTOUtils.periodDTOtoPeriod(aFiscalPeriodDTO).getYear() ){
+        tmpSales.add(sales);
+      }
+    }
+    return tmpSales;
   }
 
   @Override
@@ -52,7 +57,7 @@ public class SalesDAOTest implements SalesDAO {
 
   @Override
   public void saveOrUpdate(List<Sales> summarizedSales) {
-    
+    this.salesList.addAll(summarizedSales);
   }
 
   private void getSales() {

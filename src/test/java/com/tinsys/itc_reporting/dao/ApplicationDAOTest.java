@@ -3,6 +3,7 @@ package com.tinsys.itc_reporting.dao;
 import java.util.ArrayList;
 
 import com.tinsys.itc_reporting.model.Application;
+import com.tinsys.itc_reporting.server.utils.DTOUtils;
 import com.tinsys.itc_reporting.shared.dto.ApplicationDTO;
 
 public class ApplicationDAOTest implements ApplicationDAO {
@@ -67,8 +68,11 @@ public class ApplicationDAOTest implements ApplicationDAO {
 
   @Override
   public Application findApplicationByVendorID(String vendorID) {
-    // TODO Auto-generated method stub
+    for (ApplicationDTO applicationDTO : this.getAllApplications()) {
+      if (applicationDTO.getVendorID().equals(vendorID)) {
+        return DTOUtils.applicationDTOToApplication(applicationDTO);
+      }
+    }
     return null;
   }
-
 }

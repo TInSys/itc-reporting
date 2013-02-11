@@ -27,7 +27,7 @@ public class FiscalPeriodDAOTest implements FiscalPeriodDAO {
   @Override
   public FiscalPeriod findPeriod(FiscalPeriod aPeriod) {
     for (FiscalPeriodDTO fiscalPeriodDTO : this.fiscalPeriodList) {
-      if (fiscalPeriodDTO.getId()==aPeriod.getId()) {
+      if (fiscalPeriodDTO.getMonth()==aPeriod.getMonth() && fiscalPeriodDTO.getYear() == aPeriod.getYear()) {
          return DTOUtils.periodDTOtoPeriod(fiscalPeriodDTO);
       }
     };

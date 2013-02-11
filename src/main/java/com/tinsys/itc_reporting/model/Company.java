@@ -42,4 +42,17 @@ public class Company implements Serializable {
     return this.getName();
   }
 
+  @Override
+  public boolean equals(Object obj) {
+    if (obj != null && (obj.getClass().equals(this.getClass()))) {
+      Company company = (Company) obj;
+      return this.id == company.getId();
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Long.valueOf(this.id).hashCode();
+  }
 }

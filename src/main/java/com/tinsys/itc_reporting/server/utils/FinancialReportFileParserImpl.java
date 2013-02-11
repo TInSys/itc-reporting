@@ -139,7 +139,9 @@ public class FinancialReportFileParserImpl implements FinancialReportFileParser 
       return false;
     }
     lcsvp.changeDelimiter('\t');
+    boolean dataFound = false;
     while (lcsvp.getLine() != null && lcsvp.getValueByLabel("Quantity") != null) {
+      dataFound = true;
       Sales tmpSale = new Sales();
       Application application = null;
       String fileApp = lcsvp.getValueByLabel("Vendor Identifier");
@@ -170,7 +172,6 @@ public class FinancialReportFileParserImpl implements FinancialReportFileParser 
         saleService.summarizeSale(tmpSale);
       }
     }
-    return true;
+    return dataFound;
   }
-
 }

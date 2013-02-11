@@ -10,9 +10,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
 
+import com.tinsys.itc_reporting.dao.ApplicationDAOTest;
 import com.tinsys.itc_reporting.dao.FiscalPeriodDAOTest;
+import com.tinsys.itc_reporting.dao.SalesDAOTest;
 import com.tinsys.itc_reporting.dao.ZoneDAOTest;
+import com.tinsys.itc_reporting.model.FiscalPeriod;
 import com.tinsys.itc_reporting.server.service.SaleService;
+import com.tinsys.itc_reporting.server.utils.DTOUtils;
 import com.tinsys.itc_reporting.server.utils.FinancialReportFileParserImpl;
 import com.tinsys.itc_reporting.utils.MockFileItem;
 
@@ -101,7 +105,7 @@ public class FinancialReportFileParserImplTest {
     saleService.setPeriodDAO(new FiscalPeriodDAOTest());
     saleService.setZoneDAO(new ZoneDAOTest());
     fileParser.setSaleService(saleService);
-    Assert.assertEquals(true, fileParser.parseContent());
+    Assert.assertEquals(false, fileParser.parseContent());
     Assert.assertEquals(0, fileParser.getErrorList().size());
   }
   
@@ -118,6 +122,85 @@ public class FinancialReportFileParserImplTest {
     Assert.assertThat(fileParser.getErrorList().get(0), JUnitMatchers.containsString("No 'Vendor Identifier' header found"));
   }
 
+  @Test
+  public void testMissingQuantityLabelHeader() throws IOException {
+    FileItem fileItem = getFileItem("missingQuantityLabel_0212_EU.txt");
+    FinancialReportFileParserImpl fileParser = new FinancialReportFileParserImpl(fileItem);
+    SaleService saleService = new SaleService();
+    saleService.setPeriodDAO(new FiscalPeriodDAOTest());
+    saleService.setZoneDAO(new ZoneDAOTest());
+    fileParser.setSaleService(saleService);
+    Assert.assertEquals(false, fileParser.parseContent());
+  }
+
+  @Test
+  public void testUnknowApplicationInFileGivesError() throws IOException {
+    FileItem fileItem = getFileItem("unknownApplication_0212_EU.txt");
+    FinancialReportFileParserImpl fileParser = new FinancialReportFileParserImpl(fileItem);
+    SaleService saleService = new SaleService();
+    saleService.setPeriodDAO(new FiscalPeriodDAOTest());
+    saleService.setZoneDAO(new ZoneDAOTest());
+    saleService.setApplicationDAO(new ApplicationDAOTest());
+    fileParser.setSaleService(saleService);
+    Assert.assertEquals(true, fileParser.parseContent());
+    Assert.assertEquals(2,fileParser.getErrorList().size());
+    Assert.assertThat(fileParser.getErrorList().get(0), JUnitMatchers.containsString("No corresponding Application found"));
+  }
+  
+  @Test
+  public void testDataOK() throws IOException {
+    FileItem fileItem = getFileItem("dataOK_0212_EU.txt");
+    FinancialReportFileParserImpl fileParser = new FinancialReportFileParserImpl(fileItem);
+    SaleService saleService = new SaleService();
+    saleService.reset();
+    FiscalPeriodDAOTest fiscalPeriodDAO = new FiscalPeriodDAOTest();
+    saleService.setPeriodDAO(fiscalPeriodDAO);
+    saleService.setZoneDAO(new ZoneDAOTest());
+    saleService.setApplicationDAO(new ApplicationDAOTest());
+    SalesDAOTest salesDAO = new SalesDAOTest();
+    saleService.setSaleDAO(salesDAO);
+    fileParser.setSaleService(saleService);
+    
+    FiscalPeriod aPeriod = new FiscalPeriod();
+    aPeriod.setId(0L);
+    aPeriod.setMonth(2);
+    aPeriod.setYear(2012);
+    Assert.assertEquals(true, fileParser.parseContent());
+    Assert.assertEquals(0,fileParser.getErrorList().size());
+    saleService.saveOrUpdate();
+    Assert.assertEquals(2,salesDAO.getAllSales(DTOUtils.periodToPeriodDTO(fiscalPeriodDAO.findPeriod(aPeriod))).size());
+  }
+  
+  @Test
+  public void testSummarizationOK() throws IOException {
+    FileItem fileItem = getFileItem("dataOK_0212_EU.txt");
+    FinancialReportFileParserImpl fileParser = new FinancialReportFileParserImpl(fileItem);
+    SaleService saleService = new SaleService();
+    saleService.reset();
+    FiscalPeriodDAOTest fiscalPeriodDAO = new FiscalPeriodDAOTest();
+    saleService.setPeriodDAO(fiscalPeriodDAO);
+    saleService.setZoneDAO(new ZoneDAOTest());
+    saleService.setApplicationDAO(new ApplicationDAOTest());
+    SalesDAOTest salesDAO = new SalesDAOTest();
+    saleService.setSaleDAO(salesDAO);
+    fileParser.setSaleService(saleService);
+    Assert.assertEquals(true, fileParser.parseContent());
+    saleService.saveOrUpdate();
+
+    fileItem = getFileItem("dataSummarizationOK_0212_EU.txt");
+    fileParser = new FinancialReportFileParserImpl(fileItem);
+    fileParser.setSaleService(saleService);
+    
+    FiscalPeriod aPeriod = new FiscalPeriod();
+    aPeriod.setId(0L);
+    aPeriod.setMonth(2);
+    aPeriod.setYear(2012);
+    Assert.assertEquals(true, fileParser.parseContent());
+    Assert.assertEquals(0,fileParser.getErrorList().size());
+    saleService.saveOrUpdate();
+    Assert.assertEquals(2,salesDAO.getAllSales(DTOUtils.periodToPeriodDTO(fiscalPeriodDAO.findPeriod(aPeriod))).size());
+  }
+  
   private FileItem getFileItem(String fileName) {
     URL filePath = getClass().getResource("/financialFiles/" + fileName);
     MockFileItem fileItem = null;

@@ -51,4 +51,19 @@ public class Zone implements Serializable {
     return this.getCode();
   }
 
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj != null && (obj.getClass().equals(this.getClass()))) {
+      Zone zone = (Zone) obj;
+      return this.id == zone.getId();
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Long.valueOf(this.id).hashCode();
+  }
+  
 }

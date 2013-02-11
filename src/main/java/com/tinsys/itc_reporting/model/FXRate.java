@@ -56,4 +56,18 @@ public class FXRate implements Serializable {
     return currencyIso;
   }
 
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj != null && (obj.getClass().equals(this.getClass()))) {
+      FXRate fxRate = (FXRate) obj;
+      return this.id == fxRate.getId();
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Long.valueOf(this.id).hashCode();
+  }
 }
