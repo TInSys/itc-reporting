@@ -43,10 +43,12 @@ public class FXrateDAOTest implements FXRateDAO {
       FXRateDTO fxRateDTO = new FXRateDTO();
       fxRateDTO.setId(0L);
       fxRateDTO.setPeriod(monthYearToPeriod);
+      fxRateDTO.setCurrencyIso("EUR");
       ZoneDTO zone = new ZoneDTO();
       zone.setId(0L);
       zone.setCode("ZONE0");
       zone.setName("ZONE0");
+      zone.setCurrencyISO("EUR");
       fxRateDTO.setZone(zone);
       fxRateDTO.setRate(new BigDecimal(0.12453));
       fxRateList.add(fxRateDTO);
@@ -54,10 +56,12 @@ public class FXrateDAOTest implements FXRateDAO {
       fxRateDTO = new FXRateDTO();
       fxRateDTO.setId(1L);
       fxRateDTO.setPeriod(monthYearToPeriod);
+      fxRateDTO.setCurrencyIso("EUR");
       zone = new ZoneDTO();
       zone.setId(1L);
       zone.setCode("ZONE1");
       zone.setName("ZONE1");
+      zone.setCurrencyISO("EUR");
       fxRateDTO.setZone(zone);
       fxRateDTO.setRate(new BigDecimal(0.99999));
       fxRateList.add(fxRateDTO);

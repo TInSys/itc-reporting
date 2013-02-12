@@ -47,6 +47,18 @@ public class SalesReportServiceImpl implements SalesReportService {
   @Qualifier("taxDAO")
   private TaxDAO taxDAO;
 
+  public void setSalesDAO(SalesDAO salesDAO) {
+    this.salesDAO = salesDAO;
+  }
+
+  public void setFxRateDAO(FXRateDAO fxRateDAO) {
+    this.fxRateDAO = fxRateDAO;
+  }
+
+  public void setTaxDAO(TaxDAO taxDAO) {
+    this.taxDAO = taxDAO;
+  }
+
   @Override
   public List<ZoneReportSummary> getMonthlyReport(FiscalPeriodDTO period) throws RuntimeException {
     logger.debug("Preparing report");
@@ -239,6 +251,7 @@ public class SalesReportServiceImpl implements SalesReportService {
         break;
       }
     }
+    
     if (changeRate == null) {
       throw new RuntimeException("No Change Rate found for Zone " + zone.getCode() + " - " + zone.getName() + " for choosen Month");
     }
@@ -246,6 +259,7 @@ public class SalesReportServiceImpl implements SalesReportService {
     if (tmpCurrency == null) {
       throw new RuntimeException("No Reference currency found for Zone " + zone.getCode() + " - " + zone.getName() + " for choosen Month");
     }
+    
     if (referenceCurrency != null && !referenceCurrency.equals(tmpCurrency)) {
       throw new RuntimeException("Multiple reference currency not allowed. Zone : " + zone.getCode() + " - " + zone.getName() + " will change current currency : "
           + referenceCurrency + " to : " + tmpCurrency);

@@ -13,6 +13,10 @@ import org.apache.commons.fileupload.FileItem;
 
 public class MockFileItem implements FileItem {
 
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 7910201445419101238L;
   private URL mockUploadedFile;
   private String fileName;
   

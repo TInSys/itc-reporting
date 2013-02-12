@@ -108,7 +108,7 @@ public class FinancialReportFileParserImplTest {
     Assert.assertEquals(false, fileParser.parseContent());
     Assert.assertEquals(0, fileParser.getErrorList().size());
   }
-  
+
   @Test
   public void testMissingVendorIdentifierHeaderInFileGivesError() throws IOException {
     FileItem fileItem = getFileItem("missingVendorIdentifier_0212_EU.txt");
@@ -143,10 +143,10 @@ public class FinancialReportFileParserImplTest {
     saleService.setApplicationDAO(new ApplicationDAOTest());
     fileParser.setSaleService(saleService);
     Assert.assertEquals(true, fileParser.parseContent());
-    Assert.assertEquals(2,fileParser.getErrorList().size());
+    Assert.assertEquals(2, fileParser.getErrorList().size());
     Assert.assertThat(fileParser.getErrorList().get(0), JUnitMatchers.containsString("No corresponding Application found"));
   }
-  
+
   @Test
   public void testDataOK() throws IOException {
     FileItem fileItem = getFileItem("dataOK_0212_EU.txt");
@@ -160,17 +160,18 @@ public class FinancialReportFileParserImplTest {
     SalesDAOTest salesDAO = new SalesDAOTest();
     saleService.setSaleDAO(salesDAO);
     fileParser.setSaleService(saleService);
-    
+
     FiscalPeriod aPeriod = new FiscalPeriod();
     aPeriod.setId(0L);
     aPeriod.setMonth(2);
     aPeriod.setYear(2012);
     Assert.assertEquals(true, fileParser.parseContent());
-    Assert.assertEquals(0,fileParser.getErrorList().size());
+    Assert.assertEquals(0, fileParser.getErrorList().size());
     saleService.saveOrUpdate();
-    Assert.assertEquals(2,salesDAO.getAllSales(DTOUtils.periodToPeriodDTO(fiscalPeriodDAO.findPeriod(aPeriod))).size());
+    Assert.assertEquals(2, salesDAO.getAllSales(DTOUtils.periodToPeriodDTO(fiscalPeriodDAO.findPeriod(aPeriod))).size());
   }
   
+  // check summarization 
   @Test
   public void testSummarizationOK() throws IOException {
     FileItem fileItem = getFileItem("dataOK_0212_EU.txt");
@@ -190,22 +191,21 @@ public class FinancialReportFileParserImplTest {
     fileItem = getFileItem("dataSummarizationOK_0212_EU.txt");
     fileParser = new FinancialReportFileParserImpl(fileItem);
     fileParser.setSaleService(saleService);
-    
     FiscalPeriod aPeriod = new FiscalPeriod();
     aPeriod.setId(0L);
     aPeriod.setMonth(2);
     aPeriod.setYear(2012);
     Assert.assertEquals(true, fileParser.parseContent());
-    Assert.assertEquals(0,fileParser.getErrorList().size());
+    Assert.assertEquals(0, fileParser.getErrorList().size());
     saleService.saveOrUpdate();
-    Assert.assertEquals(2,salesDAO.getAllSales(DTOUtils.periodToPeriodDTO(fiscalPeriodDAO.findPeriod(aPeriod))).size());
+    Assert.assertEquals(2, salesDAO.getAllSales(DTOUtils.periodToPeriodDTO(fiscalPeriodDAO.findPeriod(aPeriod))).size());
   }
-  
+
   private FileItem getFileItem(String fileName) {
     URL filePath = getClass().getResource("/financialFiles/" + fileName);
     MockFileItem fileItem = null;
     try {
-      fileItem =  new MockFileItem(filePath,fileName);
+      fileItem = new MockFileItem(filePath, fileName);
     } catch (Exception e) {
       e.printStackTrace();
     }

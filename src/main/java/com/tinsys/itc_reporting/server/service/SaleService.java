@@ -75,14 +75,14 @@ public class SaleService {
     return result;
   }
 
-  public void summarizeSale(Sales tmpSale) {
+  public void addOrUpdateSale(Sales tmpSale) {
     boolean summarized = false;
     for (Sales sale : summarizedSales) {
       if (sale.getApplication().equals(tmpSale.getApplication()) && sale.getPeriod().equals(tmpSale.getPeriod()) && sale.getZone().equals(tmpSale.getZone())
-          && sale.getCountryCode().equals(tmpSale.getCountryCode()) && sale.getPromoCode().equals(tmpSale.getPromoCode())
-          && sale.getIndividualPrice().equals(tmpSale.getIndividualPrice())) {
+          && sale.getCountryCode().equals(tmpSale.getCountryCode()) && ((sale.getPromoCode() == null && tmpSale.getPromoCode() == null) ||sale.getPromoCode().equals(tmpSale.getPromoCode()))
+          && sale.getIndividualPrice().compareTo(tmpSale.getIndividualPrice()) == 0) {
         summarized = true;
-        sale.setSoldUnits(sale.getSoldUnits());
+        sale.setSoldUnits(tmpSale.getSoldUnits());
         sale.setTotalPrice(tmpSale.getIndividualPrice().multiply(new BigDecimal(tmpSale.getSoldUnits())));
       }
     }
@@ -96,6 +96,7 @@ public class SaleService {
     if (summarizedSales.size() != 0) {
       for (Sales sale : summarizedSales) {
         Sales existingSale = saleDAO.findSale(sale);
+        // if a sale exists it is updated
         if (existingSale != null) {
           sale.setId(existingSale.getId());
         }

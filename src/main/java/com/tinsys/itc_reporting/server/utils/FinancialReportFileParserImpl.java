@@ -128,6 +128,7 @@ public class FinancialReportFileParserImpl implements FinancialReportFileParser 
     InputStream fis;
     GZIPInputStream gfis;
     LabeledCSVParser lcsvp;
+    // only text or zip files allowed
     if (this.fileItem.getContentType().equalsIgnoreCase("application/x-gzip")) {
       gfis = new GZIPInputStream(this.fileItem.getInputStream());
       lcsvp = new LabeledCSVParser(new CSVParser(gfis));
@@ -140,6 +141,8 @@ public class FinancialReportFileParserImpl implements FinancialReportFileParser 
     }
     lcsvp.changeDelimiter('\t');
     boolean dataFound = false;
+    
+    // parsing
     while (lcsvp.getLine() != null && lcsvp.getValueByLabel("Quantity") != null) {
       dataFound = true;
       Sales tmpSale = new Sales();
@@ -168,8 +171,9 @@ public class FinancialReportFileParserImpl implements FinancialReportFileParser 
       tmpSale.setSoldUnits(Integer.parseInt(lcsvp.getValueByLabel("Quantity")));
       tmpSale.setTotalPrice(tmpSale.getIndividualPrice().multiply(new BigDecimal(tmpSale.getSoldUnits())));
       tmpSale.setTotalProceeds(tmpSale.getIndividualProceeds().multiply(new BigDecimal(tmpSale.getSoldUnits())));
+      // as soon there is an error we stop update of database but continue file parsing to catch all errors
       if (this.errorList.size() == 0) {
-        saleService.summarizeSale(tmpSale);
+        saleService.addOrUpdateSale(tmpSale);
       }
     }
     return dataFound;
