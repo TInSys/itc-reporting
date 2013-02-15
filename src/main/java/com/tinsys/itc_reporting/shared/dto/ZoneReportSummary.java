@@ -11,7 +11,6 @@ public class ZoneReportSummary implements Serializable {
   private static final long serialVersionUID = 1L;
   private String zoneName;
   private List<ApplicationReportSummary> applications;
-  private ApplicationReportSummary total;
 
   public String getZoneName() {
     return zoneName;
@@ -27,14 +26,6 @@ public class ZoneReportSummary implements Serializable {
 
   public void setApplications(List<ApplicationReportSummary> applications) {
     this.applications = applications;
-  }
-
-  public ApplicationReportSummary getTotal() {
-    return total;
-  }
-
-  public void setTotal(ApplicationReportSummary total) {
-    this.total = total;
   }
 
 }
