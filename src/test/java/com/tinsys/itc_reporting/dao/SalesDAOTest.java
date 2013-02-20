@@ -17,10 +17,6 @@ public class SalesDAOTest implements SalesDAO {
   ArrayList<Sales> salesList = new ArrayList<Sales>();
   ApplicationDAOTest applicationDAO = new ApplicationDAOTest();
 
-  public SalesDAOTest() {
-    this.createSales();
-  }
-
   @Override
   public List<Sales> getAllSales(FiscalPeriodDTO aFiscalPeriodDTO) {
     List<Sales> tmpSales = new ArrayList<Sales>();
@@ -87,173 +83,266 @@ public class SalesDAOTest implements SalesDAO {
     }
   }
 
-  public void createSales() {
+  public void createSales(int testPool) {
 
-    // sales ok
-    Sales sales = new Sales();
-    sales.setId(0L);
-    sales.setApplication(DTOUtils.applicationDTOToApplication(applicationDAO.findApplication(0L)));
-    sales.setIndividualPrice(new BigDecimal(10));
-    sales.setIndividualProceeds(new BigDecimal(8));
-    FiscalPeriod period = new FiscalPeriod();
-    period.setId(1L);
-    period.setMonth(1);
-    period.setYear(2013);
-    sales.setPeriod(period);
-    sales.setSoldUnits(4);
-    sales.setTotalPrice(sales.getIndividualPrice().multiply(new BigDecimal(sales.getSoldUnits())));
-    sales.setTotalProceeds(sales.getIndividualProceeds().multiply(new BigDecimal(sales.getSoldUnits())));
-    Zone zone = new Zone();
-    zone.setCode("ZONE0");
-    zone.setName("ZONE0");
-    zone.setId(0L);
-    sales.setZone(zone);
-    salesList.add(sales);
+switch (testPool) {
+case 0:
+//sales ok
+  Sales sales = new Sales();
+  sales.setId(0L);
+  sales.setApplication(DTOUtils.applicationDTOToApplication(applicationDAO.findApplication(0L)));
+  sales.setIndividualPrice(new BigDecimal(10));
+  sales.setIndividualProceeds(new BigDecimal(8));
+  FiscalPeriod period = new FiscalPeriod();
+  period.setId(1L);
+  period.setMonth(1);
+  period.setYear(2013);
+  sales.setPeriod(period);
+  sales.setSoldUnits(4);
+  sales.setTotalPrice(sales.getIndividualPrice().multiply(new BigDecimal(sales.getSoldUnits())));
+  sales.setTotalProceeds(sales.getIndividualProceeds().multiply(new BigDecimal(sales.getSoldUnits())));
+  Zone zone = new Zone();
+  zone.setCode("ZONE0");
+  zone.setName("ZONE0");
+  zone.setId(0L);
+  sales.setZone(zone);
+  salesList.add(sales);
 
-    // no fxChange rate defined for period
-    sales = new Sales();
-    sales.setId(1L);
-    sales.setApplication(DTOUtils.applicationDTOToApplication(applicationDAO.findApplication(0L)));
-    sales.setIndividualPrice(new BigDecimal(10));
-    sales.setIndividualProceeds(new BigDecimal(8));
-    period = new FiscalPeriod();
-    period.setId(3L);
-    period.setMonth(3);
-    period.setYear(2013);
-    sales.setPeriod(period);
-    sales.setSoldUnits(4);
-    sales.setTotalPrice(sales.getIndividualPrice().multiply(new BigDecimal(sales.getSoldUnits())));
-    sales.setTotalProceeds(sales.getIndividualProceeds().multiply(new BigDecimal(sales.getSoldUnits())));
-    zone = new Zone();
-    zone.setCode("ZONE0");
-    zone.setName("ZONE0");
-    zone.setId(0L);
-    sales.setZone(zone);
-    salesList.add(sales);
+  // no fxChange rate defined for period
+  sales = new Sales();
+  sales.setId(1L);
+  sales.setApplication(DTOUtils.applicationDTOToApplication(applicationDAO.findApplication(0L)));
+  sales.setIndividualPrice(new BigDecimal(10));
+  sales.setIndividualProceeds(new BigDecimal(8));
+  period = new FiscalPeriod();
+  period.setId(3L);
+  period.setMonth(3);
+  period.setYear(2013);
+  sales.setPeriod(period);
+  sales.setSoldUnits(4);
+  sales.setTotalPrice(sales.getIndividualPrice().multiply(new BigDecimal(sales.getSoldUnits())));
+  sales.setTotalProceeds(sales.getIndividualProceeds().multiply(new BigDecimal(sales.getSoldUnits())));
+  zone = new Zone();
+  zone.setCode("ZONE0");
+  zone.setName("ZONE0");
+  zone.setId(0L);
+  sales.setZone(zone);
+  salesList.add(sales);
 
-    // no royalties
-    sales = new Sales();
-    sales.setId(2L);
-    sales.setApplication(DTOUtils.applicationDTOToApplication(applicationDAO.findApplication(0L)));
-    sales.setIndividualPrice(new BigDecimal(10));
-    sales.setIndividualProceeds(new BigDecimal(8));
-    period = new FiscalPeriod();
-    period.setId(4L);
-    period.setMonth(4);
-    period.setYear(2013);
-    sales.setPeriod(period);
-    sales.setSoldUnits(4);
-    sales.setTotalPrice(sales.getIndividualPrice().multiply(new BigDecimal(sales.getSoldUnits())));
-    sales.setTotalProceeds(sales.getIndividualProceeds().multiply(new BigDecimal(sales.getSoldUnits())));
-    zone = new Zone();
-    zone.setCode("ZONE0");
-    zone.setName("ZONE0");
-    zone.setId(0L);
-    sales.setZone(zone);
-    salesList.add(sales);
+  // no royalties
+  sales = new Sales();
+  sales.setId(2L);
+  sales.setApplication(DTOUtils.applicationDTOToApplication(applicationDAO.findApplication(0L)));
+  sales.setIndividualPrice(new BigDecimal(10));
+  sales.setIndividualProceeds(new BigDecimal(8));
+  period = new FiscalPeriod();
+  period.setId(4L);
+  period.setMonth(4);
+  period.setYear(2013);
+  sales.setPeriod(period);
+  sales.setSoldUnits(4);
+  sales.setTotalPrice(sales.getIndividualPrice().multiply(new BigDecimal(sales.getSoldUnits())));
+  sales.setTotalProceeds(sales.getIndividualProceeds().multiply(new BigDecimal(sales.getSoldUnits())));
+  zone = new Zone();
+  zone.setCode("ZONE0");
+  zone.setName("ZONE0");
+  zone.setId(0L);
+  sales.setZone(zone);
+  salesList.add(sales);
 
-    // tax amount
-    sales = new Sales();
-    sales.setId(3L);
-    sales.setApplication(DTOUtils.applicationDTOToApplication(applicationDAO.findApplication(0L)));
-    sales.setIndividualPrice(new BigDecimal(10));
-    sales.setIndividualProceeds(new BigDecimal(8));
-    period = new FiscalPeriod();
-    period.setId(5L);
-    period.setMonth(5);
-    period.setYear(2013);
-    sales.setPeriod(period);
-    sales.setSoldUnits(4);
-    sales.setTotalPrice(sales.getIndividualPrice().multiply(new BigDecimal(sales.getSoldUnits())));
-    sales.setTotalProceeds(sales.getIndividualProceeds().multiply(new BigDecimal(sales.getSoldUnits())));
-    zone = new Zone();
-    zone.setCode("ZONE0");
-    zone.setName("ZONE0");
-    zone.setId(0L);
-    sales.setZone(zone);
-    salesList.add(sales);
+  // tax amount
+  sales = new Sales();
+  sales.setId(3L);
+  sales.setApplication(DTOUtils.applicationDTOToApplication(applicationDAO.findApplication(0L)));
+  sales.setIndividualPrice(new BigDecimal(10));
+  sales.setIndividualProceeds(new BigDecimal(8));
+  period = new FiscalPeriod();
+  period.setId(5L);
+  period.setMonth(5);
+  period.setYear(2013);
+  sales.setPeriod(period);
+  sales.setSoldUnits(4);
+  sales.setTotalPrice(sales.getIndividualPrice().multiply(new BigDecimal(sales.getSoldUnits())));
+  sales.setTotalProceeds(sales.getIndividualProceeds().multiply(new BigDecimal(sales.getSoldUnits())));
+  zone = new Zone();
+  zone.setCode("ZONE0");
+  zone.setName("ZONE0");
+  zone.setId(0L);
+  sales.setZone(zone);
+  salesList.add(sales);
 
-    // distinct zones
-    sales = new Sales();
-    sales.setId(4L);
-    sales.setApplication(DTOUtils.applicationDTOToApplication(applicationDAO.findApplication(0L)));
-    sales.setIndividualPrice(new BigDecimal(10));
-    sales.setIndividualProceeds(new BigDecimal(8));
-    period = new FiscalPeriod();
-    period.setId(6L);
-    period.setMonth(6);
-    period.setYear(2013);
-    sales.setPeriod(period);
-    sales.setSoldUnits(4);
-    sales.setTotalPrice(sales.getIndividualPrice().multiply(new BigDecimal(sales.getSoldUnits())));
-    sales.setTotalProceeds(sales.getIndividualProceeds().multiply(new BigDecimal(sales.getSoldUnits())));
-    zone = new Zone();
-    zone.setCode("ZONE0");
-    zone.setName("ZONE0");
-    zone.setId(0L);
-    sales.setZone(zone);
-    salesList.add(sales);
+  // distinct zones
+  sales = new Sales();
+  sales.setId(4L);
+  sales.setApplication(DTOUtils.applicationDTOToApplication(applicationDAO.findApplication(0L)));
+  sales.setIndividualPrice(new BigDecimal(10));
+  sales.setIndividualProceeds(new BigDecimal(8));
+  period = new FiscalPeriod();
+  period.setId(6L);
+  period.setMonth(6);
+  period.setYear(2013);
+  sales.setPeriod(period);
+  sales.setSoldUnits(4);
+  sales.setTotalPrice(sales.getIndividualPrice().multiply(new BigDecimal(sales.getSoldUnits())));
+  sales.setTotalProceeds(sales.getIndividualProceeds().multiply(new BigDecimal(sales.getSoldUnits())));
+  zone = new Zone();
+  zone.setCode("ZONE0");
+  zone.setName("ZONE0");
+  zone.setId(0L);
+  sales.setZone(zone);
+  salesList.add(sales);
 
-    sales = new Sales();
-    sales.setId(5L);
-    sales.setApplication(DTOUtils.applicationDTOToApplication(applicationDAO.findApplication(0L)));
-    sales.setIndividualPrice(new BigDecimal(10));
-    sales.setIndividualProceeds(new BigDecimal(8));
-    period = new FiscalPeriod();
-    period.setId(6L);
-    period.setMonth(6);
-    period.setYear(2013);
-    sales.setPeriod(period);
-    sales.setSoldUnits(4);
-    sales.setTotalPrice(sales.getIndividualPrice().multiply(new BigDecimal(sales.getSoldUnits())));
-    sales.setTotalProceeds(sales.getIndividualProceeds().multiply(new BigDecimal(sales.getSoldUnits())));
-    zone = new Zone();
-    zone.setCode("ZONE1");
-    zone.setName("ZONE1");
-    zone.setId(1L);
-    sales.setZone(zone);
-    salesList.add(sales);
+  sales = new Sales();
+  sales.setId(5L);
+  sales.setApplication(DTOUtils.applicationDTOToApplication(applicationDAO.findApplication(0L)));
+  sales.setIndividualPrice(new BigDecimal(10));
+  sales.setIndividualProceeds(new BigDecimal(8));
+  period = new FiscalPeriod();
+  period.setId(6L);
+  period.setMonth(6);
+  period.setYear(2013);
+  sales.setPeriod(period);
+  sales.setSoldUnits(4);
+  sales.setTotalPrice(sales.getIndividualPrice().multiply(new BigDecimal(sales.getSoldUnits())));
+  sales.setTotalProceeds(sales.getIndividualProceeds().multiply(new BigDecimal(sales.getSoldUnits())));
+  zone = new Zone();
+  zone.setCode("ZONE1");
+  zone.setName("ZONE1");
+  zone.setId(1L);
+  sales.setZone(zone);
+  salesList.add(sales);
 
-    // distinct periods
-    sales = new Sales();
-    sales.setId(6L);
-    sales.setApplication(DTOUtils.applicationDTOToApplication(applicationDAO.findApplication(0L)));
-    sales.setIndividualPrice(new BigDecimal(10));
-    sales.setIndividualProceeds(new BigDecimal(8));
-    period = new FiscalPeriod();
-    period.setId(7L);
-    period.setMonth(7);
-    period.setYear(2013);
-    sales.setPeriod(period);
-    sales.setSoldUnits(4);
-    sales.setTotalPrice(sales.getIndividualPrice().multiply(new BigDecimal(sales.getSoldUnits())));
-    sales.setTotalProceeds(sales.getIndividualProceeds().multiply(new BigDecimal(sales.getSoldUnits())));
-    zone = new Zone();
-    zone.setCode("ZONE1");
-    zone.setName("ZONE1");
-    zone.setId(1L);
-    sales.setZone(zone);
-    salesList.add(sales);
+  // distinct periods
+  sales = new Sales();
+  sales.setId(6L);
+  sales.setApplication(DTOUtils.applicationDTOToApplication(applicationDAO.findApplication(0L)));
+  sales.setIndividualPrice(new BigDecimal(10));
+  sales.setIndividualProceeds(new BigDecimal(8));
+  period = new FiscalPeriod();
+  period.setId(7L);
+  period.setMonth(7);
+  period.setYear(2013);
+  sales.setPeriod(period);
+  sales.setSoldUnits(4);
+  sales.setTotalPrice(sales.getIndividualPrice().multiply(new BigDecimal(sales.getSoldUnits())));
+  sales.setTotalProceeds(sales.getIndividualProceeds().multiply(new BigDecimal(sales.getSoldUnits())));
+  zone = new Zone();
+  zone.setCode("ZONE1");
+  zone.setName("ZONE1");
+  zone.setId(1L);
+  sales.setZone(zone);
+  salesList.add(sales);
 
-    sales = new Sales();
-    sales.setId(7L);
-    sales.setApplication(DTOUtils.applicationDTOToApplication(applicationDAO.findApplication(0L)));
-    sales.setIndividualPrice(new BigDecimal(10));
-    sales.setIndividualProceeds(new BigDecimal(8));
-    period = new FiscalPeriod();
-    period.setId(8L);
-    period.setMonth(8);
-    period.setYear(2013);
-    sales.setPeriod(period);
-    sales.setSoldUnits(4);
-    sales.setTotalPrice(sales.getIndividualPrice().multiply(new BigDecimal(sales.getSoldUnits())));
-    sales.setTotalProceeds(sales.getIndividualProceeds().multiply(new BigDecimal(sales.getSoldUnits())));
-    zone = new Zone();
-    zone.setCode("ZONE1");
-    zone.setName("ZONE1");
-    zone.setId(1L);
-    sales.setZone(zone);
-    salesList.add(sales);
-  }
+  sales = new Sales();
+  sales.setId(7L);
+  sales.setApplication(DTOUtils.applicationDTOToApplication(applicationDAO.findApplication(0L)));
+  sales.setIndividualPrice(new BigDecimal(10));
+  sales.setIndividualProceeds(new BigDecimal(8));
+  period = new FiscalPeriod();
+  period.setId(8L);
+  period.setMonth(8);
+  period.setYear(2013);
+  sales.setPeriod(period);
+  sales.setSoldUnits(4);
+  sales.setTotalPrice(sales.getIndividualPrice().multiply(new BigDecimal(sales.getSoldUnits())));
+  sales.setTotalProceeds(sales.getIndividualProceeds().multiply(new BigDecimal(sales.getSoldUnits())));
+  zone = new Zone();
+  zone.setCode("ZONE1");
+  zone.setName("ZONE1");
+  zone.setId(1L);
+  sales.setZone(zone);
+  salesList.add(sales);
+
+  break;
+  
+case 1:
+  sales = new Sales();
+  sales.setId(9L);
+  sales.setApplication(DTOUtils.applicationDTOToApplication(applicationDAO.findApplication(0L)));
+  sales.setIndividualPrice(new BigDecimal(10));
+  sales.setIndividualProceeds(new BigDecimal(8));
+  period = new FiscalPeriod();
+  period.setId(9L);
+  period.setMonth(9);
+  period.setYear(2013);
+  sales.setPeriod(period);
+  sales.setSoldUnits(4);
+  sales.setTotalPrice(sales.getIndividualPrice().multiply(new BigDecimal(sales.getSoldUnits())));
+  sales.setTotalProceeds(sales.getIndividualProceeds().multiply(new BigDecimal(sales.getSoldUnits())));
+  zone = new Zone();
+  zone.setCode("ZONE3");
+  zone.setName("ZONE3");
+  zone.setId(3L);
+  sales.setZone(zone);
+  salesList.add(sales);
+
+  // distinct periods
+  sales = new Sales();
+  sales.setId(10L);
+  sales.setApplication(DTOUtils.applicationDTOToApplication(applicationDAO.findApplication(0L)));
+  sales.setIndividualPrice(new BigDecimal(10));
+  sales.setIndividualProceeds(new BigDecimal(8));
+  period = new FiscalPeriod();
+  period.setId(9L);
+  period.setMonth(9);
+  period.setYear(2013);
+  sales.setPeriod(period);
+  sales.setSoldUnits(4);
+  sales.setTotalPrice(sales.getIndividualPrice().multiply(new BigDecimal(sales.getSoldUnits())));
+  sales.setTotalProceeds(sales.getIndividualProceeds().multiply(new BigDecimal(sales.getSoldUnits())));
+  zone = new Zone();
+  zone.setCode("ZONE2");
+  zone.setName("ZONE2");
+  zone.setId(2L);
+  sales.setZone(zone);
+  salesList.add(sales);
+  break;
+
+case 2:
+  sales = new Sales();
+  sales.setId(9L);
+  sales.setApplication(DTOUtils.applicationDTOToApplication(applicationDAO.findApplication(0L)));
+  sales.setIndividualPrice(new BigDecimal(10));
+  sales.setIndividualProceeds(new BigDecimal(8));
+  period = new FiscalPeriod();
+  period.setId(10L);
+  period.setMonth(10);
+  period.setYear(2013);
+  sales.setPeriod(period);
+  sales.setSoldUnits(4);
+  sales.setTotalPrice(sales.getIndividualPrice().multiply(new BigDecimal(sales.getSoldUnits())));
+  sales.setTotalProceeds(sales.getIndividualProceeds().multiply(new BigDecimal(sales.getSoldUnits())));
+  zone = new Zone();
+  zone.setCode("ZONE2");
+  zone.setName("ZONE2");
+  zone.setId(2L);
+  sales.setZone(zone);
+  salesList.add(sales);
+
+  sales = new Sales();
+  sales.setId(10L);
+  sales.setApplication(DTOUtils.applicationDTOToApplication(applicationDAO.findApplication(0L)));
+  sales.setIndividualPrice(new BigDecimal(10));
+  sales.setIndividualProceeds(new BigDecimal(8));
+  period = new FiscalPeriod();
+  period.setId(10L);
+  period.setMonth(10);
+  period.setYear(2013);
+  sales.setPeriod(period);
+  sales.setSoldUnits(4);
+  sales.setTotalPrice(sales.getIndividualPrice().multiply(new BigDecimal(sales.getSoldUnits())));
+  sales.setTotalProceeds(sales.getIndividualProceeds().multiply(new BigDecimal(sales.getSoldUnits())));
+  zone = new Zone();
+  zone.setCode("ZONE4");
+  zone.setName("ZONE4");
+  zone.setId(4L);
+  sales.setZone(zone);
+  salesList.add(sales);
+  break;
+  
+default:
+  break;
+}
+      }
 
 }

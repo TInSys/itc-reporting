@@ -15,16 +15,38 @@ public class ZoneDAOTest implements ZoneDAO {
   public ZoneDAOTest() {
    ZoneDTO zone = new ZoneDTO();
    zone.setId(0L);
-   zone.setCode("WW");
+   zone.setCode("ZONE0");
    zone.setCurrencyISO("USD");
-   zone.setName("Rest of World");
+   zone.setName("ZONE0");
    zoneList.add(zone);
    
    zone = new ZoneDTO();
    zone.setId(1L);
-   zone.setCode("EU");
+   zone.setCode("ZONE1");
    zone.setCurrencyISO("EUR");
-   zone.setName("Europe");
+   zone.setName("ZONE1");
+   zoneList.add(zone);
+
+   zone = new ZoneDTO();
+   zone.setId(2L);
+   zone.setCode("ZONE2");
+   zone.setCurrencyISO("EUR");
+   zone.setName("ZONE2");
+   zoneList.add(zone);
+
+   zone = new ZoneDTO();
+   zone.setId(3L);
+   zone.setCode("ZONE3");
+   zone.setCurrencyISO("EUR");
+   zone.setName("ZONE3");
+   zoneList.add(zone);
+
+
+   zone = new ZoneDTO();
+   zone.setId(4L);
+   zone.setCode("ZONE4");
+   zone.setCurrencyISO("EUR");
+   zone.setName("ZONE4");
    zoneList.add(zone);
   }
   @Override

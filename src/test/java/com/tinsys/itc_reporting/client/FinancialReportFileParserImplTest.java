@@ -158,6 +158,7 @@ public class FinancialReportFileParserImplTest {
     saleService.setZoneDAO(new ZoneDAOTest());
     saleService.setApplicationDAO(new ApplicationDAOTest());
     SalesDAOTest salesDAO = new SalesDAOTest();
+    salesDAO.createSales(0);
     saleService.setSaleDAO(salesDAO);
     fileParser.setSaleService(saleService);
 
@@ -183,6 +184,7 @@ public class FinancialReportFileParserImplTest {
     saleService.setZoneDAO(new ZoneDAOTest());
     saleService.setApplicationDAO(new ApplicationDAOTest());
     SalesDAOTest salesDAO = new SalesDAOTest();
+    salesDAO.createSales(0);
     saleService.setSaleDAO(salesDAO);
     fileParser.setSaleService(saleService);
     Assert.assertEquals(true, fileParser.parseContent());

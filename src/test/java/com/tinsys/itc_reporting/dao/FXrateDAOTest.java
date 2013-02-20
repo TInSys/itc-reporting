@@ -65,6 +65,46 @@ public class FXrateDAOTest implements FXRateDAO {
       fxRateDTO.setZone(zone);
       fxRateDTO.setRate(new BigDecimal(0.99999));
       fxRateList.add(fxRateDTO);
+
+      fxRateDTO = new FXRateDTO();
+      fxRateDTO.setId(2L);
+      fxRateDTO.setPeriod(monthYearToPeriod);
+      fxRateDTO.setCurrencyIso("EUR");
+      zone = new ZoneDTO();
+      zone.setId(2L);
+      zone.setCode("ZONE2");
+      zone.setName("ZONE2");
+      zone.setCurrencyISO("EUR");
+      fxRateDTO.setZone(zone);
+      fxRateDTO.setRate(new BigDecimal(1));
+      fxRateList.add(fxRateDTO);
+
+      fxRateDTO = new FXRateDTO();
+      fxRateDTO.setId(3L);
+      fxRateDTO.setPeriod(monthYearToPeriod);
+      fxRateDTO.setCurrencyIso("EUR");
+      zone = new ZoneDTO();
+      zone.setId(3L);
+      zone.setCode("ZONE3");
+      zone.setName("ZONE3");
+      zone.setCurrencyISO("EUR");
+      fxRateDTO.setZone(zone);
+      fxRateDTO.setRate(new BigDecimal(1));
+      fxRateList.add(fxRateDTO);
+
+      fxRateDTO = new FXRateDTO();
+      fxRateDTO.setId(4L);
+      fxRateDTO.setPeriod(monthYearToPeriod);
+      fxRateDTO.setCurrencyIso("EUR");
+      zone = new ZoneDTO();
+      zone.setId(4L);
+      zone.setCode("ZONE4");
+      zone.setName("ZONE4");
+      zone.setCurrencyISO("EUR");
+      fxRateDTO.setZone(zone);
+      fxRateDTO.setRate(new BigDecimal(1.2));
+      fxRateList.add(fxRateDTO);
+    
     }
     return fxRateList;
   }

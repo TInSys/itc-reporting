@@ -12,7 +12,6 @@ import org.junit.Test;
 import com.tinsys.itc_reporting.dao.FXrateDAOTest;
 import com.tinsys.itc_reporting.dao.RoyaltyDAO;
 import com.tinsys.itc_reporting.dao.RoyaltyDAOTest;
-import com.tinsys.itc_reporting.dao.SalesDAO;
 import com.tinsys.itc_reporting.dao.SalesDAOTest;
 import com.tinsys.itc_reporting.dao.TaxDAOTest;
 import com.tinsys.itc_reporting.server.service.RoyaltyReportBuilderImpl;
@@ -30,7 +29,8 @@ public class RoyaltyReportServiceImplTest {
     royaltyReportService = new RoyaltyReportServiceImpl();
     RoyaltyDAO royaltyDAO = new RoyaltyDAOTest();
     royaltyReportService.setRoyaltyDAO(royaltyDAO);
-    SalesDAO salesDAO = new SalesDAOTest();
+    SalesDAOTest salesDAO = new SalesDAOTest();
+    salesDAO.createSales(0);
     royaltyReportService.setSalesDAO(salesDAO);
     RoyaltyReportBuilderImpl royaltyReportBuilder = new RoyaltyReportBuilderImpl();
     royaltyReportService.setRoyaltyReportBuilder(royaltyReportBuilder);

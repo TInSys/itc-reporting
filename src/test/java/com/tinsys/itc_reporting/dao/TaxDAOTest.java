@@ -49,6 +49,37 @@ public class TaxDAOTest implements TaxDAO {
     zone.setCode("ZONE0");
     tax.setZone(zone);
     taxList.add(tax);
+    
+    
+    tax = new Tax();
+    tax.setId(1L);
+    period = new TaxPeriod();
+    period.setId(1L);
+    
+    cal1 = new GregorianCalendar();
+    cal1.set(Calendar.YEAR, 2013);
+    cal1.set(Calendar.MONTH, 10 - 1);
+    cal1.set(Calendar.DAY_OF_MONTH, 1);
+    cal1.set(Calendar.HOUR_OF_DAY, 0);
+    cal1.set(Calendar.MINUTE, 0);
+    cal1.set(Calendar.SECOND, 0);
+    cal1.set(Calendar.MILLISECOND, 0);
+    startDate = cal1.getTime();
+    endOfMonthDate = cal1.getTime();
+    CalendarUtil.addMonthsToDate(endOfMonthDate, 1);
+    CalendarUtil.addDaysToDate(endOfMonthDate, -1);
+    
+    period.setStartDate(startDate);
+    period.setStopDate(endOfMonthDate);
+    tax.setPeriod(period);
+    tax.setRate(new BigDecimal(0.21));
+    zone = new Zone();
+    zone.setId(4L);
+    zone.setName("ZONE4");
+    zone.setCode("ZONE4");
+    tax.setZone(zone);
+    taxList.add(tax);
+    
   }
   
   @Override
