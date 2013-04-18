@@ -81,7 +81,7 @@ public class FinancialReportFileParserImplTest {
     fileParser.setSaleService(saleService);
     fileParser.parseContent();
     Assert.assertEquals(1, fileParser.getErrorList().size());
-    Assert.assertThat(fileParser.getErrorList().get(0), JUnitMatchers.containsString("file MIME type"));
+    Assert.assertThat(fileParser.getErrorList().get(0), JUnitMatchers.containsString("File unsupportedMIMEType"));
   }
 
   @Test
