@@ -16,7 +16,7 @@ import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.tinsys.itc_reporting.client.service.PreferencesService;
@@ -44,7 +44,7 @@ public class ITCReporting implements EntryPoint {
   private PreferencesServiceAsync preferencesService = GWT.create(PreferencesService.class);
 
   @UiField
-  SimplePanel mainPanel;
+  ScrollPanel mainPanel;
 
   @UiField
   PushButton preferencesPushButton;

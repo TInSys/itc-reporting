@@ -4,7 +4,7 @@
 	xmlns:my='urn:import:com.tinsys.itc_reporting.client.widgets.utils'>
 	<ui:style src="../mainStyles.css" />
 		
-	<g:HorizontalPanel width="100%" borderWidth="1">
+	<g:HorizontalPanel width="98%" borderWidth="1">
 
 		<g:VerticalPanel styleName="{style.marge}">
 			<g:HorizontalPanel width="100%">

@@ -77,8 +77,9 @@
 				</g:StackLayoutPanel>
 			</g:west>
 			<g:center>
-				<g:SimplePanel ui:field="mainPanel" >
-				</g:SimplePanel>
+				<g:ResizeLayoutPanel width="95%" >
+				<g:ScrollPanel ui:field="mainPanel" ></g:ScrollPanel>
+				</g:ResizeLayoutPanel>
 			</g:center>
 			<g:north size="0">
 				<g:HorizontalPanel />

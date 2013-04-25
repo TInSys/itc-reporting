@@ -4,7 +4,7 @@
 	xmlns:dp="urn:import:com.google.gwt.user.datepicker.client">
 	<ui:style src="../mainStyles.css" />
 		
-	<g:HorizontalPanel width="99%" ui:field="widgetRootPanel">
+	<g:HorizontalPanel width="98%" ui:field="widgetRootPanel">
 
 		<g:VerticalPanel width="100%" styleName="{style.marge}">
 			<g:HorizontalPanel>
