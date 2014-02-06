@@ -10,5 +10,5 @@ import com.tinsys.itc_reporting.shared.dto.ZoneReportSummary;
 @RemoteServiceRelativePath("springGwtServices/salesReportService")
 public interface SalesReportService extends RemoteService {
 
-  public List<ZoneReportSummary> getMonthlyReport(FiscalPeriodDTO period) throws RuntimeException;
+  public List<ZoneReportSummary> getMonthlyReport(FiscalPeriodDTO startPeriod,FiscalPeriodDTO endPeriod) throws RuntimeException;
 }

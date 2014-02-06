@@ -3,6 +3,8 @@ package com.tinsys.itc_reporting.server.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -58,8 +60,139 @@ public class SalesReportServiceImpl implements SalesReportService {
   public void setTaxDAO(TaxDAO taxDAO) {
     this.taxDAO = taxDAO;
   }
-
+  
+  
   @Override
+  public List<ZoneReportSummary> getMonthlyReport(FiscalPeriodDTO startPeriod,FiscalPeriodDTO endPeriod) throws RuntimeException {
+    logger.debug("Preparing report");
+    referenceCurrencyAmountGrandTotal = new BigDecimal(0);
+    referenceCurrencyProceedsAmountGrandTotal = new BigDecimal(0);
+    referenceCurrencyProceedsAfterTaxGrandTotal = new BigDecimal(0);
+    
+    List<Sales> sales = new ArrayList<Sales>();
+    List<Sales> tmpSales = new ArrayList<Sales>();
+    List<Tax> taxes = new ArrayList<Tax>();
+    ArrayList<FXRateDTO> fxRates = new ArrayList<FXRateDTO>();
+    
+    if (startPeriod.getYear()==endPeriod.getYear()) {
+      FiscalPeriodDTO period = new FiscalPeriodDTO();
+      period.setYear(startPeriod.getYear());
+      for (int i = startPeriod.getMonth(); i <= endPeriod.getMonth(); i++) {
+        period.setMonth(i);
+        tmpSales.addAll(salesDAO.getAllSales(period));
+        taxes.addAll(taxDAO.getTaxesForPeriod(period));
+        fxRates.addAll(fxRateDAO.getAllFXRatesForPeriod(period));      
+      }
+    }
+
+    BigDecimal changeRate = new BigDecimal(0);
+    Zone currentZone = null;
+    Application currentApplication = null;
+    List<ZoneReportSummary> monthReportList = null;
+    ApplicationReportSummary applicationSumary = null;
+    ZoneReportSummary monthReportLine = new ZoneReportSummary();
+    monthReportLine.setApplications(new ArrayList<ApplicationReportSummary>());
+    ZoneReportSummary monthReportLineTotal = new ZoneReportSummary();
+    monthReportLineTotal.setApplications(new ArrayList<ApplicationReportSummary>());
+    BigDecimal taxRate = new BigDecimal(0);
+
+    if (tmpSales != null && tmpSales.size() > 0) {
+      logger.debug("Processing  " + sales.size() + " lines");
+      Collections.sort(tmpSales, new Comparator<Sales>() {
+
+        @Override
+        public int compare(Sales o1, Sales o2) {
+          int c;
+          c = o1.getZone().getCode().compareTo(o2.getZone().getCode());
+          if (c==0) {
+            c= o1.getApplication().getName().compareTo(o2.getApplication().getName());
+          }
+          if (c==0) {
+            c= o1.getCountryCode().compareTo(o2.getCountryCode());
+          }
+          
+          return c;
+        }
+      });
+
+    //TODO summarize lines with same zone, application and country code but different periods (have to add period parameter to getChangeRate and getTaxRate). 
+      for (Sales sale : tmpSales) {
+        Zone zone = sale.getZone();
+
+        // new Zone and not first pass
+        if (zone != currentZone && monthReportList != null) {
+          if (applicationSumary != null) {
+            monthReportLine.getApplications().add(applicationSumary);
+            applicationSumary = null;
+          }
+          monthReportList.add(monthReportLine);
+          monthReportLineTotal = appsTotal(monthReportLineTotal, monthReportLine);
+          monthReportLine = new ZoneReportSummary();
+          monthReportLine.setApplications(new ArrayList<ApplicationReportSummary>());
+          changeRate = this.getChangeRate(fxRates, zone);
+          taxRate = this.getTaxRate(taxes, zone);
+        } else {
+          if (currentZone == null) { // first pass, fetch change rate and
+                                     // taxRate
+            changeRate = this.getChangeRate(fxRates, zone);
+            taxRate = this.getTaxRate(taxes, zone);
+          }
+        }
+        Application application = sale.getApplication();
+        if (application != currentApplication && applicationSumary != null) { // add application subtotals "column" to current zone
+          monthReportLine.getApplications().add(applicationSumary);
+          applicationSumary = new ApplicationReportSummary();
+          applicationSumary.init();
+        } else {
+          if (applicationSumary == null) {// first pass
+            applicationSumary = new ApplicationReportSummary();
+            applicationSumary.init();
+          }
+        }
+        // add sales data to current application in current zone
+        monthReportLine.setZoneName(zone.getName());
+        applicationSumary.setApplicationName(application.getName());
+        applicationSumary.setSalesNumber(applicationSumary.getSalesNumber() + sale.getSoldUnits());
+        applicationSumary.setOriginalCurrency(sale.getZone().getCurrencyISO());
+        applicationSumary.setOriginalCurrencyAmount(applicationSumary.getOriginalCurrencyAmount().add(sale.getTotalPrice()));
+
+        applicationSumary.setOriginalCurrencyProceeds(applicationSumary.getOriginalCurrencyProceeds().add(
+            (sale.getTotalProceeds() != null) ? sale.getTotalProceeds() : new BigDecimal(0)));
+        applicationSumary.setOriginalCurrencyProceedsAfterTax(applicationSumary.getOriginalCurrencyProceedsAfterTax().add(
+            (sale.getTotalProceeds() != null) ? (sale.getTotalProceeds().multiply((new BigDecimal(1).subtract(taxRate)))) : new BigDecimal(0)));
+
+        applicationSumary.setReferenceCurrency(referenceCurrency);
+        applicationSumary.setReferenceCurrencyAmount(applicationSumary.getReferenceCurrencyAmount().add(
+            ((sale.getTotalPrice() != null) ? sale.getTotalPrice() : new BigDecimal(0)).multiply(changeRate)));
+        applicationSumary.setReferenceCurrencyProceeds(applicationSumary.getReferenceCurrencyProceeds().add(
+            ((sale.getTotalProceeds() != null) ? sale.getTotalProceeds() : new BigDecimal(0)).multiply(changeRate)));
+        applicationSumary.setReferenceCurrencyProceedsAfterTax(applicationSumary.getReferenceCurrencyProceedsAfterTax().add(
+            ((sale.getTotalProceeds() != null) ? (sale.getTotalProceeds().multiply((new BigDecimal(1).subtract(taxRate)))) : new BigDecimal(0)).multiply(changeRate)));
+        currentApplication = application;
+        currentZone = zone;
+
+        if (monthReportList == null) {
+          monthReportList = new ArrayList<ZoneReportSummary>();
+        }
+      }
+      if (applicationSumary != null && monthReportLine != null) {
+        monthReportLine.getApplications().add(applicationSumary);
+      }
+      if (monthReportLine != null && monthReportList != null) {
+        monthReportList.add(monthReportLine);
+        monthReportLineTotal = appsTotal(monthReportLineTotal, monthReportLine);
+      }
+      monthReportLineTotal = appsTotal(monthReportLineTotal, monthReportLineTotal);
+      monthReportList.add(monthReportLineTotal);
+      return monthReportList;
+    } else {
+      logger.debug("No sales found for periods  " + startPeriod.getMonth() + "/" + startPeriod.getYear()+" to "+endPeriod.getMonth() + "/" + endPeriod.getYear());
+    }
+    monthReportList = new ArrayList<ZoneReportSummary>();
+    return monthReportList;
+  }
+  
+  
   public List<ZoneReportSummary> getMonthlyReport(FiscalPeriodDTO period) throws RuntimeException {
     logger.debug("Preparing report");
     referenceCurrencyAmountGrandTotal = new BigDecimal(0);
