@@ -38,6 +38,7 @@ import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ResizeLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -152,7 +153,9 @@ public class MonthlySalesReport extends Composite implements WidgetSwitchManagem
     for (int i = STARTING_YEAR; i <= 2040; i++) {
       endYearPeriodListBox.addItem(Integer.toString(i));
     }
-    salesDataGrid.setEmptyTableWidget(new HTML("There is no data to display"));
+    Label noData = new Label("There is no data to display");
+    noData.setWidth("300px");
+    salesDataGrid.setEmptyTableWidget(noData);
     Date today = new Date();
     startMonth = new Integer(DateTimeFormat.getFormat("MM").format(today));
     startYear = new Integer(DateTimeFormat.getFormat("yyyy").format(today));
@@ -173,6 +176,11 @@ public class MonthlySalesReport extends Composite implements WidgetSwitchManagem
     endMonthPeriodDto.setId(null);
     endMonthPeriodDto.setMonth(endMonthPeriodListBox.getSelectedIndex() + 1);
     endMonthPeriodDto.setYear(endYearPeriodListBox.getSelectedIndex() + STARTING_YEAR);
+    if ((endMonthPeriodDto.getMonth()<startMonthPeriodDto.getMonth() && endMonthPeriodDto.getYear() == startMonthPeriodDto.getYear()) || (endMonthPeriodDto.getYear()<startMonthPeriodDto.getYear())){
+      startMonthPeriodDto = endMonthPeriodDto;
+      startMonthPeriodListBox.setSelectedIndex(endMonthPeriodListBox.getSelectedIndex());
+      startYearPeriodListBox.setSelectedIndex(endYearPeriodListBox.getSelectedIndex());
+    }
     if (salesDataGrid.getColumnCount() > 0) {
       int colCount = salesDataGrid.getColumnCount();
       for (int i = colCount - 1; i >= 0; i--) {
@@ -196,6 +204,7 @@ public class MonthlySalesReport extends Composite implements WidgetSwitchManagem
 
   protected void showResult(List<ZoneReportSummary> result) {
     final List<String> applications = new ArrayList<String>();
+    headers.clear();
     if (result.size() > 0) {
       // find all applications that will be displayed
       for (ZoneReportSummary zoneReportSummary : result) {
@@ -245,7 +254,6 @@ public class MonthlySalesReport extends Composite implements WidgetSwitchManagem
     if (pager.getDisplay() == null) {
       pager.setDisplay(salesFixedColumn);
     }
-    pager.setRangeLimited(true);
     hiddenPager.setRangeLimited(true);
     provider.getList().clear();
     if (provider.getDataDisplays().contains(salesFixedColumn)) {
@@ -331,7 +339,7 @@ public class MonthlySalesReport extends Composite implements WidgetSwitchManagem
 
   @UiHandler("exportToXLS")
   void onClickExportToXLS(ClickEvent e) {
-    String fileDownloadURL = GWT.getModuleBaseURL() + "download?startMonth=" + startMonthPeriodListBox.getValue(startMonthPeriodListBox.getSelectedIndex()) + "&startYear=" + startYearPeriodListBox.getValue(startYearPeriodListBox.getSelectedIndex())+"endMonth=" + endMonthPeriodListBox.getValue(endMonthPeriodListBox.getSelectedIndex()) + "&endYear=" + endYearPeriodListBox.getValue(endYearPeriodListBox.getSelectedIndex());
+    String fileDownloadURL = GWT.getModuleBaseURL() + "download?startMonth=" + startMonthPeriodListBox.getValue(startMonthPeriodListBox.getSelectedIndex()) + "&startYear=" + startYearPeriodListBox.getValue(startYearPeriodListBox.getSelectedIndex())+"&endMonth=" + endMonthPeriodListBox.getValue(endMonthPeriodListBox.getSelectedIndex()) + "&endYear=" + endYearPeriodListBox.getValue(endYearPeriodListBox.getSelectedIndex());
     Frame fileDownloadFrame = new Frame(fileDownloadURL);
     fileDownloadFrame.setSize("0px", "0px");
     fileDownloadFrame.setVisible(false);

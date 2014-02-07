@@ -37,20 +37,33 @@ public class FiscalPeriodDTO implements Serializable,Comparable<FiscalPeriodDTO>
     this.year = year;
   }
 
+
+  
   @Override
-  public boolean equals(Object obj) {
-    if (obj != null && (obj.getClass().equals(this.getClass()))) {
-      FiscalPeriodDTO fiscalPeriodDTO = (FiscalPeriodDTO) obj;
-      return this.id == fiscalPeriodDTO.getId();
-    }
-    return false;
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + month;
+    result = prime * result + year;
+    return result;
   }
 
   @Override
-  public int hashCode() {
-    return Long.valueOf(this.id).hashCode();
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    FiscalPeriodDTO other = (FiscalPeriodDTO) obj;
+    if (month != other.month)
+      return false;
+    if (year != other.year)
+      return false;
+    return true;
   }
-  
+
   @Override
   public String toString() {
     return month + "/" + year;

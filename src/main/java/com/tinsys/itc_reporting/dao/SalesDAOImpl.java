@@ -74,7 +74,7 @@ public class SalesDAOImpl implements SalesDAO {
 
       return sales;
     }
-    return null;
+    return new ArrayList<Sales>();
   }
 
   @SuppressWarnings("unchecked")

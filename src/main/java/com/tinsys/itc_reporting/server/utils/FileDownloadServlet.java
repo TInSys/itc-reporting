@@ -47,6 +47,7 @@ public class FileDownloadServlet extends HttpServlet {
   private final static String ZONE_TOTAL_COLUMN = "Total by Zone";
   private SalesReportServiceImpl salesReportService;
   private FileOutputStream outPutToFile;
+  private String filename;
 
   @Override
   public void init(ServletConfig config) throws ServletException {
@@ -59,17 +60,24 @@ public class FileDownloadServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, RuntimeException {
 
-    FiscalPeriodDTO period = new FiscalPeriodDTO();
-    int month = Integer.parseInt(req.getParameter("month"));
-    int year = Integer.parseInt(req.getParameter("year"));
-    period.setMonth(month);
-    period.setYear(year);
-    List<ZoneReportSummary> report = salesReportService.getMonthlyReport(period);
+    FiscalPeriodDTO startPeriod = new FiscalPeriodDTO();
+    int startMonth = Integer.parseInt(req.getParameter("startMonth"));
+    int startYear = Integer.parseInt(req.getParameter("startYear"));
+    startPeriod.setMonth(startMonth);
+    startPeriod.setYear(startYear);
+    
+    FiscalPeriodDTO endPeriod = new FiscalPeriodDTO();
+    int endMonth = Integer.parseInt(req.getParameter("endMonth"));
+    int endYear = Integer.parseInt(req.getParameter("endYear"));
+    endPeriod.setMonth(endMonth);
+    endPeriod.setYear(endYear);
+    List<ZoneReportSummary> report = salesReportService.getMonthlyReport(startPeriod,endPeriod);
 
     String basePath = req.getSession().getServletContext().getRealPath("");
     File xlsFile;
+    filename = req.getParameter("startYear") + "_" + req.getParameter("startMonth")+ "_to_" + req.getParameter("endYear") + "_" + req.getParameter("endMonth") +".xls";
     try {
-      xlsFile = new File(basePath + "/resources/" + req.getParameter("year") + "_" + req.getParameter("month") + ".xls");
+      xlsFile = new File(basePath + "/resources/" + filename);
 
       outPutToFile = new FileOutputStream(xlsFile);
       List<String> applications = new ArrayList<String>();
@@ -84,7 +92,7 @@ public class FileDownloadServlet extends HttpServlet {
 
       HSSFWorkbook workbook = new HSSFWorkbook();
       Map<String, CellStyle> styles = createStyles(workbook);
-      HSSFSheet sheet = workbook.createSheet(req.getParameter("year") + "_" + req.getParameter("month"));
+      HSSFSheet sheet = workbook.createSheet(""+startYear + "_" +startMonth + "_to_"+endYear+ "_" +endMonth);
       PrintSetup printSetup = sheet.getPrintSetup();
       printSetup.setLandscape(true);
       sheet.setFitToPage(true);
@@ -205,8 +213,8 @@ public class FileDownloadServlet extends HttpServlet {
       outPutToFile.close();
 
       ServletContext ctx = getServletContext();
-      InputStream is = ctx.getResourceAsStream("/resources/" + req.getParameter("year") + "_" + req.getParameter("month") + ".xls");
-      resp.addHeader("Content-Disposition", "attachment; filename=\"" + req.getParameter("year") + "_" + req.getParameter("month") + ".xls" + "\"");
+      InputStream is = ctx.getResourceAsStream("/resources/" + filename);
+      resp.addHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
       resp.setContentType("application/vnd.ms-excel");
       ServletOutputStream outToClient = resp.getOutputStream();
       resp.setBufferSize(32768);

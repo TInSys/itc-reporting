@@ -3,8 +3,11 @@ package com.tinsys.itc_reporting.server.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -13,14 +16,17 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.gwt.user.datepicker.client.CalendarUtil;
 import com.tinsys.itc_reporting.client.service.SalesReportService;
 import com.tinsys.itc_reporting.dao.FXRateDAO;
 import com.tinsys.itc_reporting.dao.SalesDAO;
 import com.tinsys.itc_reporting.dao.TaxDAO;
 import com.tinsys.itc_reporting.model.Application;
+import com.tinsys.itc_reporting.model.FiscalPeriod;
 import com.tinsys.itc_reporting.model.Sales;
 import com.tinsys.itc_reporting.model.Tax;
 import com.tinsys.itc_reporting.model.Zone;
+import com.tinsys.itc_reporting.server.utils.DTOUtils;
 import com.tinsys.itc_reporting.shared.dto.ApplicationReportSummary;
 import com.tinsys.itc_reporting.shared.dto.FXRateDTO;
 import com.tinsys.itc_reporting.shared.dto.FiscalPeriodDTO;
@@ -74,7 +80,7 @@ public class SalesReportServiceImpl implements SalesReportService {
     List<Tax> taxes = new ArrayList<Tax>();
     ArrayList<FXRateDTO> fxRates = new ArrayList<FXRateDTO>();
     
-    if (startPeriod.getYear()==endPeriod.getYear()) {
+    if (startPeriod.getYear()==endPeriod.getYear()) {//periods are in same year
       FiscalPeriodDTO period = new FiscalPeriodDTO();
       period.setYear(startPeriod.getYear());
       for (int i = startPeriod.getMonth(); i <= endPeriod.getMonth(); i++) {
@@ -83,6 +89,36 @@ public class SalesReportServiceImpl implements SalesReportService {
         taxes.addAll(taxDAO.getTaxesForPeriod(period));
         fxRates.addAll(fxRateDAO.getAllFXRatesForPeriod(period));      
       }
+    } else { // periods are split on several years
+      FiscalPeriodDTO period = new FiscalPeriodDTO();
+      for (int i = startPeriod.getYear(); i <= endPeriod.getYear(); i++) {
+        period.setYear(i);
+        if (i==startPeriod.getYear()) {
+          for (int j = startPeriod.getMonth(); j <= 12; j++) {
+            period.setMonth(j);
+            tmpSales.addAll(salesDAO.getAllSales(period));
+            taxes.addAll(taxDAO.getTaxesForPeriod(period));
+            fxRates.addAll(fxRateDAO.getAllFXRatesForPeriod(period));
+          }
+          
+        } else if (i==endPeriod.getYear()) {
+          for (int j = 1; j <= endPeriod.getMonth(); j++) {
+            period.setMonth(j);
+            tmpSales.addAll(salesDAO.getAllSales(period));
+            taxes.addAll(taxDAO.getTaxesForPeriod(period));
+            fxRates.addAll(fxRateDAO.getAllFXRatesForPeriod(period));
+          }
+
+        } else {
+          for (int j = 1; j <= 12; j++) {
+            period.setMonth(j);
+            tmpSales.addAll(salesDAO.getAllSales(period));
+            taxes.addAll(taxDAO.getTaxesForPeriod(period));
+            fxRates.addAll(fxRateDAO.getAllFXRatesForPeriod(period));
+          }
+        }
+      }
+      
     }
 
     BigDecimal changeRate = new BigDecimal(0);
@@ -95,7 +131,7 @@ public class SalesReportServiceImpl implements SalesReportService {
     ZoneReportSummary monthReportLineTotal = new ZoneReportSummary();
     monthReportLineTotal.setApplications(new ArrayList<ApplicationReportSummary>());
     BigDecimal taxRate = new BigDecimal(0);
-
+    FiscalPeriod currentPeriod;
     if (tmpSales != null && tmpSales.size() > 0) {
       logger.debug("Processing  " + sales.size() + " lines");
       Collections.sort(tmpSales, new Comparator<Sales>() {
@@ -115,7 +151,6 @@ public class SalesReportServiceImpl implements SalesReportService {
         }
       });
 
-    //TODO summarize lines with same zone, application and country code but different periods (have to add period parameter to getChangeRate and getTaxRate). 
       for (Sales sale : tmpSales) {
         Zone zone = sale.getZone();
 
@@ -129,13 +164,13 @@ public class SalesReportServiceImpl implements SalesReportService {
           monthReportLineTotal = appsTotal(monthReportLineTotal, monthReportLine);
           monthReportLine = new ZoneReportSummary();
           monthReportLine.setApplications(new ArrayList<ApplicationReportSummary>());
-          changeRate = this.getChangeRate(fxRates, zone);
-          taxRate = this.getTaxRate(taxes, zone);
+          changeRate = this.getChangeRate(fxRates, zone, sale.getPeriod());
+          taxRate = this.getTaxRate(taxes, zone, sale.getPeriod());
         } else {
           if (currentZone == null) { // first pass, fetch change rate and
                                      // taxRate
-            changeRate = this.getChangeRate(fxRates, zone);
-            taxRate = this.getTaxRate(taxes, zone);
+ /*           changeRate = this.getChangeRate(fxRates, zone, sale.getPeriod());
+            taxRate = this.getTaxRate(taxes, zone, sale.getPeriod());*/
           }
         }
         Application application = sale.getApplication();
@@ -149,6 +184,8 @@ public class SalesReportServiceImpl implements SalesReportService {
             applicationSumary.init();
           }
         }
+          changeRate = this.getChangeRate(fxRates, zone, sale.getPeriod());
+          taxRate = this.getTaxRate(taxes, zone, sale.getPeriod());
         // add sales data to current application in current zone
         monthReportLine.setZoneName(zone.getName());
         applicationSumary.setApplicationName(application.getName());
@@ -227,13 +264,13 @@ public class SalesReportServiceImpl implements SalesReportService {
           monthReportLineTotal = appsTotal(monthReportLineTotal, monthReportLine);
           monthReportLine = new ZoneReportSummary();
           monthReportLine.setApplications(new ArrayList<ApplicationReportSummary>());
-          changeRate = this.getChangeRate(fxRates, zone);
-          taxRate = this.getTaxRate(taxes, zone);
+          changeRate = this.getChangeRate(fxRates, zone, null);
+          taxRate = this.getTaxRate(taxes, zone, null);
         } else {
           if (currentZone == null) { // first pass, fetch change rate and
                                      // taxRate
-            changeRate = this.getChangeRate(fxRates, zone);
-            taxRate = this.getTaxRate(taxes, zone);
+            changeRate = this.getChangeRate(fxRates, zone, null);
+            taxRate = this.getTaxRate(taxes, zone, null);
           }
         }
         Application application = sale.getApplication();
@@ -363,34 +400,67 @@ public class SalesReportServiceImpl implements SalesReportService {
     return monthReportLineTotal;
   }
 
-  private BigDecimal getTaxRate(List<Tax> taxes, Zone zone) {
+  private BigDecimal getTaxRate(List<Tax> taxes, Zone zone, FiscalPeriod fiscalPeriod) {
     BigDecimal taxRate = new BigDecimal(0);
+    Date startDate = null;
+    Date endDate = null;
+    if (fiscalPeriod != null) {
+      Calendar cal1 = new GregorianCalendar();
+      cal1.set(Calendar.YEAR, fiscalPeriod.getYear());
+      cal1.set(Calendar.MONTH, fiscalPeriod.getMonth() - 1);
+      cal1.set(Calendar.DAY_OF_MONTH, 1);
+      cal1.set(Calendar.HOUR_OF_DAY, 0);
+      cal1.set(Calendar.MINUTE, 0);
+      cal1.set(Calendar.SECOND, 0);
+      cal1.set(Calendar.MILLISECOND, 0);
+      startDate = cal1.getTime();
+      Date endOfMonthDate = cal1.getTime();
+      CalendarUtil.addMonthsToDate(endOfMonthDate, 1);
+      CalendarUtil.addDaysToDate(endOfMonthDate, -1);
+      endDate = endOfMonthDate;
+    }
     for (Tax tax : taxes) {
       if (tax.getZone().equals(zone)) {
-        taxRate = tax.getRate();
-        break;
+        if (fiscalPeriod !=null) {
+          if (tax.getPeriod().getStartDate().getTime() <=startDate.getTime() && (tax.getPeriod().getStopDate().getTime() >=endDate.getTime() || tax.getPeriod().getStopDate() == null)) {
+            taxRate = tax.getRate();
+            break;
+            }
+          } else {
+            taxRate = tax.getRate(); 
+            
+          break;
+        }
       }
     }
     return taxRate;
   }
 
-  private BigDecimal getChangeRate(ArrayList<FXRateDTO> fxRates, Zone zone) throws RuntimeException {
+  private BigDecimal getChangeRate(ArrayList<FXRateDTO> fxRates, Zone zone, FiscalPeriod fiscalPeriod) throws RuntimeException {
     BigDecimal changeRate = new BigDecimal(0);
     String tmpCurrency = null;
     for (FXRateDTO fxRate : fxRates) {
       if (fxRate.getId() != null && fxRate.getZone().getId() == zone.getId()) {
-        changeRate = fxRate.getRate();
-        tmpCurrency = fxRate.getCurrencyIso();
-        break;
-      }
+        if (fiscalPeriod !=null) {
+          if (fxRate.getPeriod().equals(DTOUtils.periodToPeriodDTO(fiscalPeriod))) {
+            changeRate = fxRate.getRate();
+            tmpCurrency = fxRate.getCurrencyIso();
+            break;
+            }
+          } else {
+          changeRate = fxRate.getRate();
+          tmpCurrency = fxRate.getCurrencyIso();
+          break;
+          }
+        }
     }
     
     if (changeRate == null) {
-      throw new RuntimeException("No Change Rate found for Zone " + zone.getCode() + " - " + zone.getName() + " for choosen Month");
+      throw new RuntimeException("No Change Rate found for Zone " + zone.getCode() + " - " + zone.getName() + " for "+((fiscalPeriod!=null)?fiscalPeriod.getMonth()+"/"+fiscalPeriod.getYear():" choosen month"));
     }
 
     if (tmpCurrency == null) {
-      throw new RuntimeException("No Reference currency found for Zone " + zone.getCode() + " - " + zone.getName() + " for choosen Month");
+      throw new RuntimeException("No Reference currency found for Zone " + zone.getCode() + " - " + zone.getName() + " for "+((fiscalPeriod!=null)?fiscalPeriod.getMonth()+"/"+fiscalPeriod.getYear():" choosen month"));
     }
     
     if (referenceCurrency != null && !referenceCurrency.equals(tmpCurrency)) {
