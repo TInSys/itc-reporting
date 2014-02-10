@@ -166,13 +166,7 @@ public class SalesReportServiceImpl implements SalesReportService {
           monthReportLine.setApplications(new ArrayList<ApplicationReportSummary>());
           changeRate = this.getChangeRate(fxRates, zone, sale.getPeriod());
           taxRate = this.getTaxRate(taxes, zone, sale.getPeriod());
-        } else {
-          if (currentZone == null) { // first pass, fetch change rate and
-                                     // taxRate
- /*           changeRate = this.getChangeRate(fxRates, zone, sale.getPeriod());
-            taxRate = this.getTaxRate(taxes, zone, sale.getPeriod());*/
-          }
-        }
+        } 
         Application application = sale.getApplication();
         if (application != currentApplication && applicationSumary != null) { // add application subtotals "column" to current zone
           monthReportLine.getApplications().add(applicationSumary);
@@ -401,39 +395,39 @@ public class SalesReportServiceImpl implements SalesReportService {
   }
 
   private BigDecimal getTaxRate(List<Tax> taxes, Zone zone, FiscalPeriod fiscalPeriod) {
-    BigDecimal taxRate = new BigDecimal(0);
-    Date startDate = null;
-    Date endDate = null;
-    if (fiscalPeriod != null) {
-      Calendar cal1 = new GregorianCalendar();
-      cal1.set(Calendar.YEAR, fiscalPeriod.getYear());
-      cal1.set(Calendar.MONTH, fiscalPeriod.getMonth() - 1);
-      cal1.set(Calendar.DAY_OF_MONTH, 1);
-      cal1.set(Calendar.HOUR_OF_DAY, 0);
-      cal1.set(Calendar.MINUTE, 0);
-      cal1.set(Calendar.SECOND, 0);
-      cal1.set(Calendar.MILLISECOND, 0);
-      startDate = cal1.getTime();
-      Date endOfMonthDate = cal1.getTime();
-      CalendarUtil.addMonthsToDate(endOfMonthDate, 1);
-      CalendarUtil.addDaysToDate(endOfMonthDate, -1);
-      endDate = endOfMonthDate;
-    }
-    for (Tax tax : taxes) {
-      if (tax.getZone().equals(zone)) {
-        if (fiscalPeriod !=null) {
-          if (tax.getPeriod().getStartDate().getTime() <=startDate.getTime() && (tax.getPeriod().getStopDate().getTime() >=endDate.getTime() || tax.getPeriod().getStopDate() == null)) {
-            taxRate = tax.getRate();
-            break;
+      BigDecimal taxRate = new BigDecimal(0);
+      Date startDate = null;
+      Date endDate = null;
+      if (fiscalPeriod != null) {
+        Calendar cal1 = new GregorianCalendar();
+        cal1.set(Calendar.YEAR, fiscalPeriod.getYear());
+        cal1.set(Calendar.MONTH, fiscalPeriod.getMonth() - 1);
+        cal1.set(Calendar.DAY_OF_MONTH, 1);
+        cal1.set(Calendar.HOUR_OF_DAY, 0);
+        cal1.set(Calendar.MINUTE, 0);
+        cal1.set(Calendar.SECOND, 0);
+        cal1.set(Calendar.MILLISECOND, 0);
+        startDate = cal1.getTime();
+        Date endOfMonthDate = cal1.getTime();
+        CalendarUtil.addMonthsToDate(endOfMonthDate, 1);
+        CalendarUtil.addDaysToDate(endOfMonthDate, -1);
+        endDate = endOfMonthDate;
+      }
+      for (Tax tax : taxes) {
+        if (tax.getZone().equals(zone)) {
+          if (fiscalPeriod !=null) {
+            if (tax.getPeriod().getStartDate().getTime() <=startDate.getTime() && (tax.getPeriod().getStopDate() == null || tax.getPeriod().getStopDate().getTime() >=endDate.getTime())) {
+              taxRate = tax.getRate();
+              break;
             }
           } else {
             taxRate = tax.getRate(); 
             
-          break;
+            break;
+          }
         }
       }
-    }
-    return taxRate;
+      return taxRate;
   }
 
   private BigDecimal getChangeRate(ArrayList<FXRateDTO> fxRates, Zone zone, FiscalPeriod fiscalPeriod) throws RuntimeException {
